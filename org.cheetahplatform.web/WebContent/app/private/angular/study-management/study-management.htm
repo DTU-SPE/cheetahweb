@@ -1,0 +1,75 @@
+<div>
+    <div class="container-fluid">
+        <h1>My Studies</h1>
+
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div id="cheetah-notifications-button-container" class="clearfix">
+                    <button id="cheetah-notification-clear-button" class="btn btn-default"
+                            ng-click="openAddStudyDialog()">
+                        Add Study
+                    </button>
+                </div>
+
+                <table class="table table-hover table-search">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Comment</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="study in studies">
+                        <td>{{study.name}}</td>
+                        <td>{{study.comment}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal" id="addStudyDialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Add Study</h4>
+            </div>
+            <div class="modal-body container-fluid">
+                <div class="container-fluid">
+                    <form data-toggle="validator" id="#addStudyForm" role="form"
+                          ng-submit="submitNewStudy()">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Please enter a name and an optional comment for the new
+                                    study.</h3>
+                            </div>
+                            <div class="panel-body">
+                                <div class="form-group">
+                                    <div><label for="study-name">Study name</label></div>
+                                    <div><input class="form-control" type="text" id="study-name" ng-model="newStudyName"
+                                                required></div>
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                                <div class="form-group">
+                                    <div><label for="study-comment">Comment</label></div>
+                                    <div><input class="form-control" type="text" id="study-comment"
+                                                ng-model="newStudyComment">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <button type="submit" id="submitNewStudy" class="btn btn-primary">Add Study
+                                    </button>
+                                </div>
+                            </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

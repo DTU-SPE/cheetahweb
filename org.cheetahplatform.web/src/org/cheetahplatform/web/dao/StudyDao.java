@@ -12,6 +12,14 @@ import java.util.List;
 import org.cheetahplatform.web.dto.StudyDto;
 
 public class StudyDao {
+	private void assignUserToStudy(Connection connection, long userId, long id) throws SQLException {
+		PreparedStatement assignmentStatement = connection.prepareStatement("insert into studies_to_user (fk_user,fk_study) values (?, ?)");
+		assignmentStatement.setLong(1, userId);
+		assignmentStatement.setLong(2, id);
+		assignmentStatement.execute();
+		assignmentStatement.close();
+	}
+
 	public List<StudyDto> getStudies(Connection connection) throws SQLException {
 		Statement statement = connection.createStatement();
 		ResultSet studyResult = statement.executeQuery("select * from study");
@@ -49,6 +57,22 @@ public class StudyDao {
 
 	}
 
+	public void insertStudy(Connection connection, long userId, String name, String comment) throws SQLException {
+		PreparedStatement statement = connection.prepareStatement("insert into study (name,comment) values (?,?);",
+				PreparedStatement.RETURN_GENERATED_KEYS);
+		statement.setString(1, name);
+		statement.setString(2, comment);
+		statement.execute();
+
+		ResultSet keys = statement.getGeneratedKeys();
+		keys.next();
+		long id = keys.getLong(1);
+		keys.close();
+		statement.close();
+
+		assignUserToStudy(connection, userId, id);
+	}
+
 	/**
 	 * Inserts a new synchronized study based upon a given study.
 	 *
@@ -80,11 +104,7 @@ public class StudyDao {
 		statement.close();
 
 		// assign study to user
-		PreparedStatement assignmentStatement = connection.prepareStatement("insert into studies_to_user (fk_user,fk_study) values (?, ?)");
-		assignmentStatement.setLong(1, userId);
-		assignmentStatement.setLong(2, id);
-		assignmentStatement.execute();
-		assignmentStatement.close();
+		assignUserToStudy(connection, userId, id);
 
 		return synchronizedStudy;
 	}

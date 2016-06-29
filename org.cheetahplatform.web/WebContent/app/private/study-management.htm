@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Cheetah Experimental Platform</title>
+
+    <link href="../public/css/lib/bootstrap.css" rel="stylesheet">
+    <link href="../public/css/lib/bootstrap-theme.css" rel="stylesheet">
+    <link href="../public/css/icomoon.css" rel="stylesheet">
+    <link href="../public/css/cheetah.css" rel="stylesheet">
+    <link href="../public/css/lib/bootstrap-dialog.min.css" rel="stylesheet">
+
+    <script src="../public/js/lib/jquery.js"></script>
+    <script src="../public/js/lib/bootstrap.js"></script>
+    <script src="../public/js/lib/angular.js"></script>
+    <script src="../public/js/lib/angular-route.js"></script>
+    <script src="../public/js/lib/bootstrap-dialog.min.js"></script>
+    <script src="angular/study-management/study-management.js"></script>
+    <script src="angular/navigation/navigation.js"></script>
+    <script>
+        //need to bootstrap pages with more than one angular app
+        $(document).ready(function () {
+            angular.bootstrap($('[ng-app="cheetah.StudyManagement"]'), ['cheetah.StudyManagement']);
+        });
+    </script>
+</head>
+
+<body role="document">
+
+<div ng-app="cheetah.Navigation" ng-view="" ng-controller="NavigationCtrl" ng-init="setActive('cheetah-subject')"></div>
+
+<div role="main" class="container">
+    <div ng-app="cheetah.StudyManagement" ng-view="" class="panel-body"></div>
+</div>
+
+</body>
+</html>

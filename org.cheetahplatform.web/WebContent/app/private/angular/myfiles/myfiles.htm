@@ -28,32 +28,40 @@
                             </button>
                             <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
                                 <li role="presentation">
-                                    <a role="menuitem" tabindex="-1" ng-click="openPupillometryDataDialog()">Clean Pupillometry Data</a>
+                                    <a role="menuitem" tabindex="-1" ng-click="openPupillometryDataDialog()">Clean
+                                        Pupillometry Data</a>
                                 </li>
                                 <li role="presentation" ng-show="settings['cheetah.web.show-ppm']==='true'">
-                                    <a role="menuitem" tabindex="-1" ng-click="openTrimToPpmInstanceDialog()">Trim Pupillometry Data / Video</a></li>
+                                    <a role="menuitem" tabindex="-1" ng-click="openTrimToPpmInstanceDialog()">Trim
+                                        Pupillometry Data / Video</a></li>
                                 <li role="presentation">
-                                    <a role="menuitem" tabindex="-1" ng-click="openConnectToSubjectDialog()">Prepare Data for Analysis</a>
+                                    <a role="menuitem" tabindex="-1" ng-click="openConnectToSubjectDialog()">Prepare
+                                        Data for Analysis</a>
                                 </li>
                                 <li role="presentation">
-                                    <a role="menuitem" tabindex="-1" ng-click="openCalculateAverageLoadDialog()">Calculate average load</a>
+                                    <a role="menuitem" tabindex="-1" ng-click="openCalculateAverageLoadDialog()">Calculate
+                                        average load</a>
                                 </li>
                             </ul>
                         </div>
 
                         <div class="dropdown" id="cheetah-files-fileactions-button">
-                            <button class="btn btn-default dropdown-toggle" type="button" id="cheetah-file-fileactions-dropdown" data-toggle="dropdown"
+                            <button class="btn btn-default dropdown-toggle" type="button"
+                                    id="cheetah-file-fileactions-dropdown" data-toggle="dropdown"
                                     aria-expanded="true">File Actions <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu" role="menu" aria-labelledby="cheetah-file-fileactions-dropdown">
                                 <li role="presentation">
-                                    <a role="menuitem" tabindex="-1" ng-click="selectAllDisplayedFiles()">Add All Displayed Files to Selection</a>
+                                    <a role="menuitem" tabindex="-1" ng-click="selectAllDisplayedFiles()">Add All
+                                        Displayed Files to Selection</a>
                                 </li>
                                 <li role="presentation">
-                                    <a role="menuitem" tabindex="-1" ng-click="deselectAllFiles()">Deselect All File(s)</a>
+                                    <a role="menuitem" tabindex="-1" ng-click="deselectAllFiles()">Deselect All
+                                        File(s)</a>
                                 </li>
                                 <li role="presentation">
-                                    <a role="menuitem" tabindex="-1" ng-click="downloadFiles()">Download File(s)</a></li>
+                                    <a role="menuitem" tabindex="-1" ng-click="downloadFiles()">Download File(s)</a>
+                                </li>
                                 <li role="presentation">
                                     <a role="menuitem" tabindex="-1" ng-click="openAddTagsDialog()">Add Tag(s)</a></li>
                                 <li role="presentation">
@@ -350,7 +358,8 @@
                                         <input type="checkbox" id="detectPpmInstanceConnect" checked disabled required>
                                         Detect subject and experiment automatically</label>
                                 </div>
-                                <label>In order to detect the subject and experiment task, the format must be as follows:
+                                <label>In order to detect the subject and experiment task, the format must be as
+                                    follows:
                                     {Proband}@{Experiment Task}.tsv </label>
                                 <label>Example:
                                     P003@complex_modeling_task1_bpmn_1.0.tsv</label>

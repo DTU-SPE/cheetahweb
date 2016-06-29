@@ -11,20 +11,27 @@ angular
                 filters: [],
                 subItems: []
             }, {
-                id: "cheetah-subject",
-                url: "subject-management.htm",
-                label: "Subject Management",
+                id: "cheetah-study-management",
+                label: "Study Management",
                 filters: [],
-                subItems: []
-            }, {
-                id: "cheetah-analyze",
-                url: "analyze.htm",
-                label: "Analyze",
-                filters: [],
-                subItems: []
+                subItems: [
+                    {
+                        id: "cheetah-study",
+                        url: "study-management.htm",
+                        label: "My Studies",
+                        filters: [],
+                        subItems: []
+                    },
+                    {
+                        id: "cheetah-subject",
+                        url: "subject-management.htm",
+                        label: "My Subjects",
+                        filters: [],
+                        subItems: []
+                    }
+                ]
             }, {
                 id: "cheetah-data-management",
-                url: "notifications.htm",
                 label: "Data Management",
                 filters: [],
                 subItems: [{
@@ -43,6 +50,12 @@ angular
                     label: "Synchronize Data",
                     filters: [SHOW_PPM_FEATURES]
                 }]
+            }, {
+                id: "cheetah-analyze",
+                url: "visualize.htm",
+                label: "Visualize",
+                filters: [],
+                subItems: []
             }, {
                 id: "cheetah-contact",
                 url: "contact.htm",
