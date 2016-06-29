@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Cheetah Experimental Platform</title>
+
+    <link href="../public/css/lib/bootstrap.css" rel="stylesheet">
+    <link href="../public/css/lib/bootstrap-theme.css" rel="stylesheet">
+    <link href="../public/css/icomoon.css" rel="stylesheet">
+    <link href="../public/css/cheetah.css" rel="stylesheet">
+    <link href="../public/css/lib/bootstrap-dialog.min.css" rel="stylesheet">
+
+    <script src="../public/js/lib/jquery.js"></script>
+    <script src="../public/js/lib/bootstrap.js"></script>
+    <script src="../public/js/lib/angular.js"></script>
+    <script src="../public/js/lib/angular-route.js"></script>
+    <script src="../public/js/lib/bootstrap-dialog.min.js"></script>
+    <script src="../public/js/lib/hmac-md5.js"></script>
+    <script src="../public/js/lib/core-min.js"></script>
+    <script src="../public/js/lib/enc-utf16-min.js"></script>
+    <script src="../public/js/lib/enc-base64-min.js"></script>
+    <script src="angular/search/search.js"></script>
+    <script src="angular/navigation/navigation.js"></script>
+    <script>
+        //need to bootstrap pages with more than one angular app
+        $(document).ready(function () {
+            angular.bootstrap($('[ng-app="cheetah.Search"]'), ['cheetah.Search']);
+        });
+    </script>
+</head>
+
+<body role="document">
+
+<div ng-app="cheetah.Navigation" ng-view="" ng-controller="NavigationCtrl" ng-init="setActive('cheetah-analyze')"></div>
+
+<div role="main" class="container">
+    <h1>Search for Subject</h1>
+    <div class="panel panel-default">
+        <div ng-app="cheetah.Search" ng-view="" class="panel-body"></div>
+    </div>
+</div>
+
+</body>
+</html>

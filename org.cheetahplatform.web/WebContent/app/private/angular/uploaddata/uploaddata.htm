@@ -1,0 +1,97 @@
+<div>
+    <h1>Upload Data</h1>
+    <div class="panel panel-default">
+        <div class="panel-heading"><strong>Upload Data Files</strong></div>
+        <div class="panel-body">
+
+            <h4>Select files from your computer</h4>
+            <form action="" method="post" enctype="multipart/form-data" id="js-upload-form">
+                <div class="form-inline">
+                    <div class="form-group">
+                        <input type="file" name="files[]" id="js-upload-files" multiple>
+                    </div>
+                    <button type="submit" class="btn btn-sm btn-primary" id="js-upload-submit">Upload files</button>
+                </div>
+            </form>
+
+            <!-- Drop Zone -->
+            <h4>Or drag and drop files below</h4>
+            <div class="upload-drop-zone" id="drop-zone">
+                Just drag and drop files here
+            </div>
+
+            <div class="progress">
+                <div id="uploadprogressbar" class="progress-bar progress-bar-striped" role="progressbar"
+                     aria-valuenow={{uploadedFiles.length}} aria-valuemin="0" aria-valuemax={{filesToUpload}}
+                     style="width: {{uploadPercentage}}%;">
+                    {{uploadedFiles.length}} / {{filesToUpload}} ({{uploadPercentage}}%)
+                </div>
+            </div>
+
+            <!-- Upload Finished -->
+            <table class="table table-hover table-search">
+                <thead>
+                <tr>
+                    <th>Filename</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="uploadedFile in uploadedFiles">
+                    <td>{{uploadedFile.filename}}</td>
+                    <td>{{uploadedFile.status}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal" id="cheetah-map-files-to-subjects-dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Map files to subjects</h4>
+            </div>
+            <div class="modal-body container-fluid">
+                <div>The following files could not be automatically mapped to subjects in your database. You can map
+                    these
+                    files now manually. <br> <b>If you do not map the files now, they won't be available for analysis
+                        and you
+                        will
+                        need to re-upload the files.</b>
+                </div>
+                <table  ng-show="unmappedFiles.length>0" class="table table-hover table-search">
+                    <thead>
+                    <tr>
+                        <th>Filename</th>
+                        <th>Type</th>
+                        <th>Subject</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="file in unmappedFiles | orderBy : 'filename'">
+                        <td>{{file.filename}}</td>
+                        <td>{{file.type}}</td>
+                        <td><select class="js-example-basic-single" id="cheetah-file-id-{{file.id}}">
+                            <option ng-repeat="subject in subjects" value="{{subject.id}}">{{subject.subjectId}}
+                            </option>
+                        </select></td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div ng-show="unmappedFiles.length===0" class="cheetah-upload-complete-message"><b>All files successfully mapped.</b></div>
+
+                <div class="form-group"  ng-show="unmappedFiles.length>0">
+                    <button type="submit" id="mapFilesToSubjects"
+                            class="btn btn-primary" ng-click="mapFilesToSubject()">Map files to subject
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

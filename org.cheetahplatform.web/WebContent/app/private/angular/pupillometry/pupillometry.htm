@@ -1,0 +1,61 @@
+<div id="pupillometry" class="aGraph"></div>
+<div id="pupillometry-no-data">No eyetracking data available for this timeslot.</div>
+
+<div id="pupillometry-controls" class="container-fluid">
+    <div class="col-lg-6">
+        <label class="control-label">Pupillometry Lines</label>
+        <table class="table table-bordered">
+            <thead>
+            <th></th>
+            <th>Line</th>
+            </thead>
+            <tbody>
+            <tr ng-repeat="line in pupillometryLines" ng-click="setSelection(line, $event)">
+                <td><input type="checkbox" ng-model="line.selected"></td>
+                <td class="{{line.color}}">{{line.label}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="form-group col-lg-6">
+        <label for="pupillometryLine" class="col-sm-6 control-label">Line</label>
+
+        <div class="col-sm-6">
+            <select class="form-control" id="pupillometryLine" ng-model="additionalInformationLineLabel" ng-change="updateAdditionalInformationLine()">
+                <option value=""></option>
+                <option ng-repeat="line in pupillometryLines">{{line.label}}</option>
+            </select>
+        </div>
+
+        <label for="percentile" class="col-sm-6 control-label">Percentile</label>
+
+        <div class="col-sm-6">
+            <select class="form-control" id="percentile" ng-model="percentile" ng-change="updatePercentile()">
+                <option value=""></option>
+                <option ng-repeat="percentile in percentiles">{{percentile.percentile}}</option>
+            </select>
+        </div>
+
+        <label for="slidingWindow" class="col-sm-6 control-label">Sliding Window</label>
+
+        <div class="col-sm-6">
+            <select class="form-control" id="slidingWindow" ng-model="slidingWindowDuration"
+                    ng-change="updateSlidingWindow(slidingWindowDuration)">
+                <option value=""></option>
+                <option ng-repeat="slidingWindowDuration in slidingWindowDurations">{{slidingWindowDuration}}</option>
+            </select>
+        </div>
+
+        <div class="dropup col-sm-12">
+            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown"
+                    aria-expanded="true">Analyze <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                <li role="presentation"><a role="menuitem" tabindex="-1" ng-click="exploreHighLoad()">Find High Load</a></li>
+                <li role="presentation"><a role="menuitem" tabindex="-1" ng-click="exploreHighLoadWithSlidingWindow()">Find High Load (Sliding Window)</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="WINDOWS-1252" standalone="no"?>
+<jardesc>
+    <jar path="org.cheetahplatform.web/WebContent/WEB-INF/lib/org.cheetahplatform.experiment.2015_04_manuel.jar"/>
+    <options buildIfNeeded="true" compress="true" descriptionLocation="/org.cheetahplatform.web/org.cheetahplatform.experiment.2015_04_manuel.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="true" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
+    <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
+    <selectedProjects/>
+    <manifest generateManifest="true" manifestLocation="" manifestVersion="1.0" reuseManifest="false" saveManifest="false" usesManifest="true">
+        <sealing sealJar="false">
+            <packagesToSeal/>
+            <packagesToUnSeal/>
+        </sealing>
+    </manifest>
+    <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
+        <javaElement handleIdentifier="=org.cheetahplatform.experiment.2015_04_manuel/src"/>
+        <file path="/org.cheetahplatform.experiment.2015_04_manuel/.classpath"/>
+        <folder path="/org.cheetahplatform.experiment.2015_04_manuel/META-INF"/>
+        <file path="/org.cheetahplatform.experiment.2015_04_manuel/plugin_customization.ini"/>
+        <file path="/org.cheetahplatform.experiment.2015_04_manuel/build.properties"/>
+        <file path="/org.cheetahplatform.experiment.2015_04_manuel/.project"/>
+        <file path="/org.cheetahplatform.experiment.2015_04_manuel/org.cheetahplatform.experiment.2015_04_manuel.product"/>
+        <file path="/org.cheetahplatform.experiment.2015_04_manuel/plugin.xml"/>
+        <file path="/org.cheetahplatform.experiment.2015_04_manuel/org.cheetahplatform.experiment.2015_04_manuel_analyzer.product"/>
+    </selectedElements>
+</jardesc>

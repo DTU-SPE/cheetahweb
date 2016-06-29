@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+	<Resource name="jdbc/cheetahweb" auth="Container" type="javax.sql.DataSource"
+		maxActive="100" maxIdle="30" maxWait="10000" username="cheetah_web"
+		password="cheetah_web_pass" driverClassName="com.mysql.jdbc.Driver"
+		url="jdbc:mysql://localhost:3306/cheetah_web" />
+	<Realm className="org.apache.catalina.realm.JDBCRealm"
+		connectionName="cheetah_web" connectionPassword="cheetah_web_pass"
+		connectionURL="jdbc:mysql://localhost:3306/cheetah_web" digest="md5"
+		driverName="com.mysql.jdbc.Driver" roleNameCol="role" userCredCol="password"
+		userNameCol="email" userRoleTable="user_roles" userTable="user_table" />
+</Context>

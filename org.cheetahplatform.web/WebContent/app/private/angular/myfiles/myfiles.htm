@@ -1,0 +1,443 @@
+<div>
+    <div class="container-fluid">
+        <h1>My Files</h1>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div>
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="cheetah-files-search-input">Search</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" placeholder="Search in all columns..."
+                                       id="cheetah-files-search-input" ng-model="search"/>
+                            </div>
+                            <div id="cheetah-files-status-bar">
+                                <span>Total number of files: </span> <span class="cheetah-files-status-value">{{files.length}}</span>
+                                <span>Number of displayed files: </span> <span class="cheetah-files-status-value">{{filteredFiles().length}}</span>
+                                <span>Number of selected files: </span> <span class="cheetah-files-status-value">{{numberOfSelectedFiles()}}</span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="cheetah-files-button-container">
+                        <div class="dropdown" id="cheetah-files-analyze-button">
+                            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1"
+                                    data-toggle="dropdown"
+                                    aria-expanded="true">
+                                Analyze
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                                <li role="presentation">
+                                    <a role="menuitem" tabindex="-1" ng-click="openPupillometryDataDialog()">Clean Pupillometry Data</a>
+                                </li>
+                                <li role="presentation" ng-show="settings['cheetah.web.show-ppm']==='true'">
+                                    <a role="menuitem" tabindex="-1" ng-click="openTrimToPpmInstanceDialog()">Trim Pupillometry Data / Video</a></li>
+                                <li role="presentation">
+                                    <a role="menuitem" tabindex="-1" ng-click="openConnectToSubjectDialog()">Prepare Data for Analysis</a>
+                                </li>
+                                <li role="presentation">
+                                    <a role="menuitem" tabindex="-1" ng-click="openCalculateAverageLoadDialog()">Calculate average load</a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="dropdown" id="cheetah-files-fileactions-button">
+                            <button class="btn btn-default dropdown-toggle" type="button" id="cheetah-file-fileactions-dropdown" data-toggle="dropdown"
+                                    aria-expanded="true">File Actions <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="cheetah-file-fileactions-dropdown">
+                                <li role="presentation">
+                                    <a role="menuitem" tabindex="-1" ng-click="selectAllDisplayedFiles()">Add All Displayed Files to Selection</a>
+                                </li>
+                                <li role="presentation">
+                                    <a role="menuitem" tabindex="-1" ng-click="deselectAllFiles()">Deselect All File(s)</a>
+                                </li>
+                                <li role="presentation">
+                                    <a role="menuitem" tabindex="-1" ng-click="downloadFiles()">Download File(s)</a></li>
+                                <li role="presentation">
+                                    <a role="menuitem" tabindex="-1" ng-click="openAddTagsDialog()">Add Tag(s)</a></li>
+                                <li role="presentation">
+                                    <a role="menuitem" tabindex="-1" ng-click="openRemoveTagsDialog()">Remove Tag(s)</a>
+                                </li>
+                                <li role="presentation">
+                                    <a role="menuitem" tabindex="-1" ng-click="openDeleteDialog()">Delete File(s)</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-hover table-search">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>Filename</th>
+                        <th>Type</th>
+                        <th>Comment</th>
+                        <th>Tags</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="file in filteredFiles() | orderBy : 'filename'"
+                        ng-click="setSelection(file, $event)">
+                        <td><input type="checkbox" ng-model="file.selection"></td>
+                        <td>{{file.filename}}</td>
+                        <td>{{file.type}}</td>
+                        <td>{{file.comment}}</td>
+                        <td>
+                            <div><span ng-repeat="tag in file.tags" class="cheetah-files-tag"
+                                       style="{{getTagColors(tag)}}">{{tag.tag}}</span></div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="cleanPupillometryDataDialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Clean Pupillometry Data</h4>
+            </div>
+            <div class="modal-body container-fluid">
+                <form data-toggle="validator" id="#columnForm" role="form" ng-submit="cleanPupillometryData()">
+                    <div class="form-inline">
+                        <label for="decimalSeparator">Decimal Separator</label>
+                        <input type="text" id="decimalSeparator" class="form-control"
+                               placeholder=""
+                               ng-model="decimalSeparator" required>
+                    </div>
+                    <br>
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Filter Parameters</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div ng-repeat="parameter in parameters">
+                                <div class="form-group">
+                                    <label for="{{parameter.key}}">{{parameter.description}}</label>
+                                    <input type="text" id="{{parameter.key}}" class="form-control"
+                                           placeholder="{{parameter.description}}"
+                                           ng-model="parameter.value" required>
+
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="panel panel-primary pupillometryFilterTable">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">Selected Filters</h3>
+                                </div>
+                                <div class="panel-body">
+                                    <ul class="list-group">
+                                        <li class="list-group-item selectable"
+                                            ng-repeat="filter in filters | filter:{selected:true} | orderBy : 'timestamp'"
+                                            ng-click="toggleFilter(filter)">
+                                            {{filter.name}}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="panel panel-primary pupillometryFilterTable">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">Available Filters</h3>
+                                </div>
+                                <div class="panel-body">
+                                    <ul class="list-group">
+                                        <li class="list-group-item selectable"
+                                            ng-repeat="filter in filters | filter:{selected:false} | orderBy : 'timestamp'"
+                                            ng-click="toggleFilter(filter)">
+                                            {{filter.name}}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="select">
+                        <label for="analysisSelect">
+                            Daten analysieren
+                        </label>
+                        <select ng-model="analysisOption" id="analysisSelect"
+                                ng-options="analysisOption.name for analysisOption in analysisOptions">
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" id="submitColumnsButton" class="btn btn-primary">Clean Data
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="deleteConfirmationDialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Delete Files?</h4>
+            </div>
+            <div class="modal-body container-fluid">
+                <form data-toggle="validator" id="#deleteConfirmationForm" role="form"
+                      ng-submit="deleteFiles()">
+                    <div class="panel">
+                        <div class="form-group">
+                            <label>Do you really want to delete the selected files?</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close">Get me
+                            outa here!
+                        </button>
+                        <button type="submit" id="deleteConfirmationButton" class="btn">Delete</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="trimToPpmInstanceDialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Trim to PPM Instance</h4>
+            </div>
+            <div class="modal-body container-fluid">
+                <form data-toggle="validator" id="trimToPpmInstanceForm" role="form"
+                      ng-submit="trimToPpmInstance()">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Trim to PPM Instance</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label for="timestampColumnToTrim">Timestamp</label>
+                                <input type="text" id="timestampColumnToTrim" class="form-control"
+                                       placeholder="timestamp column name..."
+                                       ng-model="trimTimestampColumn" required>
+
+                                <div class="help-block with-errors"></div>
+                            </div>
+                            <div class="form-group">
+                                <div ng-repeat="(code,activities) in codeToWorkflowActivities"
+                                     id="trimToPpmInstanceIds">
+                                    <span>Workflow {{code}}</span>
+                                    <div class="cheetah-trim-workflow-activities">
+                                        <label ng-repeat="activity in activities track by $index"><input type="checkbox"
+                                                                                                         data-code="{{code}}"
+                                                                                                         data-activity="{{activity}}">{{activity}}</label><br>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" id="submitTrimtToPpmInstanceButton" class="btn btn-primary">Trim
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal" id="calculateAverageLoadDialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Calculate Average Load</h4>
+            </div>
+            <div class="modal-body container-fluid">
+                <form data-toggle="validator" id="calculateAverageLoadForm" role="form"
+                      ng-submit="submitCalculateAverageLoad()">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Trim to PPM Instance</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label for="leftPupilColumnToConnect">Left Pupil</label>
+                                <input type="text" id="leftPupilColumnForCognitiveLoad" class="form-control"
+                                       placeholder="left pupil column name..."
+                                       ng-model="leftPupilColumnForCognitiveLoad" required>
+
+                                <div class="help-block with-errors"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="rightPupilColumnToConnect">Right Pupil</label>
+                                <input type="text" id="rightPupilColumnForCognitiveLoad" class="form-control"
+                                       placeholder="right pupil column name..."
+                                       ng-model="rightPupilColumnForCognitiveLoad" required>
+
+                                <div class="help-block with-errors"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" id="submitCalculateAverageLoad" class="btn btn-primary">Calculate Average
+                            Load
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="connectToSubjectDialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Prepare Data for Analysis</h4>
+            </div>
+            <div class="modal-body container-fluid">
+                <form data-toggle="validator" id="#connectToPpmInstanceForm" role="form"
+                      ng-submit="connectToPpmInstance()">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Prepare Data for Analysis</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label for="timestampColumnToConnect">Timestamp</label>
+                                <input type="text" id="timestampColumnToConnect" class="form-control"
+                                       placeholder="timestamp column name..."
+                                       ng-model="connectTimestampColumn" required>
+
+                                <div class="help-block with-errors"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="leftPupilColumnToConnect">Left Pupil</label>
+                                <input type="text" id="leftPupilColumnToConnect" class="form-control"
+                                       placeholder="left pupil column name..."
+                                       ng-model="connectLeftPupilColumnName" required>
+
+                                <div class="help-block with-errors"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="rightPupilColumnToConnect">Right Pupil</label>
+                                <input type="text" id="rightPupilColumnToConnect" class="form-control"
+                                       placeholder="right pupil column name..."
+                                       ng-model="connectRightPupilColumnName" required>
+
+                                <div class="help-block with-errors"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="checkbox">
+                                    <label for="detectPpmInstanceConnect">
+                                        <input type="checkbox" id="detectPpmInstanceConnect" checked disabled required>
+                                        Detect subject and experiment automatically</label>
+                                </div>
+                                <label>In order to detect the subject and experiment task, the format must be as follows:
+                                    {Proband}@{Experiment Task}.tsv </label>
+                                <label>Example:
+                                    P003@complex_modeling_task1_bpmn_1.0.tsv</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" id="submitConnectToPpmInstanceButton" class="btn btn-primary">Connect
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="addFileTags">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Add Tags to Your Files</h4>
+            </div>
+            <div class="modal-body container-fluid">
+                <h5>We have a list of predefined tags - just add them to your files by clicking on them.</h5>
+                <span ng-repeat="tag in defaultTags" ng-click="addTagToBeAdded(tag)"
+                      style="{{getTagColorsForTagName(tag)}}" class="cheetah-files-tag cheetah-clickable">{{tag}}</span>
+                <h5>Or you could specify your own tags!</h5>
+                <form class="form-horizontal" ng-submit="addCustomTag()">
+                    <input class="form-control"
+                           placeholder="Enter tag..."
+                           type="text"
+                           id="cheetah-files-add-tag-input"/>
+                </form>
+
+                <h4 style="margin-top: 40px;">Tags that will be added to the selected files</h4>
+                <h5 ng-hide="tagsToAdd.length === 0">You can remove the selected tags by clicking on a tag!</h5>
+                <span ng-hide="tagsToAdd.length > 0">
+                    <h5>No tags selected.</h5>
+                </span>
+                <div style="margin-bottom: 10px">
+                <span ng-repeat="tag in tagsToAdd" style="{{getTagColorsForTagName(tag)}}"
+                      class="cheetah-files-tag cheetah-clickable" ng-click="removeTagToBeAdded(tag)">{{tag}}</span>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" id="submitAddTagsToFiles"
+                            class="btn btn-primary" ng-click="submitTagsToAdd()">Add Tags to Selected Files
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="removeFileTags">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Remove Tags from Your Files</h4>
+            </div>
+            <div class="modal-body container-fluid">
+                <h5>We have found the following tags in the selected files. Simply click on a tag to remove it from all
+                    selected files.</h5>
+                <span ng-repeat="tag in tagsOfSelectedFiles" ng-click="addTagToBeRemoved(tag)"
+                      style="{{getTagColorsForTagName(tag)}}" class="cheetah-files-tag cheetah-clickable">{{tag}}</span>
+
+                <h4 style="margin-top: 40px;">Tags that will be removed from the selected files</h4>
+                <h5 ng-hide="tagsToRemove.length === 0">You can removed the selected tags by clicking on a tag!</h5>
+                <span ng-hide="tagsToRemove.length > 0">
+                    <h5>No tags selected.</h5>
+                </span>
+                <div style="margin-bottom: 10px">
+                <span ng-repeat="tag in tagsToRemove" style="{{getTagColorsForTagName(tag)}}"
+                      class="cheetah-files-tag cheetah-clickable" ng-click="removeTagToBeRemoved(tag)">{{tag}}</span>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" id="submitRemoveTagFromFiles"
+                            class="btn btn-primary" ng-click="submitRemoveTagFromFiles()">Remove Tags from Selected
+                        Files
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

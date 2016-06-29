@@ -1,0 +1,53 @@
+<div class="container-fluid">
+    <h1>Server Status</h1>
+    <label id="cheetah-serverstatus-workqueuesize" class="alert alert-info">Work Queue Size:
+        {{status.workQueueSize}}</label>
+    <div class="panel-group" id="cheetah-server-status-cheetah-server-status-accordion">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#cheetah-server-status-accordion"
+                       href="#cheetah-work-queue-list">Work Queue</a>
+                </h4>
+            </div>
+            <div id="cheetah-work-queue-list" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <div ng-hide="status.workItems.length > 0">
+                        <div class="alert alert-info">No work in sight! Hang loose! 😎</div>
+                    </div>
+                    <div ng-repeat="workItem in status.workItems">
+                        <div class="alert alert-info">
+                            <span>{{workItem.message}}</span>
+                            <span class="cheetah-server-status-workitem-editable icon-server-status-workitem-cancelable-{{workItem.editable}}"
+                                  ng-click="cancelWorkItem(workItem)"></span>
+                            <span class="cheetah-server-status-workitem-editable icon-server-status-workitem-move-to-top-{{workItem.editable}}"
+                                  ng-click="moveWorkItemToTop(workItem)"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#cheetah-server-status-accordion"
+                       href="#worker-list-collapsable">Worker Status</a>
+                </h4>
+            </div>
+            <div id="worker-list-collapsable" class="panel-collapse collapse in">
+                <div class="panel-body">
+                    <div ng-repeat="worker in status.workers"
+                         class="alert cheetah-server-status-worker-{{worker.status}}">
+                        <div class="cheetah-server-status-worker">Worker {{$index + 1}}
+                        </div>
+                        <div class="cheetah-server-status-worker">{{worker.status}}
+                        </div>
+                        <div class="cheetah-server-status-worker cheetah-server-status-worker-message">
+                            <span>{{worker.message}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

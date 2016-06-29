@@ -1,0 +1,198 @@
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="">Cheetah Experimental Platform</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li ng-repeat="menuItem in filter(menu)"
+                    ng-class="{dropdown: menuItem.subItems.length>0, active: menuItem.id===activeMenuItem}">
+                    <a href="{{menuItem.url}}" ng-show="{{menuItem.subItems.length===0}}">{{menuItem.label}}</a>
+
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" ng-show="{{menuItem.subItems.length>0}}">{{menuItem.label}}<b
+                            class="caret"></b></a>
+                    <ul class="dropdown-menu" ng-show="{{menuItem.subItems.length>0}}">
+                        <li ng-repeat="subMenuItem in filter(menuItem.subItems)"><a href="{{subMenuItem.url}}">{{subMenuItem.label}}</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <div id="user-navbar" class="collapse navbar-collapse">
+                        <ul class="nav navbar-nav">
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{user.firstname}}
+                                    {{user.lastname}}<b
+                                            class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <div id="createUserButton" ng-click="showCreateUserModal()"
+                                             ng-show="user.role === 'administrator'">Create User
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div id="changePasswordButton" ng-click="changePassword()">Change Password</div>
+                                    </li>
+                                    <li>
+                                        <div id="logoutButton" ng-click="logout()">Logout</div>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <!--/.nav-collapse -->
+    </div>
+</nav>
+
+
+<!-- Modal -->
+<div class="modal fade" id="logoutDialog" tabindex="-1" role="dialog" aria-labelledby="myLogoutDialogLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <h3>You have been logged out!</h3>
+            </div>
+            <div class="modal-footer">
+                <a href="../public/index.htm" id="startPageButton" class="btn btn-info" role="button">Go to start
+                    page</a></div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="changePasswordServerErrorDialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Password could not be changed</h4>
+            </div>
+            <div class="modal-body">
+                <p>An error occurred when changing the password. Is the old password correct?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="changePasswordSuccessDialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Password changed</h4>
+            </div>
+            <div class="modal-body">
+                <p>The password was successfully changed.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="changePasswordErrorPasswordNotMatchingDialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Password could not be changed</h4>
+            </div>
+            <div class="modal-body">
+                <p>The entered passwords do not match.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="createUserDialog" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span
+                        class="sr-only">Close</span></button>
+                <h4 class="modal-title">Create User</h4>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div><label for="email">Email</label></div>
+                        <div><input type="text" class="form-control" id="email" ng-model="newUser.email"></div>
+                    </div>
+                    <div class="row">
+                        <div><label for="firstname">Firstname</label></div>
+                        <div><input type="text" class="form-control" id="firstname" ng-model="newUser.firstname"></div>
+                    </div>
+                    <div class="row">
+                        <div><label for="lastname">Lastname</label></div>
+                        <div><input type="text" class="form-control" id="lastname" ng-model="newUser.lastname"></div>
+                    </div>
+                    <div class="row">
+                        <div><label for="password1">Password</label></div>
+                        <div><input type="password" class="form-control" id="password1" ng-model="newUser.password1"></div>
+                    </div>
+                    <div class="row">
+                        <div><label for="password2">Password (retype)</label></div>
+                        <div><input type="password" class="form-control" id="password2" ng-model="newUser.password2"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" ng-click="createUser()">Create User</button>
+                <button type="button" class="btn" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="changePasswordDialog" tabindex="-1" role="dialog" aria-labelledby="myLogoutDialogLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span
+                        class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">Change Password</h4>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div><label for="oldPassword">Password</label></div>
+                        <div><input class="form-control" type="password" id="oldPassword"></div>
+                    </div>
+                    <div class="row">
+                        <div><label for="newPassword">New Password</label></div>
+                        <div><input class="form-control" type="password" id="newPassword"></div>
+                    </div>
+                    <div class="row">
+                        <div><label for="newPasswordConfirmation">Confirm Password</label></div>
+                        <div><input class="form-control" type="password"
+                                    id="newPasswordConfirmation">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" ng-click="sendPassword()">Change Password</button>
+            </div>
+        </div>
+    </div>
+</div>

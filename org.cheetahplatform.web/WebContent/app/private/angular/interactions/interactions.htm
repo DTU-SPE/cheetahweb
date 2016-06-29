@@ -1,0 +1,19 @@
+<div style="max-height: 100%; overflow: scroll">
+    <label id="messageLabel"></label>
+    <table class="table table-hover table-search">
+        <thead>
+        <tr>
+            <th>Timestamp</th>
+            <th>Type</th>
+            <th>Workflow Element</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="interaction in interactions" ng-click="jumpToInteraction(interaction)">
+            <td>{{formatTimestamp(interaction.timestamp)}}</td>
+            <td>{{interaction.type}}</td>
+            <td>{{interaction.workflowElement}}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>

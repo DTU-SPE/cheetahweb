@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Cheetah Experimental Platform</title>
+
+    <link href="../public/css/lib/bootstrap.css" rel="stylesheet">
+    <link href="../public/css/lib/bootstrap-theme.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../public/css/lib/jquery.gridster.css">
+    <link rel="stylesheet" type="text/css" href="../public/css/lib/jquery-ui.min.css">
+    <link rel="stylesheet" type="text/css" href="../public/css/lib/jquery-ui.theme.css">
+    <link rel="stylesheet" type="text/css" href="../public/css/cheetah.css">
+    <link rel="stylesheet" type="text/css" href="../public/css/icomoon.css">
+
+    <script src="../public/js/lib/jquery.js"></script>
+    <script src="../public/js/lib/bootstrap.js"></script>
+    <link href="../public/css/cheetah.css" rel="stylesheet">
+    <script src="../public/js/lib/underscore-min.js"></script>
+    <script src="../public/js/lib/jquery-ui.min.js"></script>
+    <script src="../public/js/lib/jquery.gridster.js"></script>
+    <script src="../public/js/lib/angular.js"></script>
+    <script src="../public/js/lib/angular-route.js"></script>
+    <script src="js/analyze.js"></script>
+    <script src="../public/js/lib/d3.min.js"></script>
+    <script src="angular/pupillometry/pupillometry.js"></script>
+    <script src="angular/video/video.js"></script>
+    <script src="angular/percentile/percentile.js"></script>
+    <script src="angular/interactions/interactions.js"></script>
+    <script src="angular/navigation/navigation.js"></script>
+</head>
+
+<body role="document">
+
+
+<div class="modal-backdrop fade in loading" style="height: 100%;">
+</div>
+<div style="top: 200px; z-index: 1000; position: fixed; width: 100%">
+    <div class="modal-dialog loading">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Loading data, please stand by...</h4>
+            </div>
+            <div class="modal-body">
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45"
+                         aria-valuemin="0"
+                         aria-valuemax="100" style="width: 100%">
+                        <span class="sr-only">45% Complete</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="slidingWindowRequiredDialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">No Sliding Window Duration Selected</h4>
+            </div>
+            <div class="modal-body">
+                For this analysis a sliding window duration is required. Please select the duration first.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div ng-app="cheetah.Navigation" ng-view="" ng-controller="NavigationCtrl" ng-init="setActive('cheetah-analyze')"></div>
+
+<div role="main" class="analyze-body">
+    <div class="gridster">
+        <ul>
+            <li data-row="1" data-col="1" data-sizex="3" data-sizey="6" class="analyze-widget" id="cheetah-analyze-pupillometry-container">
+                <div ng-app="cheetah.Pupillometry" ng-view="" class="analyze-widget-content"></div>
+            </li>
+            <li data-row="1" data-col="4" data-sizex="3" data-sizey="4" class="analyze-widget" id="cheetah-analyze-video-container">
+                <div ng-app="cheetah.Video" ng-view="" class="analyze-widget-content"></div>
+            </li>
+            <li data-row="5" data-col="4" data-sizex="3" data-sizey="2" class="analyze-widget" id="cheetah-analyze-interactions-container">
+                <div ng-app="cheetah.Interactions" ng-view="" class="analyze-widget-content"></div>
+            </li>
+        </ul>
+    </div>
+</div>
+
+</body>
+</html>

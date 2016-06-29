@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+	<changeSet id="CEP2.0-1" author="Jakob">
+		<comment>Create tables for user management. Email needs to be duplicated for authentication.</comment>
+		<createTable tableName="user_table">
+			<column name="pk_user" type="BIGINT(20) UNSIGNED" />
+
+			<column name="firstname" type="VARCHAR(255)" />
+			<column name="lastname" type="VARCHAR(255)" />
+			<column name="email" type="VARCHAR(255)" />
+			<column name="password" type="VARCHAR(255)" />
+		</createTable>
+		<addNotNullConstraint columnDataType="VARCHAR(255)"
+			columnName="firstname" tableName="user_table" />
+		<addNotNullConstraint columnDataType="VARCHAR(255)"
+			columnName="lastname" tableName="user_table" />
+		<addNotNullConstraint columnDataType="VARCHAR(255)"
+			columnName="email" tableName="user_table" />
+		<addNotNullConstraint columnDataType="VARCHAR(255)"
+			columnName="password" tableName="user_table" />
+		<addPrimaryKey columnNames="pk_user" constraintName="pk_user_constraint"
+			tableName="user_table" />
+
+		<addAutoIncrement columnDataType="BIGINT(20) UNSIGNED"
+			columnName="pk_user" tableName="user_table" />
+
+		<createIndex indexName="user_table_email_idx" tableName="user_table"
+			unique="true">
+			<column name="email" type="varchar(255)" />
+		</createIndex>
+
+		<createTable tableName="user_roles">
+			<column name="pk_role" type="BIGINT(20) UNSIGNED" />
+			<column name="role" type="VARCHAR(255)" />
+			<column name="email" type="VARCHAR(255)" />
+			<column name="fk_user" type="BIGINT(20) UNSIGNED" />
+		</createTable>
+		<addNotNullConstraint columnDataType="BIGINT(20) UNSIGNED"
+			columnName="pk_role" tableName="user_roles" />
+		<addNotNullConstraint columnDataType="BIGINT(20) UNSIGNED"
+			columnName="fk_user" tableName="user_roles" />
+		<addNotNullConstraint columnDataType="VARCHAR(255)"
+			columnName="role" tableName="user_roles" />
+		<addNotNullConstraint columnDataType="VARCHAR(255)"
+			columnName="email" tableName="user_roles" />
+
+		<addPrimaryKey columnNames="pk_role" constraintName="pk_role_constraint"
+			tableName="user_roles" />
+		<addAutoIncrement columnDataType="BIGINT(20) UNSIGNED"
+			columnName="pk_role" tableName="user_roles" />
+
+		<createIndex indexName="user_roles_email_idx" tableName="user_roles"
+			unique="true">
+			<column name="email" type="varchar(255)" />
+		</createIndex>
+
+		<addForeignKeyConstraint baseColumnNames="fk_user"
+			baseTableName="user_roles" constraintName="fk_roles_to_user"
+			referencedColumnNames="pk_user" referencedTableName="user_table" />
+
+		<addForeignKeyConstraint baseColumnNames="email"
+			baseTableName="user_roles" constraintName="fk_email_to_email"
+			referencedColumnNames="email" referencedTableName="user_table" />
+	</changeSet>
+
+	<changeSet id="CEP2.0-2" author="Jakob">
+		<comment>Create Notification Table</comment>
+		<createTable tableName="notification">
+			<column name="pk_notification" type="BIGINT(20) UNSIGNED" />
+			<column name="fk_user" type="BIGINT(20) UNSIGNED" />
+			<column name="message" type="VARCHAR(255)" />
+			<column name="type" type="VARCHAR(255)" />
+			<column name="url" type="VARCHAR(255)" />
+			<column name="is_read" type="BIT(1)" defaultValueBoolean="false" />
+			<column name="timestamp" type="DATETIME" />
+		</createTable>
+
+		<addPrimaryKey columnNames="pk_notification"
+			constraintName="pk_notification_constraint" tableName="notification" />
+		<addAutoIncrement columnDataType="BIGINT(20) UNSIGNED"
+			columnName="pk_notification" tableName="notification" />
+		<addNotNullConstraint columnDataType="BIGINT(20) UNSIGNED"
+			columnName="fk_user" tableName="notification" />
+		<addNotNullConstraint columnDataType="VARCHAR(255)"
+			columnName="message" tableName="notification" />
+		<addNotNullConstraint columnDataType="VARCHAR(255)"
+			columnName="type" tableName="notification" />
+		<addNotNullConstraint columnDataType="BIT(1)"
+			defaultNullValue="false" columnName="is_read" tableName="notification" />
+		<addNotNullConstraint columnDataType="DATETIME"
+			columnName="timestamp" tableName="notification" />
+		<addForeignKeyConstraint baseColumnNames="fk_user"
+			baseTableName="notification" constraintName="fk_notification_to_user"
+			referencedColumnNames="pk_user" referencedTableName="user_table" />
+	</changeSet>
+
+	<changeSet id="CEP2.0-3" author="Jakob">
+		<validCheckSum>7:c0482ff364cba435cfb92a854ba86468</validCheckSum>
+		<validCheckSum>7:b228c45b496abf72298b0ca832742c32</validCheckSum>
+		<comment>Create Users and Roles</comment>
+		<customChange class="org.cheetahplatform.web.migration.UserCreationInitTask" />
+	</changeSet>
+
+	<changeSet id="CEP2.0-4" author="Jakob">
+		<comment>Create User Files Table</comment>
+		<createTable tableName="user_data">
+			<column name="pk_user_data" type="BIGINT(20) UNSIGNED" />
+			<column name="fk_user" type="BIGINT(20) UNSIGNED" />
+			<column name="filename" type="VARCHAR(255)" />
+			<column name="type" type="VARCHAR(255)" />
+			<column name="path" type="VARCHAR(255)" />
+			<column name="hidden" type="BIT(1)" defaultValueBoolean="false" />
+			<column name="comment" type="TEXT" />
+		</createTable>
+
+		<addPrimaryKey columnNames="pk_user_data"
+			constraintName="pk_user_data_constraint" tableName="user_data" />
+		<addAutoIncrement columnDataType="BIGINT(20) UNSIGNED"
+			columnName="pk_user_data" tableName="user_data" />
+		<addNotNullConstraint columnDataType="BIGINT(20) UNSIGNED"
+			columnName="fk_user" tableName="user_data" />
+		<addNotNullConstraint columnDataType="VARCHAR(255)"
+			columnName="filename" tableName="user_data" />
+		<addNotNullConstraint columnDataType="VARCHAR(255)"
+			columnName="type" tableName="user_data" />
+		<addNotNullConstraint columnDataType="VARCHAR(255)"
+			columnName="path" tableName="user_data" />
+
+		<addForeignKeyConstraint baseColumnNames="fk_user"
+			baseTableName="user_data" constraintName="fk_user_data_to_user"
+			referencedColumnNames="pk_user" referencedTableName="user_table" />
+	</changeSet>
+
+	<changeSet id="CEP2.0-5" author="Jakob">
+		<comment>Create Study Table</comment>
+		<createTable tableName="study">
+			<column name="pk_study" type="BIGINT(20) UNSIGNED" />
+			<column name="name" type="VARCHAR(255)" />
+			<column name="fk_user" type="BIGINT(20) UNSIGNED" />
+			<column name="comment" type="TEXT" />
+		</createTable>
+		<addNotNullConstraint columnDataType="BIGINT(20) UNSIGNED"
+			columnName="pk_study" tableName="study" />
+		<addNotNullConstraint columnDataType="BIGINT(20) UNSIGNED"
+			columnName="fk_user" tableName="study" />
+		<addNotNullConstraint columnDataType="VARCHAR(255)"
+			columnName="name" tableName="study" />
+		<addPrimaryKey columnNames="pk_study" constraintName="pk_study_constraint"
+			tableName="study" />
+		<addAutoIncrement columnDataType="BIGINT(20) UNSIGNED"
+			columnName="pk_study" tableName="study" />
+		<addForeignKeyConstraint baseColumnNames="fk_user"
+			baseTableName="study" constraintName="fk_study_to_user"
+			referencedColumnNames="pk_user" referencedTableName="user_table" />
+	</changeSet>
+
+	<changeSet id="CEP2.0-6" author="Jakob">
+		<comment>Create Subject Table</comment>
+		<createTable tableName="subject">
+			<column name="pk_subject" type="BIGINT(20) UNSIGNED" />
+			<column name="email" type="VARCHAR(255)" />
+			<column name="subject_id" type="VARCHAR(255)" />
+			<column name="fk_study" type="BIGINT(20) UNSIGNED" />
+		</createTable>
+
+		<addPrimaryKey columnNames="pk_subject" constraintName="pk_subject_constraint"
+			tableName="subject" />
+		<addAutoIncrement columnDataType="BIGINT(20) UNSIGNED"
+			columnName="pk_subject" tableName="subject" />
+		<addNotNullConstraint columnDataType="VARCHAR(255)"
+			columnName="subject_id" tableName="subject" />
+		<addForeignKeyConstraint baseColumnNames="fk_study"
+			baseTableName="subject" constraintName="fk_subject_to_study"
+			referencedColumnNames="pk_study" referencedTableName="study" />
+	</changeSet>
+
+	<changeSet id="CEP2.0-7" author="Jakob">
+		<comment>Link user data to process instances and subject</comment>
+		<addColumn tableName="user_data">
+			<column name="fk_process_instance" type="BIGINT(20) UNSIGNED" />
+			<column name="fk_subject" type="BIGINT(20) UNSIGNED" />
+		</addColumn>
+		<addForeignKeyConstraint baseColumnNames="fk_process_instance"
+			baseTableName="user_data" constraintName="fk_user_data_to_process_instance"
+			referencedColumnNames="database_id" referencedTableName="process_instance" />
+		<addForeignKeyConstraint baseColumnNames="fk_subject"
+			baseTableName="user_data" constraintName="fk_user_data_to_subject"
+			referencedColumnNames="pk_subject" referencedTableName="subject" />
+	</changeSet>
+
+	<changeSet id="CEP2.0-8" author="Jakob">
+		<comment>Create Table for eyetracking movies</comment>
+		<createTable tableName="eyetracking_movie">
+			<column name="pk_eyetracking_movie" type="BIGINT(20) UNSIGNED" />
+			<column name="process_instance" type="BIGINT(20) UNSIGNED" />
+			<column name="movie_path" type="VARCHAR(255)" />
+			<column name="movie_type" type="VARCHAR(255)" />
+		</createTable>
+
+		<addNotNullConstraint columnDataType="BIGINT(20) UNSIGNED"
+			columnName="pk_eyetracking_movie" tableName="eyetracking_movie" />
+		<addNotNullConstraint columnDataType="BIGINT(20) UNSIGNED"
+			columnName="process_instance" tableName="eyetracking_movie" />
+		<addNotNullConstraint columnDataType="VARCHAR(255)"
+			columnName="movie_path" tableName="eyetracking_movie" />
+		<addNotNullConstraint columnDataType="VARCHAR(255)"
+			columnName="movie_type" tableName="eyetracking_movie" />
+		<addPrimaryKey columnNames="pk_eyetracking_movie"
+			constraintName="pk_eyetracking_movie_constraint" tableName="eyetracking_movie" />
+		<addAutoIncrement columnDataType="BIGINT(20) UNSIGNED"
+			columnName="pk_eyetracking_movie" tableName="eyetracking_movie" />
+		<addForeignKeyConstraint baseColumnNames="process_instance"
+			baseTableName="eyetracking_movie" constraintName="fk_eyetracking_movie_to_process_instance"
+			referencedColumnNames="database_id" referencedTableName="process_instance" />
+	</changeSet>
+
+	<changeSet id="preCEP2.0-9" author="Stefan">
+		<comment>Change storage engine to InnoDB (old MySQL databases will have MyISAM as default engine)</comment>
+		<sql>ALTER TABLE `process_instance` ENGINE = InnoDB;</sql>
+		<sql>ALTER TABLE `audittrail_entry` ENGINE = InnoDB;</sql>
+		<sql>ALTER TABLE `process` ENGINE = InnoDB;</sql>
+		<sql>ALTER TABLE `log` ENGINE = InnoDB;</sql>
+		<sql>ALTER TABLE `xml_log` ENGINE = InnoDB;</sql>
+		<sql>ALTER TABLE `subject` ENGINE = InnoDB;</sql>
+	</changeSet>
+
+	<changeSet id="CEP2.0-9" author="Jakob">
+		<comment>Add Reference from Process Instance to Subject</comment>
+		<addColumn tableName="process_instance">
+			<column name="fk_subject" type="BIGINT(20) UNSIGNED" />
+		</addColumn>
+
+		<addForeignKeyConstraint baseColumnNames="fk_subject"
+			baseTableName="process_instance" constraintName="fk_process_instance_to_subject"
+			referencedColumnNames="pk_subject" referencedTableName="subject" />
+	</changeSet>
+
+	<changeSet id="CEP2.0-10" author="Jakob">
+		<comment>Change type of data column in audittrail entries to allow for very long lists</comment>
+		<modifyDataType columnName="data" newDataType="LONGTEXT"
+			tableName="audittrail_entry" />
+	</changeSet>
+
+	<changeSet id="CEP2.0-11" author="Jakob">
+		<comment>Allow sharing of studies over multiple user</comment>
+		<dropForeignKeyConstraint baseTableName="study"
+			constraintName="fk_study_to_user" />
+		<dropColumn tableName="study" columnName="fk_user" />
+		<createTable tableName="studies_to_user">
+			<column name="fk_user" type="BIGINT(20) UNSIGNED" />
+			<column name="fk_study" type="BIGINT(20) UNSIGNED" />
+		</createTable>
+
+		<addForeignKeyConstraint baseColumnNames="fk_user"
+			baseTableName="studies_to_user" constraintName="fk_studies_mapping_to_user"
+			referencedColumnNames="pk_user" referencedTableName="user_table" />
+
+		<addForeignKeyConstraint baseColumnNames="fk_study"
+			baseTableName="studies_to_user" constraintName="fk_studies_mapping_to_study"
+			referencedColumnNames="pk_study" referencedTableName="study" />
+	</changeSet>
+
+	<changeSet id="CEP2.0-12" author="Jakob">
+		<validCheckSum>7:c04c0529db519affeab2f20960eaac4a</validCheckSum>
+		<validCheckSum>7:a67431d4d92396bc55d31f1b58b4bea2</validCheckSum>
+		<comment>Add type and notation column to process</comment>
+
+		<addColumn tableName="process">
+			<column name="type" type="VARCHAR(255)" />
+		</addColumn>
+		<addColumn tableName="process">
+			<column name="notation" type="VARCHAR(255)" />
+		</addColumn>
+	</changeSet>
+
+	<changeSet id="CEP2.0-14" author="Jakob">
+		<comment>Add timestamp to eyetracking video files</comment>
+		<addColumn tableName="eyetracking_movie">
+			<column name="start_timestamp" type="BIGINT(20) UNSIGNED">
+				<constraints nullable="false" />
+			</column>
+		</addColumn>
+	</changeSet>
+
+	<changeSet id="CEP2.0-15" author="Jakob">
+		<comment>Add comment column to subject table</comment>
+		<addColumn tableName="subject">
+			<column name="comment" type="TEXT" />
+		</addColumn>
+	</changeSet>
+
+	<changeSet id="CEP2.0-16" author="Stefan">
+		<comment>Add table for database configuration</comment>
+
+		<createTable tableName="database_configuration">
+			<column name="pk_database_configuration" type="BIGINT(20) UNSIGNED" />
+			<column name="fk_user" type="BIGINT(20) UNSIGNED" />
+			<column name="host" type="VARCHAR(255)" />
+			<column name="port" type="BIGINT(20) UNSIGNED" />
+			<column name="schema" type="VARCHAR(255)" />
+			<column name="user" type="VARCHAR(255)" />
+			<column name="password" type="VARCHAR(255)" />
+		</createTable>
+
+		<addPrimaryKey columnNames="pk_database_configuration"
+			constraintName="pk_database_configuration" tableName="database_configuration" />
+		<addAutoIncrement columnDataType="BIGINT(20) UNSIGNED"
+			columnName="pk_database_configuration" tableName="database_configuration" />
+		<addForeignKeyConstraint baseColumnNames="fk_user"
+			baseTableName="database_configuration" constraintName="fk_user"
+			referencedColumnNames="pk_user" referencedTableName="user_table" />
+	</changeSet>
+
+	<changeSet id="CEP2.0-17" author="Stefan">
+		<comment>Add columns for synchronizing data (to keep track of where data was synchronized from)</comment>
+
+		<addColumn tableName="study">
+			<column name="synchronized_from" type="BIGINT(20) UNSIGNED"
+				defaultValue="NULL" />
+		</addColumn>
+		<addColumn tableName="subject">
+			<column name="synchronized_from" type="BIGINT(20) UNSIGNED"
+				defaultValue="NULL" />
+		</addColumn>
+		<addColumn tableName="process">
+			<column name="synchronized_from" type="BIGINT(20) UNSIGNED"
+				defaultValue="NULL" />
+		</addColumn>
+		<addColumn tableName="process_instance">
+			<column name="synchronized_from" type="BIGINT(20) UNSIGNED"
+				defaultValue="NULL" />
+		</addColumn>
+		<addColumn tableName="audittrail_entry">
+			<column name="synchronized_from" type="BIGINT(20) UNSIGNED"
+				defaultValue="NULL" />
+		</addColumn>
+	</changeSet>
+
+	<changeSet id="CEP2.0-18" author="Jakob">
+		<comment>Add table for tagging files</comment>
+		<createTable tableName="user_data_tags">
+			<column name="pk_user_data_tags" type="BIGINT(20) UNSIGNED">
+				<constraints primaryKey="true" />
+			</column>
+			<column name="fk_user_data" type="BIGINT(20) UNSIGNED">
+				<constraints nullable="false" />
+			</column>
+			<column name="tag" type="VARCHAR(255)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+		<addForeignKeyConstraint baseColumnNames="fk_user_data"
+			baseTableName="user_data_tags" constraintName="fk_user_data_tags_to_user_data"
+			referencedColumnNames="pk_user_data" referencedTableName="user_data" />
+	</changeSet>
+
+	<changeSet id="CEP2.0-19" author="Jakob">
+		<comment>Forgot the auto increment for user_data_tags primary key</comment>
+		<addAutoIncrement tableName="user_data_tags"
+			columnName="pk_user_data_tags" columnDataType="BIGINT(20) UNSIGNED" />
+	</changeSet>
+
+	<changeSet id="CEP2.0-20" author="Stefan">
+		<comment>Add delete cascade to user_data_tags</comment>
+		<dropForeignKeyConstraint baseTableName="user_data_tags"
+			constraintName="fk_user_data_tags_to_user_data" />
+		<addForeignKeyConstraint baseColumnNames="fk_user_data"
+			baseTableName="user_data_tags" constraintName="fk_user_data_tags_to_user_data"
+			referencedColumnNames="pk_user_data" referencedTableName="user_data"
+			onDelete="CASCADE" />
+	</changeSet>
+
+	<changeSet id="CEP2.0-21" author="Stefan">
+		<comment>Remove non-null constraint on eyetracking_movie.process_instance to allow for movies that are not related to process instances. Also add fk_subject to connect movies to the respective subject.</comment>
+		<dropNotNullConstraint tableName="eyetracking_movie"
+			columnName="process_instance" columnDataType="BIGINT(20) UNSIGNED" />
+		<addColumn tableName="eyetracking_movie">
+			<column name="fk_subject" type="BIGINT(20) UNSIGNED"></column>
+		</addColumn>
+		<addForeignKeyConstraint constraintName="fk_subject_to_subject"
+			referencedTableName="subject" baseColumnNames="fk_subject"
+			baseTableName="eyetracking_movie" referencedColumnNames="pk_subject" />
+	</changeSet>
+
+	<changeSet id="CEP2.0-22" author="Jakob">
+		<comment>Add settings table for #449</comment>
+		<createTable tableName="settings">
+			<column name="pk_settings" autoIncrement="true" type="BIGINT(20) UNSIGNED">
+				<constraints primaryKey="true" primaryKeyName="pk_settings_primary_key" />
+			</column>
+			<column name="key_column" type="VARCHAR(255)">
+				<constraints unique="true" nullable="false" />
+			</column>
+			<column name="value" type="VARCHAR(255)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+		<insert tableName="settings">
+			<column name="key_column" type="VARCHAR(255)" value="cheetah.web.show-ppm" />
+			<column name="value" type="VARCHAR(255)" value="true" />
+		</insert>
+	</changeSet>
+
+	<changeSet id="CEP2.0-23" author="Jakob">
+		<comment>Add link of movie file to user file in order to implement #433</comment>
+		<addColumn tableName="eyetracking_movie">
+			<column name="fk_user_file" type="BIGINT(20) UNSIGNED">
+			</column>
+		</addColumn>
+		<addForeignKeyConstraint constraintName="fk_movie_to_user_data"
+			referencedTableName="user_data" baseColumnNames="fk_user_file"
+			baseTableName="eyetracking_movie" referencedColumnNames="pk_user_data" />
+	</changeSet>
+
+	<changeSet id="CEP2.0-24" author="Stefan">
+		<comment>Add foreign key to track derived files, #466</comment>
+
+		<addColumn tableName="user_data">
+			<column name="fk_derived_from" type="BIGINT(20) UNSIGNED" />
+		</addColumn>
+		<addForeignKeyConstraint constraintName="fk_derived_from_to_user_data"
+			referencedTableName="user_data" baseColumnNames="fk_derived_from"
+			baseTableName="user_data" referencedColumnNames="pk_user_data" />
+	</changeSet>
+</databaseChangeLog>

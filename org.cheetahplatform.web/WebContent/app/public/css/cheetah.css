@@ -1,0 +1,365 @@
+* {
+    box-sizing: border-box;
+}
+
+body, html {
+    height: 100%;
+}
+
+body {
+    padding-top: 50px;
+}
+
+.table-search tbody {
+    cursor: pointer;
+}
+
+.gridster li {
+    list-style-type: none;
+}
+
+.gridster, .gridster ul {
+    height: 100%;
+}
+
+.analyze-body {
+    padding: 10px;
+    height: 100%;
+}
+
+.analyze-widget {
+    border-color: #cccccc;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 4px;
+}
+
+.analyze-widget-content {
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+}
+
+.analyze-content {
+    padding: 5px;
+}
+
+.analyze-video {
+    width: 100%;
+    height: 100%;
+}
+
+path {
+    stroke: steelblue;
+    stroke-width: 1;
+    fill: none;
+}
+
+.blue {
+    stroke: steelblue;
+    color: steelblue;
+}
+
+.red {
+    stroke: darkred;
+    color: darkred;
+}
+
+.green {
+    stroke: green;
+    color: green;
+}
+
+.black {
+    stroke: black;
+    color: black;
+}
+
+.yellow {
+    stroke: yellow;
+    color: yellow;
+}
+
+path.sliding-window {
+    stroke: orange;
+}
+
+.axis {
+    shape-rendering: crispEdges;
+}
+
+.x.axis line {
+    stroke: lightgrey;
+}
+
+.x.axis .minor {
+    stroke-opacity: .5;
+}
+
+.x.axis path {
+    display: none;
+}
+
+.y.axis line, .y.axis path {
+    fill: none;
+    stroke: #000;
+}
+
+#pupillometry {
+    width: 100%;
+}
+
+#pupillometry-controls {
+    padding: 10px;
+    width: 100%;
+    position: absolute;
+    bottom: 0px;
+}
+
+[role=menuitem] {
+    cursor: pointer;
+}
+
+.modal-dialog {
+    top: 200px;
+    z-index: 1000;
+}
+
+.table-header-sortable {
+    cursor: pointer;
+}
+
+#pupillometry-no-data {
+    text-align: center;
+    width: 100%;
+    position: relative;
+    top: 20%;
+}
+
+/* layout.css Style */
+.upload-drop-zone {
+    height: 200px;
+    border-width: 2px;
+    margin-bottom: 20px;
+}
+
+/* skin.css Style*/
+.upload-drop-zone {
+    color: #ccc;
+    border-style: dashed;
+    border-color: #ccc;
+    line-height: 200px;
+    text-align: center
+}
+
+.upload-drop-zone.drop {
+    color: #222;
+    border-color: #222;
+}
+
+.notification_list {
+    width: 100%;
+}
+
+.notification_icon {
+    float: right;
+    font-size: 16pt;
+    padding-right: 5px;
+    cursor: pointer;
+}
+
+.log-in-form {
+    padding: 10px;
+    border: 1px solid #cccccc;
+    margin-left: auto;
+    margin-right: auto;
+    width: 500px;
+    border-radius: 4px;
+}
+
+.login-in-form-field {
+    margin-bottom: 5px;
+}
+
+#logoutDialog {
+    min-height: 300px;
+}
+
+#logoutButton, #changePasswordButton, #configureDatabasesButton, #createUserButton {
+    cursor: pointer;
+    display: block;
+    padding: 3px 20px;
+    clear: both;
+    font-weight: normal;
+    line-height: 1.42857341;
+    white-space: nowrap;
+}
+
+#startPageButton {
+    float: right;
+}
+
+.selectable {
+    cursor: pointer;
+}
+
+.pupillometryFilterTable {
+    height: 350px;
+}
+
+.column_selection_row {
+    padding: 2px 10px;
+    width: 100%;
+}
+
+#changePasswordServerErrorDialog, #changePasswordErrorPasswordNotMatchingDialog, #changePasswordSuccessDialog {
+    z-index: 1500;
+}
+
+#submitColumnsButton {
+    float: right;
+}
+
+#cheetah-analyze-select-all-button, #cheetah-analyze-select-none-button, #cheetah-files-analyze-button, #cheetah-files-fileactions-button, #cheetah-notification-clear-button{
+    float: right;
+    margin-bottom: 10px;
+    margin-right: 10px;
+}
+
+#cheetah-analyze-button-container, #cheetah-files-button-container {
+    float: right;
+    margin-bottom: 10px;
+    padding-left: 0;
+    padding-right: 0;
+    margin-right: 0;
+}
+
+#cheetah-notifications-button-container {
+    margin-bottom: 10px;
+    padding-left: 0;
+    padding-right: 0;
+    margin-right: 0;
+}
+
+#cheetah-files-analyze-button, #cheetah-notification-clear-button {
+    margin-right: 0;
+}
+
+.cheetah-cursor-pointer {
+    cursor: pointer;
+}
+
+.cheetah-delete-database-configuration-icon {
+    cursor: pointer;
+    padding-left: 10px;
+    color: red;
+}
+
+.cheetah-synchronize-database-configuration-icon {
+    cursor: pointer;
+    color: green;
+}
+
+.cheetah-available-studies-list {
+    list-style: none;
+}
+
+.cheetah-available-study-label {
+    vertical-align: top;
+}
+
+input[type=checkbox] {
+    margin: 0;
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
+.cheetah-server-status-worker {
+    width: 10%;
+    display: inline-block;
+}
+
+.cheetah-server-status-worker-message {
+    width: 70%;
+}
+
+.cheetah-server-status-worker-IDLE {
+    color: #3c763d;
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+}
+
+.cheetah-server-status-worker-BUSY {
+    color: #31708f;
+    background-color: #d9edf7;
+    border-color: #bce8f1;
+}
+
+#cheetah-serverstatus-workqueuesize {
+    width: 100%;
+}
+
+.cheetah-files-tag {
+    background-color: green;
+    color: white;
+    padding-top: 2px;
+    border-radius: 3px;
+    padding-bottom: 2px;
+    padding-left: 5px;
+    padding-right: 5px;
+    margin-right: 5px;
+}
+
+.cheetah-trim-workflow-activities label {
+    display: block;
+    font-weight: normal;
+}
+
+#trimToPpmInstanceForm span {
+    font-weight: bold;
+}
+
+.cheetah-clickable {
+    cursor: pointer;
+}
+
+#cheetah-files-status-bar {
+    float: right;
+    font-weight: bold;
+    padding-top: 5px;
+}
+
+.cheetah-files-status-value {
+    padding-right: 20px;
+}
+
+.cheetah-server-status-workitem-editable {
+    float: right;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.icon-server-status-workitem-cancelable-true:before {
+    content: "\e903";
+}
+
+.icon-server-status-workitem-move-to-top-true:before {
+    content: "\e904";
+}
+
+.icon-server-status-workitem-cancelable-false, .icon-server-status-workitem-move-to-top-false {
+    display: none;
+}
+
+#cheetah-files-to-analyze-container {
+    padding-bottom: 15px;
+}
+
+.ui-dialog-titlebar .ui-button-text {
+    display: none;
+}
+
+.cheetah-upload-complete-message {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}

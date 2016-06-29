@@ -1,0 +1,94 @@
+<form class="form-horizontal">
+
+    <div class="form-group">
+        <label for="id" class="col-sm-2 control-label">Subject Id</label>
+
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="id" placeholder="Subject Id" ng-model="search.subjectId">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="study" class="col-sm-2 control-label">Study</label>
+
+        <div class="col-sm-10">
+            <select class="form-control" id="study" ng-model="search.study"
+                    ng-options="study for study in studies">
+                <option value=""></option>
+            </select>
+        </div>
+    </div>
+
+    <div class="dropdown" id="cheetah-files-analyze-button">
+        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1"
+                data-toggle="dropdown"
+                aria-expanded="true">
+            Actions
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+            <li role="presentation">
+                <a role="menuitem" tabindex="-1" ng-click="selectAll()">Select All</a>
+            </li>
+            <li role="presentation">
+                <a role="menuitem" tabindex="-1" ng-click="deselectAll()">Deselect All</a>
+            </li>
+            <li role="presentation">
+                <a role="menuitem" tabindex="-1" ng-click="deleteSubject()">Delete Selected Subject</a>
+            </li>
+            <li role="presentation">
+                <a role="menuitem" tabindex="-1 " ng-click="addSub()">Create Subject</a>
+            </li>
+        </ul>
+    </div>
+</form>
+
+<table class="table table-hover table-search">
+    <thead>
+    <tr>
+        <th></th>
+        <th>Subject</th>
+        <th>Study</th>
+        <th>Comment</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="subject in filteredSubjects()" ng-click="setSelection(subject)" class="{{getSubjectClass(subject)}}">
+        <td><span class="{{isSelected(subject)}}"></span></td>
+        <td>{{subject.subjectId}}</td>
+        <td>{{subject.study.name}}</td>
+        <td>{{subject.comment}}</td>
+    </tr>
+    </tbody>
+</table>
+
+<div class="modal" id="cheetah-create-subject-dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Add new User</h4>
+                <div class="modal-body container-fluid">
+                    <form id="addUserToDB" role="form"
+                          ng-submit="addUserToDB()">
+                        <label for="subjectID">Subject Id</label>
+                        <input type="text" id="subjectID" class="form-control" ng-model="subjectID" required>
+                        <label for="mail">Mail Adress</label>
+                        <input type="text" id="mail" class="form-control" ng-model="mail" required>
+                        <label for="comment">Comment</label>
+                        <input type="text" id="comment" class="form-control" ng-model="comment" required>
+                        <label for="studySelect">Select Study</label>
+                        <select class="form-control" id="studySelect" ng-model="selectedStudy" ng-options="studySelect.name for studySelect in fullStudies">
+                        </select>
+                        <br>
+                        <div class="form-group">
+                            <button type="submit" id="submitColumnsButton" class="btn btn-primary">Create Subject</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

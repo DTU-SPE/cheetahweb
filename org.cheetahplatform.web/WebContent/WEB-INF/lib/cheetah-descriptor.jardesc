@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="WINDOWS-1252" standalone="no"?>
+<jardesc>
+    <jar path="org.cheetahplatform.web/WebContent/WEB-INF/lib/cheetah.jar"/>
+    <options buildIfNeeded="true" compress="true" descriptionLocation="/org.cheetahplatform.web/WebContent/WEB-INF/lib/cheetah-descriptor.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="false" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
+    <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
+    <selectedProjects/>
+    <manifest generateManifest="true" manifestLocation="" manifestVersion="1.0" reuseManifest="false" saveManifest="false" usesManifest="true">
+        <sealing sealJar="false">
+            <packagesToSeal/>
+            <packagesToUnSeal/>
+        </sealing>
+    </manifest>
+    <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
+        <file path="/org.cheetahplatform.analysis/plugin.xml"/>
+        <file path="/org.cheetahplatform.modeler.changepattern/plugin.xml"/>
+        <javaElement handleIdentifier="=org.cheetahplatform.modeler/src"/>
+        <folder path="/org.cheetahplatform.modeler/resource"/>
+        <folder path="/org.cheetahplatform.modeler.changepattern/META-INF"/>
+        <file path="/org.cheetahplatform.psychology/.project"/>
+        <file path="/org.cheetahplatform.psychology/.classpath"/>
+        <file path="/org.cheetahplatform.common/plugin.xml"/>
+        <file path="/org.cheetahplatform.modeler/.project"/>
+        <file path="/org.cheetahplatform.modeler/.classpath"/>
+        <file path="/org.cheetahplatform.modeler.bpmn/.project"/>
+        <folder path="/org.cheetahplatform.modeler.bpmn/resource"/>
+        <folder path="/org.cheetahplatform.modeler.bpmn/META-INF"/>
+        <file path="/org.cheetahplatform.modeler.bpmn/.classpath"/>
+        <javaElement handleIdentifier="=org.cheetahplatform.common/src"/>
+        <file path="/org.cheetahplatform.modeler/plugin.xml"/>
+        <folder path="/org.cheetahplatform.modeler.changepattern/resource"/>
+        <javaElement handleIdentifier="=org.cheetahplatform.analysis/src"/>
+        <folder path="/org.cheetahplatform.analysis/resource"/>
+        <file path="/org.cheetahplatform.modeler/database_backup.bat"/>
+        <file path="/org.cheetahplatform.modeler.changepattern/build.properties"/>
+        <file path="/org.cheetahplatform.modeler/plugin_customization.ini"/>
+        <file path="/org.cheetahplatform.analysis/build.properties"/>
+        <folder path="/org.cheetahplatform.psychology/META-INF"/>
+        <file path="/org.cheetahplatform.modeler.declare/plugin.xml"/>
+        <folder path="/org.cheetahplatform.modeler.declare/resource"/>
+        <file path="/org.cheetahplatform.analysis/.classpath"/>
+        <folder path="/org.cheetahplatform.common/META-INF"/>
+        <file path="/org.cheetahplatform.analysis/plugin_customization.ini"/>
+        <file path="/org.cheetahplatform.modeler/org.cheetahplatform.modeler.product"/>
+        <file path="/org.cheetahplatform.modeler.declare/build.properties"/>
+        <javaElement handleIdentifier="=org.cheetahplatform.modeler.bpmn/src"/>
+        <file path="/org.cheetahplatform.modeler.declare/.project"/>
+        <file path="/org.cheetahplatform.modeler.bpmn/build.properties"/>
+        <folder path="/org.cheetahplatform.common/OSGI-INF"/>
+        <file path="/org.cheetahplatform.modeler.declare/.classpath"/>
+        <file path="/org.cheetahplatform.modeler/build.properties"/>
+        <file path="/org.cheetahplatform.psychology/plugin.xml"/>
+        <file path="/org.cheetahplatform.psychology/build.properties"/>
+        <file path="/org.cheetahplatform.common/.project"/>
+        <file path="/org.cheetahplatform.modeler.changepattern/.project"/>
+        <javaElement handleIdentifier="=org.cheetahplatform.modeler.declare/src"/>
+        <file path="/org.cheetahplatform.modeler.changepattern/.classpath"/>
+        <file path="/org.cheetahplatform.modeler.bpmn/plugin.xml"/>
+        <file path="/org.cheetahplatform.analysis/splash.bmp"/>
+        <folder path="/org.cheetahplatform.common/resource"/>
+        <file path="/org.cheetahplatform.analysis/org.cheetahplatform.analysis.product"/>
+        <javaElement handleIdentifier="=org.cheetahplatform.modeler.changepattern/src"/>
+        <folder path="/org.cheetahplatform.modeler.declare/META-INF"/>
+        <file path="/org.cheetahplatform.modeler/timesync.bat"/>
+        <folder path="/org.cheetahplatform.modeler/META-INF"/>
+        <javaElement handleIdentifier="=org.cheetahplatform.psychology/src"/>
+        <folder path="/org.cheetahplatform.psychology/resource"/>
+        <file path="/org.cheetahplatform.analysis/.project"/>
+        <file path="/org.cheetahplatform.common/.classpath"/>
+        <file path="/org.cheetahplatform.common/build.properties"/>
+        <folder path="/org.cheetahplatform.analysis/META-INF"/>
+        <file path="/org.cheetahplatform.modeler/splash.bmp"/>
+    </selectedElements>
+</jardesc>
