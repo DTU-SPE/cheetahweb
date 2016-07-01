@@ -283,6 +283,18 @@ public class UserFileDao extends AbstractCheetahDao {
 		return result;
 	}
 
+	public Integer getUsageOfForeignKeyOfSubject(Connection connection, long subjectId) throws SQLException {
+		PreparedStatement statement = connection.prepareStatement(
+				"Select count(un.fk_subject) as resultat from (SELECT pi.fk_subject from process_instance as pi union all SELECT su.fk_subject from user_data as su) as un where un.fk_subject=?;");
+		statement.setLong(1, subjectId);
+		ResultSet resultSet = statement.executeQuery();
+		resultSet.next();
+		Integer usageOfFK = resultSet.getInt("resultat");
+		statement.close();
+
+		return usageOfFK;
+	}
+
 	public File getUserFile(String path) {
 		File catalinaBase = new File(System.getProperty("catalina.base")).getAbsoluteFile();
 		return new File(catalinaBase.getAbsolutePath() + path);

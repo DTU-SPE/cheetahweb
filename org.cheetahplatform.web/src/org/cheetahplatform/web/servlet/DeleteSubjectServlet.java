@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.cheetahplatform.web.dao.SubjectDao;
+import org.cheetahplatform.web.dao.UserFileDao;
 
 public class DeleteSubjectServlet extends AbstractCheetahServlet {
 
@@ -22,9 +23,23 @@ public class DeleteSubjectServlet extends AbstractCheetahServlet {
 			@SuppressWarnings("unchecked")
 			List<Integer> idList = readJson(req, ArrayList.class);
 			SubjectDao subjectDao = new SubjectDao();
+			UserFileDao userFileDao = new UserFileDao();
+			List<Integer> hasFile = new ArrayList<>();
 			for (Integer id : idList) {
-				subjectDao.deleteSubject(connection, id);
+				Integer userFilesForSubject = userFileDao.getUsageOfForeignKeyOfSubject(connection, id);
+				if (userFilesForSubject > 0) {
+					hasFile.add(id);
+				}
 			}
+			if (hasFile.isEmpty()) {
+				for (Integer id : idList) {
+					subjectDao.deleteSubject(connection, id);
+					writeJson(resp, null);
+				}
+			} else {
+				writeJson(resp, hasFile);
+			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

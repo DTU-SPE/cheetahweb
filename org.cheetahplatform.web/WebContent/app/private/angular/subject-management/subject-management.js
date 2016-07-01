@@ -93,7 +93,7 @@ angular.module('cheetah.SubjectManagement', ['ngRoute'])
             }
 
             var objectToDelete = $scope.selection.map(function (input) {
-                return input.comment;
+                return input.subjectId;
             });
             BootstrapDialog.show({
                 title: 'Delete',
@@ -104,20 +104,39 @@ angular.module('cheetah.SubjectManagement', ['ngRoute'])
                         var subjectsToDelete = $scope.selection.map(function (input) {
                             return input.id;
                         });
-                        $http.post('../../private/deleteSubject', subjectsToDelete).success(function () {
-                            BootstrapDialog.alert({
-                                title: 'Subject deleted',
-                                message: 'Subject "' + objectToDelete + '" was deleted successfully.'
-                            });
+                        $http.post('../../private/deleteSubject', subjectsToDelete).then(function (response) {
+                            if (!response.data=="") {
+                                var notDeleteAble = response.data;
+                                var notDeleteAbleSubjects =[];
+                                $.each(notDeleteAble, function (index, idOfSubject) {
+                                    $.each( $scope.subjects, function (index, subj) {
+                                        if(subj.id==idOfSubject){
+                                            notDeleteAbleSubjects.push(subj);
+                                        }
+                                    })
+                                });
+                                var messageString = notDeleteAbleSubjects.map(function (input) {
+                                    return input.subjectId;
+                                })
+                                BootstrapDialog.alert({
+                                    title: 'Could not delete',
+                                    message: "Could not delete "+ messageString + ". The subjects have already attached files."
+                                });
+                                dialog.close();
+                            }else {
+                                BootstrapDialog.alert({
+                                    title: 'Subject deleted',
+                                    message: 'Subject "' + objectToDelete + '" was deleted successfully.'
+                                });
 
-                            $.each($scope.selection, function (index, subject) {
-                                var tmpIndex = $scope.subjects.indexOf(subject);
-                                $scope.subjects.splice(tmpIndex, 1);
-                            });
+                                $.each($scope.selection, function (index, subject) {
+                                    var tmpIndex = $scope.subjects.indexOf(subject);
+                                    $scope.subjects.splice(tmpIndex, 1);
+                                });
 
-                            $scope.selection = [];
-                            dialog.close();
-                        });
+                                $scope.selection = [];
+                                dialog.close();
+                            }});
                     }
                 }, {
                     label: 'No',
