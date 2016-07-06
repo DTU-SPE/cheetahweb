@@ -21,9 +21,9 @@
                 </div>
             </div>
 
-            <div id="cheetah-analyze-button-container">
-                <button class="btn btn-default dropdown-toggle" type="button" id="cheetah-analyze-button-analyze"
-                        ng-click="analyze()">
+            <div id="cheetah-visualize-button-container">
+                <button class="btn btn-default dropdown-toggle" type="button" id="cheetah-visualize-button-visualize"
+                        ng-click="visualize()">
                     Visualize Data
                 </button>
             </div>
@@ -47,31 +47,31 @@
 </table>
 
 
-<div class="modal fade" tabindex="-1" role="dialog" id="cheetah-analyze-modal">
+<div class="modal fade" tabindex="-1" role="dialog" id="cheetah-visualize-modal">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Select Data to Analyze</h4>
+                <h4 class="modal-title">Select Data to Visualize</h4>
             </div>
             <div class="modal-body">
                 <div>
                     <ul class="nav nav-tabs" role="tablist">
-                        <li role="presentation" ng-show="processInstancesToAnalyze.length > 0"
-                            id="cheetah-analyze-ppm-tab">
-                            <a href="#cheetah-analyze-by-ppm" aria-controls="cheetah-analyze-by-ppm" role="tab"
-                               data-toggle="tab">Analyze by PPM</a></li>
-                        <li role="presentation" id="cheetah-analyze-custom-tab">
-                            <a href="#cheetah-analyze-custom" aria-controls="cheetah-analyze-custom" role="tab"
-                               data-toggle="tab">Custom Analysis</a></li>
+                        <li role="presentation" ng-show="processInstancesToVisualize.length > 0"
+                            id="cheetah-visualize-ppm-tab">
+                            <a href="#cheetah-visualize-by-ppm" aria-controls="cheetah-visualize-by-ppm" role="tab"
+                               data-toggle="tab">Visualize by PPM</a></li>
+                        <li role="presentation" id="cheetah-visualize-custom-tab">
+                            <a href="#cheetah-visualize-custom" aria-controls="cheetah-visualize-custom" role="tab"
+                               data-toggle="tab">Custom Visualization</a></li>
                     </ul>
 
                     <div class="tab-content">
-                        <div role="tabpanel" class="tab-pane active" id="cheetah-analyze-by-ppm"
-                             ng-show="processInstancesToAnalyze.length > 0">
+                        <div role="tabpanel" class="tab-pane active" id="cheetah-visualize-by-ppm"
+                             ng-show="processInstancesToVisualize.length > 0">
                             <div class="panel panel-default">
                                 <div class="panel-body">
-                                    <p>Please select the process of process modeling to analyze:</p>
-                                    <label ng-repeat="processInstance in processInstancesToAnalyze">
+                                    <p>Please select the process of process modeling to visualize:</p>
+                                    <label ng-repeat="processInstance in processInstancesToVisualize">
                                         <input type="radio" name="selectedProcessInstance"
                                                ng-model="$parent.selectedProcessInstance.id"
                                                value="{{processInstance.id}}"/>
@@ -80,12 +80,12 @@
                                 </div>
                             </div>
                         </div>
-                        <div role="tabpanel" class="tab-pane" id="cheetah-analyze-custom">
+                        <div role="tabpanel" class="tab-pane" id="cheetah-visualize-custom">
                             <div class="panel panel-default">
                                 <div class="panel-body">
-                                    <p ng-show="filesToAnalyze.length > 0">Please select the data to analyze:</p>
-                                    <div id="cheetah-files-to-analyze-container" ng-show="filesToAnalyze.length > 0">
-                                        <div ng-repeat="file in filesToAnalyze">
+                                    <p ng-show="filesToVisualize.length > 0">Please select the data to visualize:</p>
+                                    <div id="cheetah-files-to-visualize-container" ng-show="filesToVisualize.length > 0">
+                                        <div ng-repeat="file in filesToVisualize">
                                             <label>
                                                 <input type="checkbox" ng-model="selectedFiles[file.id]"/>
                                                 {{file.filename}}
@@ -94,9 +94,9 @@
                                         </div>
                                     </div>
 
-                                    <div id="cheetah-movies-to-analyze-container" ng-show="moviesToAnalyze.length > 0">
-                                        <p>Please select the movie to analyze:</p>
-                                        <div ng-repeat="movie in moviesToAnalyze">
+                                    <div id="cheetah-movies-to-visualize-container" ng-show="moviesToVisualize.length > 0">
+                                        <p>Please select the movie to visualize:</p>
+                                        <div ng-repeat="movie in moviesToVisualize">
                                             <label>
                                                 <input type="radio" name="selectedMovie"
                                                        ng-model="$parent.selectedMovie.id"
@@ -112,7 +112,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" ng-click="analyzeData()">Analyze</button>
+                <button type="button" class="btn btn-primary" ng-click="visualizeData()">Visualize</button>
                 <button type="button" class="btn" data-dismiss="modal">Close</button>
             </div>
         </div>
@@ -126,9 +126,9 @@
                 <h4 class="modal-title">Select Files To Prepare</h4>
             </div>
             <div class="modal-body">
-                <p>Before data can be analyzed, it needs to be prepared before (e.g., compressing large pupillometry
-                    files to speed up analysis). Please select
-                    the files you wish to prepare for analysis.</p>
+                <p>Before data can be visualized, it needs to be prepared before (e.g., compressing large pupillometry
+                    files to speed up visualization). Please select
+                    the files you wish to prepare for visualization.</p>
                 <form role="form" ng-submit="connectFiles()">
                     <div class="panel panel-primary">
                         <div class="panel-heading">
@@ -187,15 +187,15 @@
                     by. In case the preparation takes too long, you can leave this page and come back at any time.</p>
                 <p>Please also note that you can speed up this process by manually starting the preparation process
                     through Data Management --> My Data. Then,
-                    select the files to prepare and click Analyze --> Prepare Data for Analysis.</p>
+                    select the files to prepare and click Analyze --> Prepare Data for Visualization.</p>
                 <h4>Status of the workers:</h4>
                 <ul>
                     <li ng-repeat="worker in workers">{{worker.filename}}: {{worker.status}}</li>
                 </ul>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" ng-click="closePrepareModalAndAnalyze()"
-                        id="cheetah-repeat-analysis-button">Continue Analysis
+                <button type="button" class="btn btn-primary" ng-click="closePrepareModalAndVisualize()"
+                        id="cheetah-repeat-visualization-button">Continue Visualization
                 </button>
                 <button type="button" class="btn" data-dismiss="modal">Cancel</button>
             </div>

@@ -43,9 +43,9 @@ angular
         $scope.setSelection = function (subject) {
             $scope.selection = subject;
             if ($scope.selection !== undefined) {
-                $("#button-analyze").removeAttr("disabled");
+                $("#button-visualize").removeAttr("disabled");
             } else {
-                $("#button-analyze").attr("disabled");
+                $("#button-visualize").attr("disabled");
             }
         };
 
@@ -82,7 +82,7 @@ angular
             var workerIds = workers.map(function (worker) {
                 return worker.workerId;
             });
-            $('#cheetah-repeat-analysis-button').addClass('disabled');
+            $('#cheetah-repeat-visualization-button').addClass('disabled');
             $('#cheetah-wait-for-workers-modal').modal('show');
 
             var updateWorkersFunction = function () {
@@ -105,7 +105,7 @@ angular
                     if (!$scope.allWorkersFinished) {
                         $timeout(updateWorkersFunction, 500);
                     } else {
-                        $('#cheetah-repeat-analysis-button').removeClass('disabled');
+                        $('#cheetah-repeat-visualization-button').removeClass('disabled');
                     }
                 });
             };
@@ -113,16 +113,16 @@ angular
             $timeout(updateWorkersFunction, 500);
         }
 
-        $scope.closePrepareModalAndAnalyze = function () {
+        $scope.closePrepareModalAndVisualize = function () {
             $('#cheetah-wait-for-workers-modal').modal('hide');
-            $scope.analyze();
+            $scope.visualize();
         };
 
-        $scope.analyze = function () {
+        $scope.visualize = function () {
             if ($scope.selection === undefined) {
                 BootstrapDialog.alert({
                     title: 'No Subject Selected',
-                    message: 'Please select first the subject you would like to analyze.'
+                    message: 'Please select first the subject you would like to visualize.'
                 });
                 return;
             }
@@ -130,7 +130,7 @@ angular
             var postData = {subjectId: $scope.selection.id};
             $http.post('../../private/listFilesForSubject', angular.toJson(postData)).then(function (response) {
                 var data = response.data;
-                var hasDataToAnalyze = data.files.length > 0 || data.movies.length > 0;
+                var hasDataToVisualize = data.files.length > 0 || data.movies.length > 0;
                 var hasDataToPrepare = data.candidatesForConnecting.length > 0;
 
                 var showPrepareDataModal = function () {
@@ -143,7 +143,7 @@ angular
                 };
 
 
-                var analyzeData = function () {
+                var visualizeDate = function () {
                     //aggregate by process instance
                     var processInstanceIds = {};
                     var allData = [].concat(data.files).concat(data.movies);
@@ -156,35 +156,35 @@ angular
                     });
                     delete processInstanceIds[-1]; //ignore movies without process instance ids
 
-                    $scope.filesToAnalyze = data.files;
+                    $scope.filesToVisualize = data.files;
                     $scope.selectedFiles = {};
-                    $scope.moviesToAnalyze = data.movies;
+                    $scope.moviesToVisualize = data.movies;
                     $scope.selectedMovie = {};
-                    $scope.processInstancesToAnalyze = [];
+                    $scope.processInstancesToVisualize = [];
                     $.each(processInstanceIds, function (key, value) {
-                        $scope.processInstancesToAnalyze.push(value);
+                        $scope.processInstancesToVisualize.push(value);
                     });
                     $scope.selectedProcessInstance = {};
-                    if ($scope.processInstancesToAnalyze.length > 0) {
-                        $scope.selectedProcessInstance = $scope.processInstancesToAnalyze[0];
+                    if ($scope.processInstancesToVisualize.length > 0) {
+                        $scope.selectedProcessInstance = $scope.processInstancesToVisualize[0];
                     }
 
-                    $('#cheetah-analyze-modal').modal('show');
-                    $('#cheetah-analyze-modal').on('shown.bs.modal', function () {
-                        if ($scope.processInstancesToAnalyze.length > 0) {
-                            $('#cheetah-analyze-ppm-tab a').tab('show');
+                    $('#cheetah-visualize-modal').modal('show');
+                    $('#cheetah-visualize-modal').on('shown.bs.modal', function () {
+                        if ($scope.processInstancesToVisualize.length > 0) {
+                            $('#cheetah-visualize-ppm-tab a').tab('show');
                         } else {
-                            $('#cheetah-analyze-custom-tab a').tab('show');
+                            $('#cheetah-visualize-custom-tab a').tab('show');
                         }
                     });
                 };
 
                 if (hasDataToPrepare) {
-                    if (hasDataToAnalyze) {
-                        //data for analysis as well as preparation
+                    if (hasDataToVisualize) {
+                        //data for visualization as well as preparation
                         BootstrapDialog.show({
                             title: 'Unprepared Data Available',
-                            message: 'Cheetah web found additional data that was not prepared for analysis yet. Before you can analyze this data, you need to prepare it first. Do you want to prepare this data now?',
+                            message: 'Cheetah web found additional data that was not prepared for visualization yet. Before you can visualize this data, you need to prepare it first. Do you want to prepare this data now?',
                             buttons: [{
                                 label: 'Yes',
                                 action: function (dialog) {
@@ -198,7 +198,7 @@ angular
                                 action: function (dialog) {
                                     dialog.close();
                                     $scope.$apply(function () {
-                                        analyzeData();
+                                        visualizeDate();
                                     });
                                 }
                             }]
@@ -209,14 +209,14 @@ angular
                         showPrepareDataModal();
                     }
                 } else {
-                    if (hasDataToAnalyze) {
-                        //nothing to prepare, but data for analysis
-                        analyzeData();
+                    if (hasDataToVisualize) {
+                        //nothing to prepare, but data for visualization
+                        visualizeDate();
                     } else {
                         //no data, nothing to prepare
                         BootstrapDialog.alert({
                             title: 'No Files Available',
-                            message: 'There are no files and videos to be analyzed for the selected subject.'
+                            message: 'There are no files and videos to be visualized for the selected subject.'
                         });
                     }
                 }
@@ -240,22 +240,22 @@ angular
             return name;
         };
 
-        $scope.analyzeData = function () {
-            var analyzePpm = $('#cheetah-analyze-ppm-tab').hasClass('active');
-            if (analyzePpm) {
+        $scope.visualizeData = function () {
+            var visualizePpm = $('#cheetah-visualize-ppm-tab').hasClass('active');
+            if (visualizePpm) {
                 if ($scope.selectedProcessInstance.id === undefined) {
                     BootstrapDialog.alert({
                         title: 'Please Select a PPM',
-                        message: 'Please select the process of process modeling to analyze.'
+                        message: 'Please select the process of process modeling to visualize.'
                     });
                     return;
                 }
 
-                var url = "analyze.htm?processInstance=" + $scope.selectedProcessInstance.id;
+                var url = "visualize.htm?processInstance=" + $scope.selectedProcessInstance.id;
                 window.location.href = url;
             } else {
                 var selectedFiles = [];
-                $.each($scope.filesToAnalyze, function (index, file) {
+                $.each($scope.filesToVisualize, function (index, file) {
                     if ($scope.selectedFiles[file.id]) {
                         selectedFiles.push(file);
                     }
@@ -263,7 +263,7 @@ angular
 
                 var selectedMovie = undefined;
                 if ($scope.selectedMovie.id) {
-                    $.each($scope.moviesToAnalyze, function (index, movie) {
+                    $.each($scope.moviesToVisualize, function (index, movie) {
                         if (movie.id == $scope.selectedMovie.id) {
                             selectedMovie = movie;
                             return false;
@@ -274,7 +274,7 @@ angular
                 if (selectedFiles.length === 0 && (!selectedMovie || selectedMovie.length === 0)) {
                     BootstrapDialog.alert({
                         title: 'Empty Selection',
-                        message: 'Please select at least one file or movie to analyze.'
+                        message: 'Please select at least one file or movie to visualize.'
                     });
                     return;
                 }
@@ -282,7 +282,7 @@ angular
                 var fileIds = selectedFiles.map(function (file) {
                     return file.id;
                 });
-                var url = "analyze.htm?files=" + encodeURIComponent(fileIds);
+                var url = "visualize.htm?files=" + encodeURIComponent(fileIds);
                 if (selectedMovie) {
                     url = url + "&movie=" + selectedMovie.id;
                 }

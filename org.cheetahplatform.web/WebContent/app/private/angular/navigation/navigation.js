@@ -51,7 +51,7 @@ angular
                     filters: [SHOW_PPM_FEATURES]
                 }]
             }, {
-                id: "cheetah-analyze",
+                id: "cheetah-visualize",
                 url: "visualize.htm",
                 label: "Visualize",
                 filters: [],

@@ -79,9 +79,9 @@ angular.module('cheetah.SubjectManagement', ['ngRoute'])
                 $scope.selection.push(subjects);
             }
             if ($scope.selection.length > 0) {
-                $("#button-analyze").removeAttr("disabled");
+                $("#button-visualize").removeAttr("disabled");
             } else {
-                $("#button-analyze").attr("disabled");
+                $("#button-visualize").attr("disabled");
             }
         };
 
