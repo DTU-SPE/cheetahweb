@@ -1,13 +1,22 @@
 <div>
     <div class="container-fluid">
         <h1>My Studies</h1>
-
         <div class="panel panel-default">
             <div class="panel-body">
-                <div id="cheetah-notifications-button-container" class="clearfix">
-                    <button id="cheetah-notification-clear-button" class="btn btn-default"
+                <div>This area lets you manage all your studies. Whenever you would like to perform an empirical
+                    investigation
+                    with a pupillometric analysis, you should create a new study and <a
+                            href="subject-management.htm">assign subjects</a> to it. This will
+                    help you manage all your data in the future.
+                </div>
+                <div id="cheetah-study-management-button-container" class="clearfix">
+                    <button id="cheetah-study-management-add-button" class="btn btn-default"
                             ng-click="openAddStudyDialog()">
                         Add Study
+                    </button>
+                    <button id="cheetah-study-management-delete-button" class="btn btn-default"
+                            ng-click="deleteStudy()">
+                        Delete Study
                     </button>
                 </div>
 
@@ -19,7 +28,8 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr ng-repeat="study in studies">
+                    <tr ng-repeat="study in studies" ng-class="study.id===selection.id ? 'alert-success' : ''"
+                        ng-click="setSelection(study)">
                         <td>{{study.name}}</td>
                         <td>{{study.comment}}</td>
                     </tr>

@@ -226,7 +226,7 @@ path.sliding-window {
     margin-right: 10px;
 }
 
-#cheetah-analyze-button-container, #cheetah-files-button-container {
+#cheetah-analyze-button-container, #cheetah-files-button-container, #cheetah-study-management-button-container {
     float: right;
     margin-bottom: 10px;
     padding-left: 0;

@@ -9,6 +9,7 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.cheetahplatform.web.dto.PlainSubjectDto;
 import org.cheetahplatform.web.dto.StudyDto;
 
 public class StudyDao {
@@ -18,6 +19,37 @@ public class StudyDao {
 		assignmentStatement.setLong(2, id);
 		assignmentStatement.execute();
 		assignmentStatement.close();
+	}
+
+	public String canStudyBeDeleted(Connection connection, long studyId, long userId) throws SQLException {
+		PreparedStatement statement = connection.prepareStatement("select count(*) from studies_to_user where fk_study=? and fk_user=?");
+		statement.setLong(1, studyId);
+		statement.setLong(2, userId);
+		ResultSet result = statement.executeQuery();
+		result.next();
+		int count = result.getInt(1);
+		result.close();
+		statement.close();
+		if (count != 1) {
+			return "The user does not own the study";
+		}
+
+		SubjectDao subjectDao = new SubjectDao();
+		List<PlainSubjectDto> subjects = subjectDao.getSubjectsFor(connection, studyId);
+		boolean empty = subjects.isEmpty();
+		if (!empty) {
+			return "There are already subjects assigned to the study.";
+		}
+		return null;
+	}
+
+	public void deleteStudy(Connection connection, long studyId, long userId) throws SQLException {
+		PreparedStatement statement = connection.prepareStatement("delete from studies_to_user where fk_user=? and fk_study=?");
+		statement.setLong(1, userId);
+		statement.setLong(2, studyId);
+		statement.executeUpdate();
+		statement.close();
+
 	}
 
 	public List<StudyDto> getStudies(Connection connection) throws SQLException {

@@ -506,4 +506,14 @@
 		<servlet-name>AddStudyServlet</servlet-name>
 		<url-pattern>/private/addStudy</url-pattern>
 	</servlet-mapping>
+	<servlet>
+		<description></description>
+		<display-name>DeleteStudyServlet</display-name>
+		<servlet-name>DeleteStudyServlet</servlet-name>
+		<servlet-class>org.cheetahplatform.web.servlet.DeleteStudyServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>DeleteStudyServlet</servlet-name>
+		<url-pattern>/private/deleteStudy</url-pattern>
+	</servlet-mapping>
 </web-app>
