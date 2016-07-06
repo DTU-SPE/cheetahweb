@@ -14,8 +14,10 @@ angular.module('cheetah.SubjectManagement', ['ngRoute'])
         var studiesRequest = $http.get("../../private/listStudies");
         $q.all([subjectsRequest, studiesRequest]).then(function (arrayOfResults) {
             $scope.subjects = arrayOfResults[0].data;
-            $scope.studies = uniqueProperties($scope.subjects, "study.name");
             $scope.fullStudies = arrayOfResults[1].data;
+            $scope.studies= arrayOfResults[1].data.map(function (input) {
+                return input.name;
+            });
         });
 
         $scope.isSelected = function (subject) {
@@ -105,7 +107,7 @@ angular.module('cheetah.SubjectManagement', ['ngRoute'])
                             return input.id;
                         });
                         $http.post('../../private/deleteSubject', subjectsToDelete).then(function (response) {
-                            if (!response.data=="") {
+                            if (response.data!="null") {
                                 var notDeleteAble = response.data;
                                 var notDeleteAbleSubjects =[];
                                 $.each(notDeleteAble, function (index, idOfSubject) {
@@ -135,6 +137,7 @@ angular.module('cheetah.SubjectManagement', ['ngRoute'])
                                 });
 
                                 $scope.selection = [];
+                                $scope.studies = uniqueProperties($scope.subjects, "study.name");
                                 dialog.close();
                             }});
                     }
@@ -172,13 +175,14 @@ angular.module('cheetah.SubjectManagement', ['ngRoute'])
                     });
 
                     var createdSubjectWithPK = {
-                        id: response.data.pk_subject,
+                        id: response.data.id,
                         email: response.data.email,
                         subjectId: response.data.subjectId,
                         study: $scope.selectedStudy,
                         comment: response.data.comment
                     };
                     $scope.subjects.push(createdSubjectWithPK);
+                    $scope.studies = uniqueProperties($scope.subjects, "study.name");
                 }
             });
 
