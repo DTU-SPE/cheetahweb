@@ -307,12 +307,12 @@ angular
                 }
             });
             localStorage.setItem('decimalSeparator', $scope.decimalSeparator);
-            localStorage.setItem('visualizeData', $scope.visualizeData);
+            localStorage.setItem('analyzeData', $scope.analyzeData);
             localStorage.setItem('analysisOption', $scope.analysisOption.id);
 
             postData.files = [];
             extractFiles(postData.files);
-            postData.visualizeData = $scope.analysisOption.id;
+            postData.analyzeData = $scope.analysisOption.id;
             postData.decimalSeparator = $scope.decimalSeparator;
 
             $http.post("../../private/cleanPupillometryData", angular.toJson(postData));

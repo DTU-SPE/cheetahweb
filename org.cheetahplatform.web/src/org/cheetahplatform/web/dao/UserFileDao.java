@@ -127,7 +127,9 @@ public class UserFileDao extends AbstractCheetahDao {
 		String path = result.getString("path");
 		String url = path.replaceAll("webapps", "../..");
 		String comment = result.getString("comment");
-		UserFileDto userFileDto = new UserFileDto(id, filename, type, url, comment);
+		Long subjectId = result.getLong("user_data.fk_subject");
+
+		UserFileDto userFileDto = new UserFileDto(id, filename, type, url, comment, subjectId);
 		if (extractProcessInstance) {
 			long processInstanceId = result.getLong("fk_process_instance");
 			if (!result.wasNull()) {
@@ -181,8 +183,7 @@ public class UserFileDao extends AbstractCheetahDao {
 
 	public List<UserFileDto> getEyeTrackingDataForPpmInstance(long ppmInstanceId) throws SQLException {
 		Connection connection = AbstractCheetahServlet.getDatabaseConnection();
-		PreparedStatement statement = connection
-				.prepareStatement("select pk_user_data, filename, type, path, comment from user_data where fk_process_instance=?");
+		PreparedStatement statement = connection.prepareStatement("select * from user_data where fk_process_instance=?");
 		statement.setLong(1, ppmInstanceId);
 
 		List<UserFileDto> files = new ArrayList<>();
@@ -199,8 +200,7 @@ public class UserFileDao extends AbstractCheetahDao {
 
 	public UserFileDto getFile(long fileId) throws SQLException {
 		Connection connection = AbstractCheetahServlet.getDatabaseConnection();
-		PreparedStatement statement = connection
-				.prepareStatement("select pk_user_data, filename, type, path, comment from user_data where pk_user_data=?");
+		PreparedStatement statement = connection.prepareStatement("select * from user_data where pk_user_data=?");
 		statement.setLong(1, fileId);
 		ResultSet result = statement.executeQuery();
 		UserFileDto file = null;
@@ -302,8 +302,7 @@ public class UserFileDao extends AbstractCheetahDao {
 
 	public List<UserFileDto> getUserFiles(long userid) throws SQLException {
 		Connection connection = AbstractCheetahServlet.getDatabaseConnection();
-		PreparedStatement statement = connection
-				.prepareStatement("select pk_user_data, filename, type, path, comment from user_data where fk_user=? and hidden=?");
+		PreparedStatement statement = connection.prepareStatement("select * from user_data where fk_user=? and hidden=?");
 		statement.setLong(1, userid);
 		statement.setBoolean(2, false);
 		ResultSet result = statement.executeQuery();
@@ -315,7 +314,7 @@ public class UserFileDao extends AbstractCheetahDao {
 
 	public List<UserFileDto> getUserFilesForSubject(Connection connection, long subjectId) throws SQLException {
 		PreparedStatement statement = connection.prepareStatement(
-				"select process.id, pk_user_data, filename, user_data.type, path, comment, fk_process_instance from user_data left outer join process_instance on fk_process_instance = process_instance.database_id left outer join process on process_instance.process = process.database_id where user_data.fk_subject =?;");
+				"select process.id, pk_user_data, filename, user_data.type, path, comment, fk_process_instance, user_data.fk_subject from user_data left outer join process_instance on fk_process_instance = process_instance.database_id left outer join process on process_instance.process = process.database_id where user_data.fk_subject =?;");
 		statement.setLong(1, subjectId);
 		ResultSet resultSet = statement.executeQuery();
 		List<UserFileDto> files = extractFiles(resultSet, true);

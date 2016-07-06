@@ -225,7 +225,8 @@ public class CleanPupillometryDataWorkItem extends AbstractCheetahWorkItem {
 		UserFileDao userFileDao = new UserFileDao();
 		String fileName = originalFileDto.getFilename();
 		int position = fileName.lastIndexOf(".");
-		String newName = fileName.substring(0, position) + CheetahWebConstants.FILENAME_PATTERN_SEPARATOR + "results" + fileName.substring(position);
+		String newName = fileName.substring(0, position) + CheetahWebConstants.FILENAME_PATTERN_SEPARATOR + "results"
+				+ fileName.substring(position);
 		String relativePath = userFileDao.generateRelativePath(userId, newName);
 
 		String absolutePath = userFileDao.getAbsolutePath(relativePath);
@@ -332,7 +333,8 @@ public class CleanPupillometryDataWorkItem extends AbstractCheetahWorkItem {
 
 		String fileName = originalFileDto.getFilename();
 		int position = fileName.lastIndexOf(".");
-		String newName = fileName.substring(0, position) + CheetahWebConstants.FILENAME_PATTERN_SEPARATOR + "filtered" + fileName.substring(position);
+		String newName = fileName.substring(0, position) + CheetahWebConstants.FILENAME_PATTERN_SEPARATOR + "filtered"
+				+ fileName.substring(position);
 		String relativePath = userFileDao.generateRelativePath(userId, newName);
 
 		if (request.isAnalyisDefined()) {
@@ -344,7 +346,7 @@ public class CleanPupillometryDataWorkItem extends AbstractCheetahWorkItem {
 		String absolutePath = userFileDao.getAbsolutePath(relativePath);
 		reader.writeToFile(new File(absolutePath));
 		long cleanedId = userFileDao.insertUserFile(userId, newName, relativePath, originalFileDto.getType(),
-				"Applied filters: " + appliedFilters.toString());
+				"Applied filters: " + appliedFilters.toString(), null, originalFileDto.getSubjectId(), false, null);
 		logSuccessNotification("Pupillometry data cleaned successfully! New file: " + newName);
 		userFileDao.addTags(cleanedId, UserFileDao.TAG_CLEANED);
 	}
