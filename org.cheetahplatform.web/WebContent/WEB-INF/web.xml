@@ -516,4 +516,14 @@
 		<servlet-name>DeleteStudyServlet</servlet-name>
 		<url-pattern>/private/deleteStudy</url-pattern>
 	</servlet-mapping>
+	<servlet>
+		<description></description>
+		<display-name>ChangeSubjectServlet</display-name>
+		<servlet-name>ChangeSubjectServlet</servlet-name>
+		<servlet-class>org.cheetahplatform.web.servlet.ChangeSubjectServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ChangeSubjectServlet</servlet-name>
+		<url-pattern>/private/changeSubject</url-pattern>
+	</servlet-mapping>
 </web-app>

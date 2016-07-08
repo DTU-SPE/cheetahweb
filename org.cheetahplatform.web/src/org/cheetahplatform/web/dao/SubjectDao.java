@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.cheetahplatform.web.dto.ChangeSubjectRequest;
 import org.cheetahplatform.web.dto.CreateSubjectRequest;
 import org.cheetahplatform.web.dto.CreateSubjectResponse;
 import org.cheetahplatform.web.dto.PlainSubjectDto;
@@ -16,6 +17,25 @@ import org.cheetahplatform.web.dto.SubjectForSearchDto;
 import org.cheetahplatform.web.servlet.AbstractCheetahServlet;
 
 public class SubjectDao {
+
+	public void changeSubject(Connection connection, ChangeSubjectRequest changeSubjecRequest) throws SQLException {
+		PreparedStatement statement = connection.prepareStatement("UPDATE subject set email=?, subject_id=?, comment=? where pk_subject=?");
+		statement.setString(1, changeSubjecRequest.getEmail());
+		statement.setString(2, changeSubjecRequest.getSubjectId());
+		statement.setString(3, changeSubjecRequest.getComment());
+		statement.setLong(4, changeSubjecRequest.getId());
+
+		statement.execute();
+
+		// ResultSet keys = statement.getGeneratedKeys();
+		// keys.next();
+		// long id = keys.getLong(1);
+		statement.close();
+		//
+		// // return new CreateSubjectResponse(id, createSubjecRequest.getEmail(),
+		// // createSubjecRequest.getSubjectId(),createSubjecRequest.getStudyId(), createSubjecRequest.getComment());
+
+	}
 
 	public CreateSubjectResponse createSubject(Connection connection, CreateSubjectRequest createSubjecRequest) throws SQLException {
 		PreparedStatement statement = connection.prepareStatement(
