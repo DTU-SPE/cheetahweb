@@ -80,21 +80,21 @@ $(document).ready(function () {
         angular.bootstrap($('[ng-app="cheetah.Pupillometry"]'), ['cheetah.Pupillometry']);
         angular.bootstrap($('[ng-app="cheetah.Percentile"]'), ['cheetah.Percentile']);
     } else {
-        $('#cheetah-analyze-pupillometry-container').remove();
-        $('#cheetah-analyze-video-container').attr('data-sizex', 6).attr('data-col', 1);
+        $('#cheetah-visualize-pupillometry-container').remove();
+        $('#cheetah-visualize-video-container').attr('data-sizex', 6).attr('data-col', 1);
     }
 
     if (cheetah.processInstance || cheetah.movie) {
         angular.bootstrap($('[ng-app="cheetah.Video"]'), ['cheetah.Video']);
     } else {
-        $('#cheetah-analyze-video-container').remove();
-        $('#cheetah-analyze-pupillometry-container').attr('data-sizex', 6);
+        $('#cheetah-visualize-video-container').remove();
+        $('#cheetah-visualize-pupillometry-container').attr('data-sizex', 6);
     }
 
     if (cheetah.processInstance) {
         angular.bootstrap($('[ng-app="cheetah.Interactions"]'), ['cheetah.Interactions']);
     } else {
-        $('#cheetah-analyze-interactions-container').remove();
-        $('#cheetah-analyze-video-container').attr('data-sizey', 6);
+        $('#cheetah-visualize-interactions-container').remove();
+        $('#cheetah-visualize-video-container').attr('data-sizey', 6);
     }
 });

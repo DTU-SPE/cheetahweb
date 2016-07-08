@@ -21,7 +21,7 @@
     <script src="../public/js/lib/jquery.gridster.js"></script>
     <script src="../public/js/lib/angular.js"></script>
     <script src="../public/js/lib/angular-route.js"></script>
-    <script src="js/analyze.js"></script>
+    <script src="js/visualize.js"></script>
     <script src="../public/js/lib/d3.min.js"></script>
     <script src="angular/pupillometry/pupillometry.js"></script>
     <script src="angular/video/video.js"></script>
@@ -73,19 +73,19 @@
     </div>
 </div>
 
-<div ng-app="cheetah.Navigation" ng-view="" ng-controller="NavigationCtrl" ng-init="setActive('cheetah-analyze')"></div>
+<div ng-app="cheetah.Navigation" ng-view="" ng-controller="NavigationCtrl" ng-init="setActive('cheetah-visualize')"></div>
 
-<div role="main" class="analyze-body">
+<div role="main" class="visualize-body">
     <div class="gridster">
         <ul>
-            <li data-row="1" data-col="1" data-sizex="3" data-sizey="6" class="analyze-widget" id="cheetah-analyze-pupillometry-container">
-                <div ng-app="cheetah.Pupillometry" ng-view="" class="analyze-widget-content"></div>
+            <li data-row="1" data-col="1" data-sizex="3" data-sizey="6" class="visualize-widget" id="cheetah-visualize-pupillometry-container">
+                <div ng-app="cheetah.Pupillometry" ng-view="" class="visualize-widget-content"></div>
             </li>
-            <li data-row="1" data-col="4" data-sizex="3" data-sizey="4" class="analyze-widget" id="cheetah-analyze-video-container">
-                <div ng-app="cheetah.Video" ng-view="" class="analyze-widget-content"></div>
+            <li data-row="1" data-col="4" data-sizex="3" data-sizey="4" class="visualize-widget" id="cheetah-visualize-video-container">
+                <div ng-app="cheetah.Video" ng-view="" class="visualize-widget-content"></div>
             </li>
-            <li data-row="5" data-col="4" data-sizex="3" data-sizey="2" class="analyze-widget" id="cheetah-analyze-interactions-container">
-                <div ng-app="cheetah.Interactions" ng-view="" class="analyze-widget-content"></div>
+            <li data-row="5" data-col="4" data-sizex="3" data-sizey="2" class="visualize-widget" id="cheetah-visualize-interactions-container">
+                <div ng-app="cheetah.Interactions" ng-view="" class="visualize-widget-content"></div>
             </li>
         </ul>
     </div>

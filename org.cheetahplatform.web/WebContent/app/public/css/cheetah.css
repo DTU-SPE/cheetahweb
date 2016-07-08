@@ -22,29 +22,29 @@ body {
     height: 100%;
 }
 
-.analyze-body {
+.visualize-body {
     padding: 10px;
     height: 100%;
 }
 
-.analyze-widget {
+.visualize-widget {
     border-color: #cccccc;
     border-width: 1px;
     border-style: solid;
     border-radius: 4px;
 }
 
-.analyze-widget-content {
+.visualize-widget-content {
     width: 100%;
     height: 100%;
     padding: 10px;
 }
 
-.analyze-content {
+.visualize-content {
     padding: 5px;
 }
 
-.analyze-video {
+.visualize-video {
     width: 100%;
     height: 100%;
 }
@@ -220,13 +220,13 @@ path.sliding-window {
     float: right;
 }
 
-#cheetah-analyze-select-all-button, #cheetah-analyze-select-none-button, #cheetah-files-analyze-button, #cheetah-files-fileactions-button, #cheetah-notification-clear-button{
+#cheetah-visualize-select-all-button, #cheetah-visualize-select-none-button, #cheetah-files-analyze-button, #cheetah-files-fileactions-button, #cheetah-notification-clear-button {
     float: right;
     margin-bottom: 10px;
     margin-right: 10px;
 }
 
-#cheetah-analyze-button-container, #cheetah-files-button-container, #cheetah-study-management-button-container {
+#cheetah-visualize-button-container, #cheetah-files-button-container, #cheetah-study-management-button-container {
     float: right;
     margin-bottom: 10px;
     padding-left: 0;
@@ -241,7 +241,7 @@ path.sliding-window {
     margin-right: 0;
 }
 
-#cheetah-files-analyze-button, #cheetah-notification-clear-button {
+#cheetah-files-visualize-button, #cheetah-notification-clear-button {
     margin-right: 0;
 }
 
@@ -351,7 +351,7 @@ input[type=checkbox] {
     display: none;
 }
 
-#cheetah-files-to-analyze-container {
+#cheetah-files-to-visualize-container {
     padding-bottom: 15px;
 }
 
@@ -362,4 +362,8 @@ input[type=checkbox] {
 .cheetah-upload-complete-message {
     margin-top: 10px;
     margin-bottom: 10px;
+}
+
+.jumbotron > p:last-of-type {
+    padding-top: 40px;
 }
