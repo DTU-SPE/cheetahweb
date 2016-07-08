@@ -220,7 +220,7 @@ path.sliding-window {
     float: right;
 }
 
-#cheetah-visualize-select-all-button, #cheetah-visualize-select-none-button, #cheetah-files-analyze-button, #cheetah-files-fileactions-button, #cheetah-notification-clear-button {
+#cheetah-visualize-select-all-button, #cheetah-visualize-select-none-button, #cheetah-files-analyze-button, #cheetah-files-fileactions-button, #cheetah-notification-clear-button, #cheetah-files-visualize-button {
     float: right;
     margin-bottom: 10px;
     margin-right: 10px;
@@ -241,7 +241,7 @@ path.sliding-window {
     margin-right: 0;
 }
 
-#cheetah-files-visualize-button, #cheetah-notification-clear-button {
+ #cheetah-notification-clear-button {
     margin-right: 0;
 }
 

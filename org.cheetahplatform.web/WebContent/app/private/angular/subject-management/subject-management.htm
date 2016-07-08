@@ -83,7 +83,7 @@
                         <input type="text" id="comment" class="form-control" ng-model="comment" required>
                         <label for="studySelect">Select Study</label>
                         <select class="form-control" id="studySelect" ng-model="selectedStudy"
-                                ng-options="studySelect.name for studySelect in fullStudies">
+                                ng-options="studySelect.name for studySelect in fullStudies" required><option></option>
                         </select>
                         <br>
                         <div class="form-group">
