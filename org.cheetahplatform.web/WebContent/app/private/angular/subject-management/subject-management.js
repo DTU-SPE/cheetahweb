@@ -4,6 +4,7 @@ angular.module('cheetah.SubjectManagement', ['ngRoute'])
         $scope.search = {};
         $scope.search.freeText = "";
         $scope.selection = [];
+        $scope.changeMail="";
 
         var storedSearch = localStorage.getItem('subjectMangement.search');
         if (storedSearch) {
@@ -79,9 +80,9 @@ angular.module('cheetah.SubjectManagement', ['ngRoute'])
                 $scope.selection.push(subjects);
             }
             if ($scope.selection.length > 0) {
-                $("#button-analyze").removeAttr("disabled");
+                $("#button-visualize").removeAttr("disabled");
             } else {
-                $("#button-analyze").attr("disabled");
+                $("#button-visualize").attr("disabled");
             }
         };
 
@@ -150,10 +151,54 @@ angular.module('cheetah.SubjectManagement', ['ngRoute'])
             });
         };
 
+        $scope.changeSubject= function () {
+            if ($scope.selection.length != 1) {
+                BootstrapDialog.alert({
+                    title: 'Select exactly one subject',
+                    message: 'You have selected the wrong number of subjects.'
+                });
+
+            }else {
+                $scope.changeMail = $scope.selection[0].email;
+                $scope.changeSubjectID=$scope.selection[0].subjectId;
+                $scope.changeComment=$scope.selection[0].comment;
+                $("#cheetah-change-subject-dialog").modal('show');
+            }};
+
         $scope.addSub = function () {
             $("#cheetah-create-subject-dialog").modal('show');
         };
 
+
+        $scope.changeUser=function () {
+            $("#cheetah-change-subject-dialog").modal('hide');
+            var changeSubject = {
+                id: $scope.selection[0].id,
+                email: $scope.changeMail,
+                subjectId: $scope.changeSubjectID,
+                comment: $scope.changeComment
+            };
+            $http.post('../../private/changeSubject', changeSubject).then(function successCallback(response) {
+                BootstrapDialog.alert({
+                    title: 'Successfully changed',
+                    message: 'Successfully changed.'
+                });
+
+                $scope.selection[0].email= changeSubject.email;
+                $scope.selection[0].subjectId= changeSubject.subjectId;
+                $scope.selection[0].comment=changeSubject.comment;
+                $scope.selection = [];
+            }, function errorCallback(response)  {
+                BootstrapDialog.alert({
+                    title: 'no success',
+                    message: 'no succ.'
+                });
+
+
+            });
+
+
+        }
         $scope.addUserToDB = function () {
             $("#cheetah-create-subject-dialog").modal('hide');
             var createdSubject = {

@@ -19,7 +19,7 @@
         </div>
     </div>
 
-    <div class="dropdown" id="cheetah-files-analyze-button">
+    <div class="dropdown" id="cheetah-files-visualize-button">
         <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1"
                 data-toggle="dropdown"
                 aria-expanded="true">
@@ -82,11 +82,43 @@
                         <label for="comment">Comment</label>
                         <input type="text" id="comment" class="form-control" ng-model="comment" required>
                         <label for="studySelect">Select Study</label>
-                        <select class="form-control" id="studySelect" ng-model="selectedStudy" ng-options="studySelect.name for studySelect in fullStudies">
+                        <select class="form-control" id="studySelect" ng-model="selectedStudy"
+                                ng-options="studySelect.name for studySelect in fullStudies">
                         </select>
                         <br>
                         <div class="form-group">
-                            <button type="submit" id="submitColumnsButton" class="btn btn-primary">Create Subject</button>
+                            <button type="submit" id="submitColumnsButton" class="btn btn-primary">Create Subject
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="cheetah-change-subject-dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Change User</h4>
+                <div class="modal-body container-fluid">
+                    <form id="changeUser" role="form"
+                          ng-submit="changeUser()">
+                        <label for="subjectID">Subject Id</label>
+                        <input type="text" id="changeSubjectID" class="form-control" ng-model="changeSubjectID"
+                               required>
+                        <label for="mail">Mail Adress</label>
+                        <input type="text" id="changeMail" class="form-control" ng-model="changeMail" required>
+                        <label for="comment">Comment</label>
+                        <input type="text" id="changeComment" class="form-control" ng-model="changeComment" required>
+                        <br>
+                        <div class="form-group">
+                            <button type="submit" id="changeSubmitColumnsButton" class="btn btn-primary">Change
+                                Subject
+                            </button>
                         </div>
                     </form>
                 </div>
