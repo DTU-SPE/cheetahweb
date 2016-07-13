@@ -121,6 +121,22 @@ angular
                 url = url + 'files=' + encodeURIComponent(cheetah.files);
             }
             $http.get(url + '&start=' + time + '&slidingWindowDuration=' + slidingWindowDuration).success(function (pupillometryData) {
+                //preserve the selection of lines, #509
+                if ($scope.pupillometryLines) {
+                    var selectedLines = {};
+                    $.each($scope.pupillometryLines, function (index, line) {
+                        selectedLines[line.id] = line.selected;
+                    });
+                    $.each(pupillometryData, function (index, line) {
+                        line.selected = selectedLines[line.id];
+                    });
+                } else {
+                    //select all lines by default
+                    $.each(pupillometryData, function (index, line) {
+                        line.selected = true;
+                    });
+                }
+
                 $scope.pupillometryLines = pupillometryData;
 
                 var data;
@@ -153,7 +169,6 @@ angular
                 $scope.sessionStartTimestamp = sessionStartTimestamp;
                 $scope.sessionEndTimeStamp = data.sessionEndTimeStamp;
                 cheetah.sessionStartTimestamp = sessionStartTimestamp;
-                
 
                 var availableWidth = $('#pupillometry').width();
                 var availableHeight = $('#pupillometry').parent().height() - $('#pupillometry-controls').height();
@@ -222,10 +237,12 @@ angular
                     var currentData = pupillometryData[j];
                     var colorNumber = j % $scope.colors.length;
                     var color = $scope.colors[colorNumber];
-                    graph.append("svg:path").attr("d", line(currentData.entries)).attr("class", color).attr("id", currentData.id);
-                    $scope.pupillometryLines[j].selected = true;
                     $scope.pupillometryLines[j].color = color;
+                    if (!currentData.selected) {
+                        continue;
+                    }
 
+                    graph.append("svg:path").attr("d", line(currentData.entries)).attr("class", color).attr("id", currentData.id);
                     if (currentData.label === $scope.additionalInformationLineLabel && currentData.slidingWindow != undefined) {
                         graph.append("svg:path").attr("d", line(currentData.slidingWindow)).attr("class", "sliding-window");
                     }

@@ -9,7 +9,7 @@ import org.cheetahplatform.web.AbstractCheetahWorkItem;
 import org.cheetahplatform.web.dao.UserFileDao;
 
 public class EyetrackingAnalysisWorkItem extends AbstractCheetahWorkItem {
-	List<IEyeTrackingDataAnalyzer> analyzers;
+	private List<IEyeTrackingDataAnalyzer> analyzers;
 
 	public EyetrackingAnalysisWorkItem(long userId, List<IEyeTrackingDataAnalyzer> analyzers) {
 		super(userId);
