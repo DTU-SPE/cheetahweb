@@ -4,7 +4,7 @@ angular.module('cheetah.SubjectManagement', ['ngRoute'])
         $scope.search = {};
         $scope.search.freeText = "";
         $scope.selection = [];
-        $scope.changeMail="";
+        $scope.changeMail = "";
 
         var storedSearch = localStorage.getItem('subjectMangement.search');
         if (storedSearch) {
@@ -16,7 +16,7 @@ angular.module('cheetah.SubjectManagement', ['ngRoute'])
         $q.all([subjectsRequest, studiesRequest]).then(function (arrayOfResults) {
             $scope.subjects = arrayOfResults[0].data;
             $scope.fullStudies = arrayOfResults[1].data;
-            $scope.studies= arrayOfResults[1].data.map(function (input) {
+            $scope.studies = arrayOfResults[1].data.map(function (input) {
                 return input.name;
             });
         });
@@ -25,7 +25,6 @@ angular.module('cheetah.SubjectManagement', ['ngRoute'])
             if (getSelectionIndex(subject) >= 0) {
                 return "icon-cheetah-selected";
             }
-
             return "icon-cheetah-not-selected";
         };
 
@@ -108,12 +107,12 @@ angular.module('cheetah.SubjectManagement', ['ngRoute'])
                             return input.id;
                         });
                         $http.post('../../private/deleteSubject', subjectsToDelete).then(function (response) {
-                            if (response.data!="null") {
+                            if (response.data != "null") {
                                 var notDeleteAble = response.data;
-                                var notDeleteAbleSubjects =[];
+                                var notDeleteAbleSubjects = [];
                                 $.each(notDeleteAble, function (index, idOfSubject) {
-                                    $.each( $scope.subjects, function (index, subj) {
-                                        if(subj.id==idOfSubject){
+                                    $.each($scope.subjects, function (index, subj) {
+                                        if (subj.id == idOfSubject) {
                                             notDeleteAbleSubjects.push(subj);
                                         }
                                     })
@@ -123,10 +122,10 @@ angular.module('cheetah.SubjectManagement', ['ngRoute'])
                                 })
                                 BootstrapDialog.alert({
                                     title: 'Could not delete',
-                                    message: "Could not delete "+ messageString + ". The subjects have already attached files."
+                                    message: "Could not delete " + messageString + ". The subjects have already attached files."
                                 });
                                 dialog.close();
-                            }else {
+                            } else {
                                 BootstrapDialog.alert({
                                     title: 'Subject deleted',
                                     message: 'Subject "' + objectToDelete + '" was deleted successfully.'
@@ -140,9 +139,10 @@ angular.module('cheetah.SubjectManagement', ['ngRoute'])
                                 $scope.selection = [];
                                 $scope.studies = uniqueProperties($scope.subjects, "study.name");
                                 dialog.close();
-                            }});
+                            }
+                        });
                     }
-                }, {
+                },{
                     label: 'No',
                     action: function (dialog) {
                         dialog.close();
@@ -151,26 +151,25 @@ angular.module('cheetah.SubjectManagement', ['ngRoute'])
             });
         };
 
-        $scope.changeSubject= function () {
-            if ($scope.selection.length != 1) {
+        $scope.showChangeSubjectModal = function () {
+            if ($scope.selection.length !== 1) {
                 BootstrapDialog.alert({
                     title: 'Select exactly one subject',
                     message: 'You have selected the wrong number of subjects.'
                 });
-
-            }else {
+            } else {
                 $scope.changeMail = $scope.selection[0].email;
-                $scope.changeSubjectID=$scope.selection[0].subjectId;
-                $scope.changeComment=$scope.selection[0].comment;
+                $scope.changeSubjectID = $scope.selection[0].subjectId;
+                $scope.changeComment = $scope.selection[0].comment;
                 $("#cheetah-change-subject-dialog").modal('show');
-            }};
-
+            }
+        };
         $scope.addSub = function () {
+            $scope.selectedStudy = $scope.fullStudies[0];
             $("#cheetah-create-subject-dialog").modal('show');
         };
 
-
-        $scope.changeUser=function () {
+        $scope.changeSubject = function () {
             $("#cheetah-change-subject-dialog").modal('hide');
             var changeSubject = {
                 id: $scope.selection[0].id,
@@ -183,22 +182,18 @@ angular.module('cheetah.SubjectManagement', ['ngRoute'])
                     title: 'Successfully changed',
                     message: 'Successfully changed.'
                 });
-
-                $scope.selection[0].email= changeSubject.email;
-                $scope.selection[0].subjectId= changeSubject.subjectId;
-                $scope.selection[0].comment=changeSubject.comment;
+                $scope.selection[0].email = changeSubject.email;
+                $scope.selection[0].subjectId = changeSubject.subjectId;
+                $scope.selection[0].comment = changeSubject.comment;
                 $scope.selection = [];
-            }, function errorCallback(response)  {
+            }, function errorCallback(response) {
                 BootstrapDialog.alert({
-                    title: 'no success',
-                    message: 'no succ.'
+                    title: 'Error',
+                    message: 'An error occured while changing a subject.'
                 });
-
-
             });
+        };
 
-
-        }
         $scope.addUserToDB = function () {
             $("#cheetah-create-subject-dialog").modal('hide');
             var createdSubject = {

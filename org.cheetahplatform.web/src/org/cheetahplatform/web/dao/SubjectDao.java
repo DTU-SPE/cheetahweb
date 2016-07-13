@@ -27,14 +27,7 @@ public class SubjectDao {
 
 		statement.execute();
 
-		// ResultSet keys = statement.getGeneratedKeys();
-		// keys.next();
-		// long id = keys.getLong(1);
 		statement.close();
-		//
-		// // return new CreateSubjectResponse(id, createSubjecRequest.getEmail(),
-		// // createSubjecRequest.getSubjectId(),createSubjecRequest.getStudyId(), createSubjecRequest.getComment());
-
 	}
 
 	public CreateSubjectResponse createSubject(Connection connection, CreateSubjectRequest createSubjecRequest) throws SQLException {
