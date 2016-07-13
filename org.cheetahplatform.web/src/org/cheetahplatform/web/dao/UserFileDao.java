@@ -33,6 +33,7 @@ public class UserFileDao extends AbstractCheetahDao {
 	public static final String WEBAPPS_PATH = "/webapps";
 	public static final String USER_UPLOAD_PATH = WEBAPPS_PATH + "/cheetah_content/user_upload";
 	public static final String VIDEO_PATH = WEBAPPS_PATH + "/cheetah_content/videos";
+	public static final String ARCHIVE_PATH = WEBAPPS_PATH + "/cheetah_content/archive";
 
 	public static final String TAG_RAW_DATA = "raw-data";
 	public static final String TAG_TRIMMED = "trimmed";
@@ -48,6 +49,16 @@ public class UserFileDao extends AbstractCheetahDao {
 		STANDARD_TAGS.add(TAG_CLEANED);
 		STANDARD_TAGS.add(TAG_VIDEO);
 		STANDARD_TAGS.add(TAG_RESULT);
+	}
+
+	public static File getPath(String type) {
+		File catalinaBase = new File(System.getProperty("catalina.base")).getAbsoluteFile();
+		File archive = new File(catalinaBase, type);
+		if (!archive.exists()) {
+			archive.mkdirs();
+		}
+
+		return archive;
 	}
 
 	public void addTags(Long fileId, String... tags) throws SQLException {
@@ -390,6 +401,7 @@ public class UserFileDao extends AbstractCheetahDao {
 		if (!userDirectory.exists()) {
 			userDirectory.mkdirs();
 		}
+
 		return userDirectoryPath + "/" + System.currentTimeMillis() + "_" + fileName.replaceAll(" ", "_");
 	}
 
