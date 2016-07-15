@@ -36,8 +36,8 @@ public class SubstitutePupilFilter extends AbstractPupillometryFilter {
 		for (PupillometryFileLine line : file.getContent()) {
 			String left = line.get(leftPupil);
 			String right = line.get(rightPupil);
-			boolean leftMissing = left.equals("");
-			boolean rightMissing = right.equals("");
+			boolean leftMissing = left.trim().isEmpty();
+			boolean rightMissing = right.trim().isEmpty();
 
 			if (leftMissing && !rightMissing) {
 				line.setValue(leftPupil, right);
@@ -51,7 +51,7 @@ public class SubstitutePupilFilter extends AbstractPupillometryFilter {
 				line.setValue(missingColumn, MISSING_BOTH);
 			}
 		}
-
+		
 		return "Substituted " + replaced + " values";
 	}
 
