@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.io.IOUtils;
@@ -190,6 +191,21 @@ public class UserFileDao extends AbstractCheetahDao {
 	public String getAbsolutePath(String relativePath) {
 		File catalinaBase = new File(System.getProperty("catalina.base")).getAbsoluteFile();
 		return catalinaBase.getAbsolutePath() + relativePath;
+	}
+
+	public List<UserFileDto> getDerivedFiles(Connection connection, Long derivedFromId) throws SQLException {
+		String sql = "select * from user_data where fk_derived_from = ?;";
+		PreparedStatement statement = connection.prepareStatement(sql);
+		statement.setLong(1, derivedFromId);
+		ResultSet resultSet = statement.executeQuery();
+		List<UserFileDto> files = new ArrayList<>();
+		while (resultSet.next()) {
+			UserFileDto file = extractFile(resultSet, false);
+			files.add(file);
+		}
+
+		statement.close();
+		return files;
 	}
 
 	public List<UserFileDto> getEyeTrackingDataForPpmInstance(long ppmInstanceId) throws SQLException {
@@ -491,6 +507,18 @@ public class UserFileDao extends AbstractCheetahDao {
 		updateStatement.setLong(2, fileId);
 		updateStatement.executeUpdate();
 		cleanUp(connection, updateStatement);
+	}
+
+	public void updateFileName(Connection connection, Map<Long, String> newFileNames) throws SQLException {
+		PreparedStatement statement = connection.prepareStatement("UPDATE user_data SET filename=? WHERE pk_user_data=?;");
+
+		for (Entry<Long, String> entry : newFileNames.entrySet()) {
+			statement.setString(1, entry.getValue());
+			statement.setLong(2, entry.getKey());
+			statement.executeUpdate();
+		}
+
+		statement.close();
 	}
 
 	/**

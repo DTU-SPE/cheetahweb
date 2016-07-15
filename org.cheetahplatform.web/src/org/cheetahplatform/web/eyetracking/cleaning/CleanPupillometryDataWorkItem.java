@@ -13,6 +13,7 @@ import org.cheetahplatform.web.CheetahWebConstants;
 import org.cheetahplatform.web.dao.UserFileDao;
 import org.cheetahplatform.web.dto.FilterRequest;
 import org.cheetahplatform.web.dto.UserFileDto;
+import org.cheetahplatform.web.util.FileUtils;
 
 /**
  * Represents a work item for cleaning a pupillometry file.
@@ -330,11 +331,20 @@ public class CleanPupillometryDataWorkItem extends AbstractCheetahWorkItem {
 				appliedFilters.append(")");
 			}
 		}
+		String newName = null;
 
 		String fileName = originalFileDto.getFilename();
-		int position = fileName.lastIndexOf(".");
-		String newName = fileName.substring(0, position) + CheetahWebConstants.FILENAME_PATTERN_SEPARATOR + "filtered"
-				+ fileName.substring(position);
+		String fileNamePostFix = request.getFileNamePostFix();
+		if (fileNamePostFix != null && !fileNamePostFix.trim().isEmpty()
+				&& fileName.contains(CheetahWebConstants.FILENAME_PATTERN_SEPARATOR)) {
+			String subject = FileUtils.extractSubjectName(fileName);
+			newName = subject + CheetahWebConstants.FILENAME_PATTERN_SEPARATOR + fileNamePostFix + FileUtils.getFileExtension(fileName);
+		} else {
+			int position = fileName.lastIndexOf(".");
+			newName = fileName.substring(0, position) + CheetahWebConstants.FILENAME_PATTERN_SEPARATOR + "filtered"
+					+ fileName.substring(position);
+		}
+
 		String relativePath = userFileDao.generateRelativePath(userId, newName);
 
 		if (request.isAnalyisDefined()) {

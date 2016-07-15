@@ -18,6 +18,7 @@ public class FilterRequest {
 	private Map<String, String> parameters;
 	private String analyzeData;
 	private String decimalSeparator;
+	private String fileNamePostFix;
 
 	public FilterRequest() {
 		// JSON
@@ -25,6 +26,10 @@ public class FilterRequest {
 
 	public String getDecimalSeparator() {
 		return decimalSeparator;
+	}
+
+	public String getFileNamePostFix() {
+		return fileNamePostFix;
 	}
 
 	public List<Long> getFiles() {
@@ -94,6 +99,10 @@ public class FilterRequest {
 
 	public void setDecimalSeparator(String decimalSeparator) {
 		this.decimalSeparator = decimalSeparator;
+	}
+
+	public void setFileNamePostFix(String fileNamePostFix) {
+		this.fileNamePostFix = fileNamePostFix;
 	}
 
 	public void setFiles(List<Long> files) {

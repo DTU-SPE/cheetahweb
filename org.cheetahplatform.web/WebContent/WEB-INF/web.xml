@@ -526,4 +526,14 @@
 		<servlet-name>ChangeSubjectServlet</servlet-name>
 		<url-pattern>/private/changeSubject</url-pattern>
 	</servlet-mapping>
+	<servlet>
+		<description></description>
+		<display-name>RenameFilesServlet</display-name>
+		<servlet-name>RenameFilesServlet</servlet-name>
+		<servlet-class>org.cheetahplatform.web.servlet.RenameFilesServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>RenameFilesServlet</servlet-name>
+		<url-pattern>/private/renameFiles</url-pattern>
+	</servlet-mapping>
 </web-app>

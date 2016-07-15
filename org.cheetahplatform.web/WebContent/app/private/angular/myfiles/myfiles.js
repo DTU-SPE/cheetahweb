@@ -13,6 +13,8 @@ angular
         $scope.tagsToAdd = [];
         $scope.tagsOfSelectedFiles = [];
         $scope.tagsToRemove = [];
+        $scope.filesToRename = [];
+        $scope.cleanFileNamePattern = "";
         $scope.search = "";
         //include default tags with fixed colors.
         $scope.tagColors = {
@@ -108,6 +110,29 @@ angular
                 $scope.decimalSeparator = tmp.toLocaleString().substring(1, 2);
             }
         }
+
+
+        $scope.renameFiles = function () {
+            $scope.filesToRename = [];
+            $.each($scope.files, function (index, file) {
+                if (file.selection) {
+                    $scope.filesToRename.push({id: file.id, oldName: file.filename, newName: file.filename});
+                }
+            });
+            $("#renameFilesDialog").modal();
+        };
+
+        $scope.submitRenameFiles = function () {
+            var postData = {files: {}};
+            $.each($scope.filesToRename, function (index, file) {
+                postData.files[file.id] = file.newName;
+            });
+
+            $http.post('../../private/renameFiles', postData).success(function () {
+                $("#renameFilesDialog").modal('hide');
+                $scope.refreshFiles();
+            });
+        };
 
         $scope.selectAllDisplayedFiles = function () {
             $.each($scope.filteredFiles(), function (index, file) {
@@ -314,6 +339,7 @@ angular
             extractFiles(postData.files);
             postData.analyzeData = $scope.analysisOption.id;
             postData.decimalSeparator = $scope.decimalSeparator;
+            postData.fileNamePostFix = $scope.cleanFileNamePattern;
 
             $http.post("../../private/cleanPupillometryData", angular.toJson(postData));
             $("#cleanPupillometryDataDialog").modal('hide');

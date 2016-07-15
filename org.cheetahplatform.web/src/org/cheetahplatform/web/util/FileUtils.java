@@ -15,6 +15,11 @@ public class FileUtils {
 		return splittedFilename[0];
 	}
 
+	public static String getFileExtension(String fileName) {
+		int position = fileName.lastIndexOf(".");
+		return fileName.substring(position);
+	}
+
 	public static String getFileNameWithoutExtension(String fileName) {
 		int position = fileName.lastIndexOf(".");
 		if (position < 0) {
