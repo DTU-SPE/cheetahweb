@@ -1,14 +1,30 @@
 <div class="cheetah-pupillometry-visualization">
     <div class="dropdown">
-        <button class="btn btn-default dropdown-toggle" type="button" id="cheetah-pupillometry-visualization-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-            Displayed pupils
-            <span class="caret"></span>
+        <button class="btn btn-default dropdown-toggle" type="button" id="cheetah-pupillometry-visualization-dropdown" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="true"> Displayed pupils <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" aria-labelledby="cheetah-pupillometry-visualization-dropdown">
-            <li><input type="checkbox" ng-model="displayedPupils.average" ng-change="renderData()"><div class="cheetah-pupillometry-visualization-average"></div><a href="#">Average Pupil Size</a></li>
-            <li><input type="checkbox" ng-model="displayedPupils.leftPupil" ng-change="renderData()"><div class="cheetah-pupillometry-visualization-left"></div><a href="#">Left Pupuil Size</a></li>
-            <li><input type="checkbox" ng-model="displayedPupils.rightPupil" ng-change="renderData()"><div class="cheetah-pupillometry-visualization-right"></div><a href="#">Right Pupil Size</a></li>
+            <li><input type="checkbox" ng-model="displayedPupils.average" ng-change="renderData()">
+                <div class="cheetah-pupillometry-visualization-average"></div>
+                <a href="#">Average Pupil Size</a>
+            </li>
+            <li><input type="checkbox" ng-model="displayedPupils.leftPupil" ng-change="renderData()">
+                <div class="cheetah-pupillometry-visualization-left"></div>
+                <a href="#">Left Pupil Size</a>
+            </li>
+            <li><input type="checkbox" ng-model="displayedPupils.rightPupil" ng-change="renderData()">
+                <div class="cheetah-pupillometry-visualization-right"></div>
+                <a href="#">Right Pupil Size</a>
+            </li>
         </ul>
+    </div>
+    <div>
+        <button type="button" class="btn btn-default btn-md" ng-click="jumpToPreviousTimeframe()">
+            <span class=" icon-cheetah-arrow-left" aria-hidden="true"></span> Previous Timeframe
+        </button>
+        <button type="button" class="btn btn-default btn-md" ng-click="jumpToNextTimeframe()">
+            Next Timeframe <span class="icon-cheetah-arrow-right" aria-hidden="true"></span>
+        </button>
     </div>
 </div>
 

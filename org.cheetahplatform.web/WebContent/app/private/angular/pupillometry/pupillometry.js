@@ -128,10 +128,10 @@ angular
                 cheetah.sessionStartTimestamp = sessionStartTimestamp;
 
                 var availableWidth = $('#pupillometry').width();
-                var availableHeight = $('#pupillometry').parent().height() - $('#pupillometry-controls').height();
+                var availableHeight = $('#pupillometry').parent().height() - $('#pupillometry-controls').height() - $('.cheetah-pupillometry-visualization').height() - 40;
                 $scope.marginLeft = 60;
 
-                var margins = [60, 30, 60, $scope.marginLeft];
+                var margins = [0, 30, 30, $scope.marginLeft];
                 var width = availableWidth - margins[1] - margins[3];
                 var height = availableHeight - margins[0] - margins[2];
 
@@ -177,11 +177,11 @@ angular
                 // Add the x-axis.
                 graph.append("svg:g").attr("class", "x axis").attr("transform", "translate(0," + height + ")").call(xAxis);
 
-
                 // create left yAxis
                 var yAxisLeft = d3.svg.axis().scale(y).ticks(4).orient("left");
                 // Add the y-axis to the left
                 graph.append("svg:g").attr("class", "y axis").attr("transform", "translate(-25,0)").call(yAxisLeft);
+                graph.append("clipPath").attr("id", "line-clip").append('rect').attr('x', 0).attr('y', 0).attr('height', height).attr('width', width);
 
                 for (var j = 0; j < $scope.pupillometryData.length; j++) {
                     var currentData = $scope.pupillometryData[j];
@@ -205,7 +205,7 @@ angular
                             strokeClass = 'cheetah-pupillometry-line-right-pupil';
                         }
 
-                        graph.append("svg:path").attr("d", path).classed([color, strokeClass].join(' '), true).attr("id", currentData.id);
+                        graph.append("svg:path").attr("d", path).classed([color, strokeClass].join(' '), true).attr("id", currentData.id).attr("clip-path", "url(#line-clip)");
                         if (currentData.label === $scope.additionalInformationLineLabel && currentData.slidingWindow != undefined) {
                             graph.append("svg:path").attr("d", createLine(currentData.slidingWindow, 'average')).attr("class", "sliding-window");
                         }
@@ -282,6 +282,21 @@ angular
                 $('#pupillometry').find("#" + line.id).remove();
             } else {
                 drawLine(line);
+            }
+        };
+
+        $scope.jumpToNextTimeframe = function () {
+            jumpToMousePosition([Number.MAX_VALUE, 0]);
+        };
+
+        $scope.jumpToPreviousTimeframe = function () {
+            if ($scope.sessionStartTimestamp - $scope.startTime === 0) {
+                BootstrapDialog.alert({
+                    title: 'Start Reached',
+                    message: 'You have already reached the start of the session.'
+                });
+            } else {
+                jumpToMousePosition([0, 0]);
             }
         };
 

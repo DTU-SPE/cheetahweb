@@ -107,6 +107,8 @@ path.sliding-window {
 
 #pupillometry {
     width: 100%;
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 #pupillometry-controls {
@@ -376,6 +378,10 @@ input[type=checkbox] {
     display: inline-block;
 }
 
+.cheetah-pupillometry-visualization div:first-child {
+    margin-right: 20px;
+}
+
 .cheetah-pupillometry-visualization-left {
     border-bottom-style: dashed;
     border-bottom-color: black;
@@ -396,10 +402,13 @@ input[type=checkbox] {
 
 .cheetah-pupillometry-visualization .dropdown-menu > li > a {
     padding-left: 10px;
+    background-image: none;
+    background-color: white;
+    cursor: context-menu;
 }
 
 .cheetah-pupillometry-visualization .dropdown-menu {
-    min-width: 225px;
+    min-width: 240px;
 }
 
 .cheetah-pupillometry-visualization input {
@@ -407,10 +416,14 @@ input[type=checkbox] {
     margin-right: 10px;
 }
 
-.cheetah-pupillometry-line-left-pupil{
+.cheetah-pupillometry-line-left-pupil {
     stroke-dasharray: 10, 10;
 }
 
-.cheetah-pupillometry-line-right-pupil{
+.cheetah-pupillometry-line-right-pupil {
     stroke-dasharray: 2 5;
+}
+
+#pupillometry-controls ul {
+    height: initial; /*override height: 100% from gridster */
 }
