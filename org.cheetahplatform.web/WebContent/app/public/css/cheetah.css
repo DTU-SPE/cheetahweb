@@ -241,7 +241,7 @@ path.sliding-window {
     margin-right: 0;
 }
 
- #cheetah-notification-clear-button {
+#cheetah-notification-clear-button {
     margin-right: 0;
 }
 
@@ -366,4 +366,51 @@ input[type=checkbox] {
 
 .jumbotron > p:last-of-type {
     padding-top: 40px;
+}
+
+.cheetah-pupillometry-visualization ul {
+    height: initial; /*override height: 100% from gridster */
+}
+
+.dropdown-menu > li > a, .cheetah-pupillometry-visualization div {
+    display: inline-block;
+}
+
+.cheetah-pupillometry-visualization-left {
+    border-bottom-style: dashed;
+    border-bottom-color: black;
+    width: 40px;
+}
+
+.cheetah-pupillometry-visualization-right {
+    border-bottom-style: dotted;
+    border-bottom-color: black;
+    width: 40px;
+}
+
+.cheetah-pupillometry-visualization-average {
+    border-bottom-style: solid;
+    border-bottom-color: black;
+    width: 40px;
+}
+
+.cheetah-pupillometry-visualization .dropdown-menu > li > a {
+    padding-left: 10px;
+}
+
+.cheetah-pupillometry-visualization .dropdown-menu {
+    min-width: 225px;
+}
+
+.cheetah-pupillometry-visualization input {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.cheetah-pupillometry-line-left-pupil{
+    stroke-dasharray: 10, 10;
+}
+
+.cheetah-pupillometry-line-right-pupil{
+    stroke-dasharray: 2 5;
 }

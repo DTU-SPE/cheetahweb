@@ -6,6 +6,11 @@ angular
         $scope.threshold = 5000;
         $scope.slidingWindowDurations = [];
         $scope.colors = ['blue', 'red', 'green', 'black', 'yellow'];
+        $scope.displayedPupils = {average: true};
+
+        $('.cheetah-pupillometry-visualization input').on('click', function (event) {
+            event.stopPropagation();
+        });
 
         $("#percentile").attr("disabled", "disabled");
         $("#slidingWindow").attr("disabled", "disabled");
@@ -39,13 +44,7 @@ angular
             $('.timestamp-line').remove();
 
             var x = $scope.x(time - $scope.sessionStartTimestamp);
-            $scope.graph.append("line")
-                .style("stroke", "red")
-                .attr("x1", x)
-                .attr("y1", $scope.y($scope.yMin))
-                .attr("x2", x)
-                .attr("y2", $scope.y($scope.yMax))
-                .attr("class", "timestamp-line");
+            $scope.graph.append("line").style("stroke", "red").attr("x1", x).attr("y1", $scope.y($scope.yMin)).attr("x2", x).attr("y2", $scope.y($scope.yMax)).attr("class", "timestamp-line");
         }
 
         function initializePercentiles(line) {
@@ -96,6 +95,130 @@ angular
             }
         };
 
+        $scope.renderData = function () {
+            var data;
+            for (var k = 0; k < $scope.pupillometryData.length; k++) {
+                if ($scope.pupillometryData[k].entries.length > 0) {
+                    data = $scope.pupillometryData[k];
+                    break;
+                }
+            }
+
+            if (data === undefined || $scope.pupillometryData[0].percentiles === undefined) {
+                $("#pupillometry").hide();
+                $("#pupillometry-no-data").show();
+                $scope.updatingData = false;
+                $('.loading').hide();
+            } else {
+
+
+                $("#pupillometry").show();
+                $("#pupillometry-no-data").hide();
+                initializePercentilesIfNecessary(data);
+
+                var entries = data.entries;
+                var sessionStartTimestamp = data.sessionStartTimestamp;
+                var startTime = entries[0].timestamp;
+                var endTime = entries[entries.length - 1].timestamp;
+                $scope.startTime = startTime;
+                $scope.endTime = endTime;
+                $scope.currentTime = startTime;
+                $scope.sessionStartTimestamp = sessionStartTimestamp;
+                $scope.sessionEndTimeStamp = data.sessionEndTimeStamp;
+                cheetah.sessionStartTimestamp = sessionStartTimestamp;
+
+                var availableWidth = $('#pupillometry').width();
+                var availableHeight = $('#pupillometry').parent().height() - $('#pupillometry-controls').height();
+                $scope.marginLeft = 60;
+
+                var margins = [60, 30, 60, $scope.marginLeft];
+                var width = availableWidth - margins[1] - margins[3];
+                var height = availableHeight - margins[0] - margins[2];
+
+                $scope.diagramWidth = width;
+
+                var x = d3.scale.linear().domain([startTime - sessionStartTimestamp, endTime - sessionStartTimestamp]).range([0, width]);
+                $scope.x = x;
+                var yMax = data.percentiles[99];
+                var yMin = yMax - 1;
+                var y = d3.scale.linear().domain([yMin, yMax]).range([height, 0]);
+                $scope.y = y;
+                $scope.yMin = yMin;
+                $scope.yMax = yMax;
+
+                var createLine = function (dataToRender, key) {
+                    return d3.svg.line().x(function (data) {
+                        return x(data.timestamp - sessionStartTimestamp);
+                    }).y(function (data) {
+                        return y(data[key]);
+                    })(dataToRender);
+                };
+                $scope.createLine = createLine;
+
+                $("#pupillometry").html('');
+                // Add an SVG element with the desired dimensions and margin.
+                var graph = d3.select("#pupillometry").append("svg:svg")
+                    .attr("width", width + margins[1] + margins[3])
+                    .attr("height", height + margins[0] + margins[2]).on("click", function () {
+                        var position = d3.mouse(this);
+                        jumpToMousePosition(position);
+                    })
+                    .append("svg:g")
+                    .attr("transform", "translate(" + margins[3] + "," + margins[0] + ")");
+                $scope.graph = graph;
+
+                var formatTime = d3.time.format("%M:%S");
+                var formatMinutes = function (d) {
+                    return formatTime(new Date(d / 1000));
+                };
+
+                var ticks = Math.floor((endTime - startTime) / (1000 * 1000));
+                var xAxis = d3.svg.axis().scale(x).tickSize(-height).tickFormat(formatMinutes).ticks(ticks);
+                // Add the x-axis.
+                graph.append("svg:g").attr("class", "x axis").attr("transform", "translate(0," + height + ")").call(xAxis);
+
+
+                // create left yAxis
+                var yAxisLeft = d3.svg.axis().scale(y).ticks(4).orient("left");
+                // Add the y-axis to the left
+                graph.append("svg:g").attr("class", "y axis").attr("transform", "translate(-25,0)").call(yAxisLeft);
+
+                for (var j = 0; j < $scope.pupillometryData.length; j++) {
+                    var currentData = $scope.pupillometryData[j];
+                    var colorNumber = j % $scope.colors.length;
+                    var color = $scope.colors[colorNumber];
+                    $scope.pupillometryLines[j].color = color;
+                    if (!currentData.selected) {
+                        continue;
+                    }
+
+                    $.each($scope.displayedPupils, function (pupil, displayed) {
+                        if (!displayed) {
+                            return;
+                        }
+
+                        var path = createLine(currentData.entries, pupil);
+                        var strokeClass = 'cheetah-pupillometry-line-average-pupil';
+                        if (pupil === 'leftPupil') {
+                            strokeClass = 'cheetah-pupillometry-line-left-pupil';
+                        } else if (pupil === 'rightPupil') {
+                            strokeClass = 'cheetah-pupillometry-line-right-pupil';
+                        }
+
+                        graph.append("svg:path").attr("d", path).classed([color, strokeClass].join(' '), true).attr("id", currentData.id);
+                        if (currentData.label === $scope.additionalInformationLineLabel && currentData.slidingWindow != undefined) {
+                            graph.append("svg:path").attr("d", createLine(currentData.slidingWindow, 'average')).attr("class", "sliding-window");
+                        }
+                    });
+                }
+
+                updateTimeLine();
+                $scope.updatePercentile();
+                $scope.updatingData = false;
+                $('.loading').hide();
+            }
+        };
+
         function refreshData(time) {
             if ($scope.updatingData === true) {
                 return;
@@ -138,125 +261,14 @@ angular
                 }
 
                 $scope.pupillometryLines = pupillometryData;
+                $scope.pupillometryData = pupillometryData;
 
-                var data;
-                for (var k = 0; k < pupillometryData.length; k++) {
-                    if (pupillometryData[k].entries.length > 0) {
-                        data = pupillometryData[k];
-                        break;
-                    }
-                }
-
-                if (data === undefined || pupillometryData[0].percentiles === undefined) {
-                    $("#pupillometry").hide();
-                    $("#pupillometry-no-data").show();
-                    $scope.updatingData = false;
-                    $('.loading').hide();
-                    return;
-                }
-
-                $("#pupillometry").show();
-                $("#pupillometry-no-data").hide();
-                initializePercentilesIfNecessary(data);
-
-                var entries = data.entries;
-                var sessionStartTimestamp = data.sessionStartTimestamp;
-                var startTime = entries[0].timestamp;
-                var endTime = entries[entries.length - 1].timestamp;
-                $scope.startTime = startTime;
-                $scope.endTime = endTime;
-                $scope.currentTime = startTime;
-                $scope.sessionStartTimestamp = sessionStartTimestamp;
-                $scope.sessionEndTimeStamp = data.sessionEndTimeStamp;
-                cheetah.sessionStartTimestamp = sessionStartTimestamp;
-
-                var availableWidth = $('#pupillometry').width();
-                var availableHeight = $('#pupillometry').parent().height() - $('#pupillometry-controls').height();
-                $scope.marginLeft = 60;
-
-                var margins = [60, 30, 60, $scope.marginLeft];
-                var width = availableWidth - margins[1] - margins[3];
-                var height = availableHeight - margins[0] - margins[2];
-
-                $scope.diagramWidth = width;
-
-                var x = d3.scale.linear().domain([startTime - sessionStartTimestamp, endTime - sessionStartTimestamp]).range([0, width]);
-                $scope.x = x;
-                var yMax = data.percentiles[99];
-                var yMin = yMax - 1;
-                var y = d3.scale.linear().domain([yMin, yMax]).range([height, 0]);
-                $scope.y = y;
-                $scope.yMin = yMin;
-                $scope.yMax = yMax;
-
-                var line = d3.svg.line()
-                    .x(function (data) {
-                        return x((data.timestamp - sessionStartTimestamp));
-                    })
-                    .y(function (data) {
-                        return y(data.average);
-                    });
-
-                $scope.line = line;
-
-                $("#pupillometry").html('');
-                // Add an SVG element with the desired dimensions and margin.
-                var graph = d3.select("#pupillometry").append("svg:svg")
-                    .attr("width", width + margins[1] + margins[3])
-                    .attr("height", height + margins[0] + margins[2]).on("click", function () {
-                        var position = d3.mouse(this);
-                        jumpToMousePosition(position);
-                    })
-                    .append("svg:g")
-                    .attr("transform", "translate(" + margins[3] + "," + margins[0] + ")");
-                $scope.graph = graph;
-
-                var formatTime = d3.time.format("%M:%S");
-                var formatMinutes = function (d) {
-                    return formatTime(new Date(d / 1000));
-                };
-
-                var ticks = Math.floor((endTime - startTime) / (1000 * 1000));
-                var xAxis = d3.svg.axis().scale(x).tickSize(-height).tickFormat(formatMinutes).ticks(ticks);
-                // Add the x-axis.
-                graph.append("svg:g")
-                    .attr("class", "x axis")
-                    .attr("transform", "translate(0," + height + ")")
-                    .call(xAxis);
-
-
-                // create left yAxis
-                var yAxisLeft = d3.svg.axis().scale(y).ticks(4).orient("left");
-                // Add the y-axis to the left
-                graph.append("svg:g")
-                    .attr("class", "y axis")
-                    .attr("transform", "translate(-25,0)")
-                    .call(yAxisLeft);
-
-                for (var j = 0; j < pupillometryData.length; j++) {
-                    var currentData = pupillometryData[j];
-                    var colorNumber = j % $scope.colors.length;
-                    var color = $scope.colors[colorNumber];
-                    $scope.pupillometryLines[j].color = color;
-                    if (!currentData.selected) {
-                        continue;
-                    }
-
-                    graph.append("svg:path").attr("d", line(currentData.entries)).attr("class", color).attr("id", currentData.id);
-                    if (currentData.label === $scope.additionalInformationLineLabel && currentData.slidingWindow != undefined) {
-                        graph.append("svg:path").attr("d", line(currentData.slidingWindow)).attr("class", "sliding-window");
-                    }
-                }
-
-                updateTimeLine();
-                $scope.updatePercentile();
-                $scope.updatingData = false;
-                $('.loading').hide();
+                $scope.renderData();
             });
         }
 
         function drawLine(pupillometryLine) {
-            $scope.graph.append("svg:path").attr("d", $scope.line(pupillometryLine.entries)).attr("class", pupillometryLine.color).attr("id", pupillometryLine.id);
+            $scope.graph.append("svg:path").attr("d", $scope.createLine(pupillometryLine.entries, 'average')).attr("class", pupillometryLine.color).attr("id", pupillometryLine.id);
         }
 
         $scope.setSelection = function (line, event) {
@@ -265,6 +277,7 @@ angular
             if (target.type !== 'checkbox') {
                 line.selected = !line.selected;
             }
+
             if (!line.selected) {
                 $('#pupillometry').find("#" + line.id).remove();
             } else {
@@ -355,8 +368,7 @@ angular
             });
 
             angular.bootstrap(dialog, ['cheetah.Percentile']);
-        };
-
+        }
 
         $scope.updateSlidingWindow = function (newDuration) {
             $('.loading').show();
