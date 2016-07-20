@@ -18,6 +18,7 @@ public class PupillometryDataFilterRegistry {
 		AVAILABLE_FIlTERS.put(3l, new BlinkDetectionFilter(3));
 		AVAILABLE_FIlTERS.put(4l, new LinearInterpolationFilter(4));
 		AVAILABLE_FIlTERS.put(5l, new ButterworthFilter(5));
+		AVAILABLE_FIlTERS.put(6l, new SubstituteGazePointFilter(6));
 	}
 
 	public static IPupillometryFilter getFilter(Long id) {
