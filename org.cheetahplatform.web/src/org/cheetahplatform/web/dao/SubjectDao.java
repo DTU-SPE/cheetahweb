@@ -16,7 +16,7 @@ import org.cheetahplatform.web.dto.SubjectDto;
 import org.cheetahplatform.web.dto.SubjectForSearchDto;
 import org.cheetahplatform.web.servlet.AbstractCheetahServlet;
 
-public class SubjectDao {
+public class SubjectDao extends AbstractCheetahDao {
 
 	public void changeSubject(Connection connection, ChangeSubjectRequest changeSubjecRequest) throws SQLException {
 		PreparedStatement statement = connection.prepareStatement("UPDATE subject set email=?, subject_id=?, comment=? where pk_subject=?");
@@ -143,6 +143,23 @@ public class SubjectDao {
 		statement.close();
 
 		return subjects;
+	}
+
+	public SubjectDto getSubjectWithId(long userId, long subjectId) throws SQLException {
+		Connection connection = AbstractCheetahServlet.getDatabaseConnection();
+		PreparedStatement statement = connection.prepareStatement(
+				"SELECT sub.pk_subject, sub.subject_id, st.name FROM subject sub, study st, studies_to_user sttu WHERE sub.fk_study = st.pk_study AND sttu.fk_study = st.pk_study AND sttu.fk_user = ? AND sub.pk_subject = ?;");
+		statement.setLong(1, userId);
+		statement.setLong(2, subjectId);
+		ResultSet result = statement.executeQuery();
+		List<SubjectDto> subjects = extractSubjects(result);
+		cleanUp(connection, statement, result);
+
+		if (subjects == null || subjects.isEmpty()) {
+			return null;
+		}
+
+		return subjects.get(0);
 	}
 
 	public SubjectDto getSubjectWithName(Connection connection, long userId, String subjectName) throws SQLException {
