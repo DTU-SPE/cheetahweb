@@ -427,3 +427,11 @@ input[type=checkbox] {
 #pupillometry-controls ul {
     height: initial; /*override height: 100% from gridster */
 }
+
+ul.dropdown-menu a {
+    width: 100%;
+}
+
+.dropdown-menu > li > a {
+    width: auto;
+}
