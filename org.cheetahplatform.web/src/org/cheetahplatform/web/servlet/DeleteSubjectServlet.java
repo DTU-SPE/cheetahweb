@@ -34,8 +34,8 @@ public class DeleteSubjectServlet extends AbstractCheetahServlet {
 			if (hasFile.isEmpty()) {
 				for (Integer id : idList) {
 					subjectDao.deleteSubject(connection, id);
-					writeJson(resp, null);
 				}
+				writeJson(resp, null);
 			} else {
 				writeJson(resp, hasFile);
 			}
