@@ -173,9 +173,10 @@ public class UserFileDao extends AbstractCheetahDao {
 	 * @throws SQLException
 	 */
 	public List<UserFileDto> findConnectCandidates(Connection connection, long subjectId) throws SQLException {
-		String query = "select * from user_data where fk_derived_from is null and fk_subject = ? and not exists (select fk_derived_from from user_data user_data_sub where user_data_sub.fk_derived_from = user_data.pk_user_data union select fk_user_file from eyetracking_movie where fk_user_file = user_data.pk_user_data)";
+		String query = "select * from user_data where fk_derived_from is null and fk_subject = ? and hidden = ? and not exists (select fk_derived_from from user_data user_data_sub where user_data_sub.fk_derived_from = user_data.pk_user_data union select fk_user_file from eyetracking_movie where fk_user_file = user_data.pk_user_data)";
 		PreparedStatement statement = connection.prepareStatement(query);
 		statement.setLong(1, subjectId);
+		statement.setBoolean(2, false);
 		ResultSet resultSet = statement.executeQuery();
 		return extractFiles(resultSet, false);
 	}
