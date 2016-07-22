@@ -510,6 +510,12 @@ public class UserFileDao extends AbstractCheetahDao {
 		cleanUp(connection, updateStatement);
 	}
 
+	public void updateFileName(Connection connection, long fileId, String newName) throws SQLException {
+		Map<Long, String> map = new HashMap<>();
+		map.put(fileId, newName);
+		updateFileName(connection, map);
+	}
+
 	public void updateFileName(Connection connection, Map<Long, String> newFileNames) throws SQLException {
 		PreparedStatement statement = connection.prepareStatement("UPDATE user_data SET filename=? WHERE pk_user_data=?;");
 

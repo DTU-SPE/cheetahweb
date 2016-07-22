@@ -6,10 +6,13 @@ import java.util.Map.Entry;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.cheetahplatform.web.CheetahWebConstants;
 import org.cheetahplatform.web.dao.NotificationDao;
+import org.cheetahplatform.web.dao.SubjectDao;
 import org.cheetahplatform.web.dao.UserDao;
 import org.cheetahplatform.web.dao.UserFileDao;
 import org.cheetahplatform.web.dto.MapFilesToSubjectRequest;
+import org.cheetahplatform.web.dto.SubjectDto;
 import org.cheetahplatform.web.dto.UserFileDto;
 
 public class MapFilesToSubjectServlet extends AbstractCheetahServlet {
@@ -21,6 +24,7 @@ public class MapFilesToSubjectServlet extends AbstractCheetahServlet {
 			throws Exception {
 		super.doPostWithDatabaseConnection(connection, request, response);
 
+		SubjectDao subjectDao = new SubjectDao();
 		UserFileDao userFileDao = new UserFileDao();
 		long userId = new UserDao().getUserId(connection, request);
 
@@ -30,8 +34,11 @@ public class MapFilesToSubjectServlet extends AbstractCheetahServlet {
 			Long subjectId = fileToSubject.getValue();
 
 			userFileDao.mapFileToSubject(connection, fileId, subjectId);
-
 			UserFileDto file = userFileDao.getFile(fileId);
+			SubjectDto subject = subjectDao.getSubjectWithId(userId, subjectId);
+			String newFileName = subject.getSubjectName() + CheetahWebConstants.FILENAME_PATTERN_SEPARATOR + file.getFilename();
+			userFileDao.updateFileName(connection, file.getId(), newFileName);
+
 			new NotificationDao().insertNotification("Upload successful for file: " + file.getFilename(),
 					NotificationDao.NOTIFICATION_SUCCESS, userId);
 		}
