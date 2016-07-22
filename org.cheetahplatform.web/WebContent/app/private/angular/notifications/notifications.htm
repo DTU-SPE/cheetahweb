@@ -1,27 +1,40 @@
-<div>
-    <div class="container-fluid">
-        <h1>Notifications</h1>
-        <form class="form-horizontal">
-            <div class="form-group">
-                <label class="col-sm-2 control-label" for="cheetah-notifications-search-input">Search</label>
-                <div class="col-sm-10">
-                    <input type="text" class="form-control" placeholder="Search for notifications..."
-                           id="cheetah-notifications-search-input" ng-model="search"/>
-                </div>
+<div class="container-fluid">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <h1>Notifications</h1>
+            <h4>What can I do here?</h4>
+            <div class="cheetah-section-description">
+                Once you work is scheduled, you can close the browser and come back later. This list of notification
+                will
+                contain everything that has happened in the mean time :) We would recommend to clear the list from
+                time to
+                time to not loose track of new notifications.
             </div>
-        </form>
-        <div class="panel panel-default">
-            <div class="panel-body">
-                <div id="cheetah-notifications-button-container" class="clearfix">
-                    <button id="cheetah-notification-clear-button" class="btn btn-default" ng-click="openClearNotificationsPromt()">
-                        Clear Notifications
-                    </button>
+            <h4>Any news?</h4>
+            <form class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="cheetah-notifications-search-input">Search</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" placeholder="Search for notifications..."
+                               id="cheetah-notifications-search-input" ng-model="search"/>
+                    </div>
                 </div>
+            </form>
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div id="cheetah-notifications-button-container" class="clearfix">
+                        <button id="cheetah-notification-clear-button" class="btn btn-default"
+                                ng-click="openClearNotificationsPromt()">
+                            Clear Notifications
+                        </button>
+                    </div>
 
-                <div class="notification_list" ng-repeat="notification in filteredNotifications() | orderBy : 'read'">
-                    <div class="alert alert-{{notification.type}}">{{notification.message}} <span
-                            ng-click="toggleReadStatus(notification)"
-                            ng-class="getNotificationIcon(notification)"></span>
+                    <div class="notification_list"
+                         ng-repeat="notification in filteredNotifications() | orderBy : 'read'">
+                        <div class="alert alert-{{notification.type}}">{{notification.message}} <span
+                                ng-click="toggleReadStatus(notification)"
+                                ng-class="getNotificationIcon(notification)"></span>
+                        </div>
                     </div>
                 </div>
             </div>
