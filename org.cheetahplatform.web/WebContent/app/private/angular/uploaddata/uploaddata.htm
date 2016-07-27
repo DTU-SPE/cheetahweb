@@ -1,8 +1,16 @@
 <div>
-    <h1>Upload Data</h1>
+    <h1>Upload Data Files</h1>
     <div class="panel panel-default">
-        <div class="panel-heading"><strong>Upload Data Files</strong></div>
         <div class="panel-body">
+            <h4>What can I do here?</h4>
+            <div class="cheetah-section-description">When you upload your data, you will be required to assign every
+                file to one of subjects as defined in
+                the <a href="subject-management.htm">My Subjects</a> section. <br/><br/>
+
+                We will try to detect the subject automtically. For this, the file name must start with the subject id
+                followed by a @ sign: {subject-id}@{Your-file-name}.tsv. For example the filename P003@my-experiment.tsv
+                would indicate that the file belongs to subject P003.
+            </div>
 
             <h4>Select files from your computer</h4>
             <form action="" method="post" enctype="multipart/form-data" id="js-upload-form">
@@ -64,7 +72,7 @@
                         will
                         need to re-upload the files.</b>
                 </div>
-                <table  ng-show="unmappedFiles.length>0" class="table table-hover table-search">
+                <table ng-show="unmappedFiles.length>0" class="table table-hover table-search">
                     <thead>
                     <tr>
                         <th>Filename</th>
@@ -84,9 +92,10 @@
                     </tbody>
                 </table>
 
-                <div ng-show="unmappedFiles.length===0" class="cheetah-upload-complete-message"><b>All files successfully mapped.</b></div>
+                <div ng-show="unmappedFiles.length===0" class="cheetah-upload-complete-message"><b>All files
+                    successfully mapped.</b></div>
 
-                <div class="form-group"  ng-show="unmappedFiles.length>0">
+                <div class="form-group" ng-show="unmappedFiles.length>0">
                     <button type="submit" id="mapFilesToSubjects"
                             class="btn btn-primary" ng-click="mapFilesToSubject()">Map files to subject
                     </button>

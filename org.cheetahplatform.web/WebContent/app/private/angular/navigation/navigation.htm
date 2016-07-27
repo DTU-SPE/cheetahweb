@@ -32,15 +32,13 @@
                                             class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <div id="createUserButton" ng-click="showCreateUserModal()"
-                                             ng-show="user.role === 'administrator'">Create User
-                                        </div>
+                                        <a id="createUserButton" ng-click="showCreateUserModal()" ng-show="user.role === 'administrator'">Create User</a>
                                     </li>
                                     <li>
-                                        <div id="changePasswordButton" ng-click="changePassword()">Change Password</div>
+                                        <a id="changePasswordButton" ng-click="changePassword()">Change Password</a>
                                     </li>
                                     <li>
-                                        <div id="logoutButton" ng-click="logout()">Logout</div>
+                                        <a id="logoutButton" ng-click="logout()">Logout</a>
                                     </li>
                                 </ul>
                             </li>

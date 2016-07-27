@@ -97,6 +97,12 @@ public class UserFileDao extends AbstractCheetahDao {
 		cleanUp(connection, statement, result);
 	}
 
+	public void deleteFilePermanently(Connection connection, long fileId) throws SQLException {
+		PreparedStatement statement = connection.prepareStatement("delete from user_data where pk_user_data = ?");
+		statement.setLong(1, fileId);
+		statement.execute();
+	}
+
 	public void deleteFiles(List<Long> filesToDelete, long userid) throws SQLException {
 		String in = buildIn(filesToDelete);
 		Connection connection = AbstractCheetahServlet.getDatabaseConnection();
@@ -508,6 +514,12 @@ public class UserFileDao extends AbstractCheetahDao {
 		updateStatement.setLong(2, fileId);
 		updateStatement.executeUpdate();
 		cleanUp(connection, updateStatement);
+	}
+
+	public void updateFileName(Connection connection, long fileId, String newName) throws SQLException {
+		Map<Long, String> map = new HashMap<>();
+		map.put(fileId, newName);
+		updateFileName(connection, map);
 	}
 
 	public void updateFileName(Connection connection, Map<Long, String> newFileNames) throws SQLException {

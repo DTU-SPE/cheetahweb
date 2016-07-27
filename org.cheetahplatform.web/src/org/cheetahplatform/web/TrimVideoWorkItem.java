@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.cheetahplatform.common.logging.AuditTrailEntry;
+import org.cheetahplatform.web.dao.SubjectDao;
 import org.cheetahplatform.web.dao.UserFileDao;
 import org.cheetahplatform.web.dto.CodeAndExperimentActivity;
 import org.cheetahplatform.web.dto.SubjectDto;
@@ -23,7 +24,6 @@ import org.cheetahplatform.web.dto.UserFileDto;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFile;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileColumn;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileLine;
-import org.cheetahplatform.web.util.FileUtils;
 
 /**
  * Work item for trimming videos.
@@ -165,12 +165,12 @@ public class TrimVideoWorkItem extends AbstractActivityBasedWorkItem {
 		}
 		trimmingProcess.waitFor();
 
-		String sourceFileName = userFileDao.getFile(fileId).getFilename();
-		String[] splittedFilename = splitFileName(sourceFileName);
-		String subjectName = splittedFilename[0];
+		UserFileDto sourceFile = userFileDao.getFile(fileId);
+		SubjectDto subject = new SubjectDao().getSubjectWithId(userId, sourceFile.getSubjectId());
+		String subjectName = subject.getSubjectName() + CheetahWebConstants.FILENAME_PATTERN_SEPARATOR;
 		String activityId = entry.getAttribute(ATTRIBUTE_EXPERIMENT_ACTIVITY_ID);
-		String filename = subjectName + "@" + activityId + ".webm";
-		SubjectDto subject = FileUtils.getSubjectForFileName(userId, sourceFileName);
+		String filename = subjectName + activityId + ".webm";
+
 		try (FileInputStream input = new FileInputStream(videoOutput)) {
 			long trimmedVideo = userFileDao.saveUserFile(userId, filename, "video/webm", input, subject, false);
 			userFileDao.addTags(trimmedVideo, "trimmed", "video");

@@ -3,6 +3,16 @@
         <h1>My Files</h1>
         <div class="panel panel-default">
             <div class="panel-body">
+                <h4>What can I do here?</h4>
+                <div class="cheetah-section-description">This area lets you manage all your uploaded data. Use the
+                    search box to find the data you are looking for. You can search for all columns in the table, but
+                    also for tags assigned to files. For example, if you search for 'raw-data' you will see all files
+                    that got the raw-data tag on upload (this happens for all files). <br/><br/>
+
+                    Additionally, you can trigger the lion's share of your analyses here. For example, you can clean
+                    your pupillometric data, or launch your cognitive load calculations.
+                </div>
+                <h4>Manage your data</h4>
                 <div>
                     <form class="form-horizontal">
                         <div class="form-group">
@@ -132,7 +142,7 @@
                         </div>
                         <input type="text" id="cleanFileNamePattern" class="form-control"
                                placeholder=""
-                               ng-model="cleanFileNamePattern" required>
+                               ng-model="cleanFileNamePattern">
                     </div>
                     <br>
                     <div class="panel panel-primary">

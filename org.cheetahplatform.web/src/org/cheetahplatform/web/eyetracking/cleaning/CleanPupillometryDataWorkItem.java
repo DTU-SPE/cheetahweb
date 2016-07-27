@@ -332,16 +332,20 @@ public class CleanPupillometryDataWorkItem extends AbstractCheetahWorkItem {
 			}
 		}
 		String newName = null;
-
 		String fileName = originalFileDto.getFilename();
+		String subjectName = FileUtils.getSubjectName(fileName, originalFileDto.getSubjectId(), userId);
+		if (!subjectName.trim().isEmpty()) {
+			subjectName = subjectName + CheetahWebConstants.FILENAME_PATTERN_SEPARATOR;
+		}
+
 		String fileNamePostFix = request.getFileNamePostFix();
 		if (fileNamePostFix != null && !fileNamePostFix.trim().isEmpty()
 				&& fileName.contains(CheetahWebConstants.FILENAME_PATTERN_SEPARATOR)) {
-			String subject = FileUtils.extractSubjectName(fileName);
-			newName = subject + CheetahWebConstants.FILENAME_PATTERN_SEPARATOR + fileNamePostFix + FileUtils.getFileExtension(fileName);
+
+			newName = subjectName + fileNamePostFix + FileUtils.getFileExtension(fileName);
 		} else {
 			int position = fileName.lastIndexOf(".");
-			newName = fileName.substring(0, position) + CheetahWebConstants.FILENAME_PATTERN_SEPARATOR + "filtered"
+			newName = subjectName + fileName.substring(0, position) + CheetahWebConstants.FILENAME_PATTERN_SEPARATOR + "filtered"
 					+ fileName.substring(position);
 		}
 
