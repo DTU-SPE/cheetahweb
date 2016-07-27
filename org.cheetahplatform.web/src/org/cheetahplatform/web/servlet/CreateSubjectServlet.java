@@ -22,14 +22,19 @@ public class CreateSubjectServlet extends AbstractCheetahServlet {
 			throws Exception {
 		CreateSubjectRequest createSubjecRequest = readJson(request, CreateSubjectRequest.class);
 		SubjectDao subjectDao = new SubjectDao();
-		// String error = null;
-		/*
-		 * if (subjectDao.subjectExists(connection, createSubjecRequest.getEmail())) { error = "A user with the email \"" +
-		 * createSubjecRequest.getEmail() + "\" already exists."; writeJson(response, new ResponseCreateSubjectDto(error)); } else {
-		 */
-		CreateSubjectResponse createSubject = subjectDao.createSubject(connection, createSubjecRequest);
-		writeJson(response, createSubject);
-		// }
+		String error = null;
 
+		if (createSubjecRequest.getAllowDouble()) {
+			CreateSubjectResponse createSubject = subjectDao.createSubject(connection, createSubjecRequest);
+			writeJson(response, createSubject);
+		} else {
+			if (subjectDao.subjectExists(connection, createSubjecRequest.getEmail())) {
+				error = "A user with the email \"" + createSubjecRequest.getEmail() + "\" already exists.";
+				writeJson(response, new CreateSubjectResponse(error));
+			} else {
+				CreateSubjectResponse createSubject = subjectDao.createSubject(connection, createSubjecRequest);
+				writeJson(response, createSubject);
+			}
+		}
 	}
 }

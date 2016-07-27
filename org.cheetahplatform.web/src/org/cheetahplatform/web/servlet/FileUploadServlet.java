@@ -118,7 +118,7 @@ public class FileUploadServlet extends AbstractCheetahServlet {
 				if (studyId == null) {
 					throw new Exception("Study \"" + array[1] + "\" not found");
 				}
-				CreateSubjectRequest createSubjectRequest = new CreateSubjectRequest();
+				CreateSubjectRequest createSubjectRequest = new CreateSubjectRequest(false);
 				createSubjectRequest.setEmail(array[0]);
 				createSubjectRequest.setStudyId(studyId);
 				createSubjectRequest.setSubjectId(array[2]);

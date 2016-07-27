@@ -5,6 +5,19 @@ public class CreateSubjectRequest {
 	private String subjectId;
 	private long studyId;
 	private String comment;
+	private boolean allowDouble;
+
+	public CreateSubjectRequest() {
+
+	}
+
+	public CreateSubjectRequest(boolean allowDouble) {
+		this.allowDouble = allowDouble;
+	}
+
+	public boolean getAllowDouble() {
+		return allowDouble;
+	}
 
 	public String getComment() {
 		return comment;
@@ -20,6 +33,10 @@ public class CreateSubjectRequest {
 
 	public String getSubjectId() {
 		return subjectId;
+	}
+
+	public void setAllowDouble(Boolean allowDouble) {
+		this.allowDouble = allowDouble;
 	}
 
 	public void setComment(String comment) {
