@@ -445,3 +445,7 @@ ul.dropdown-menu a {
     color: red;
     cursor: pointer;
 }
+
+.cheetah-highlighted {
+    background-color: blue;
+}

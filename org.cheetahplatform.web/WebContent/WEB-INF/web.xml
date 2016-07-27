@@ -546,4 +546,14 @@
     <servlet-name>DeleteDataServlet</servlet-name>
     <url-pattern>/private/deleteData</url-pattern>
   </servlet-mapping>
+  <servlet>
+  	<description></description>
+  	<display-name>FileUploadServlet</display-name>
+	<servlet-name>FileUploadServlet</servlet-name>
+	<servlet-class>org.cheetahplatform.web.servlet.FileUploadServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+	<servlet-name>FileUploadServlet</servlet-name>
+	<url-pattern>/private/fileUpload</url-pattern>
+  </servlet-mapping>
 </web-app>
