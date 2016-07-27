@@ -38,4 +38,9 @@ public class CreateSubjectRequest {
 		this.subjectId = subjectId;
 	}
 
+	@Override
+	public String toString() {
+		return "email=" + email + ", subjectId=" + subjectId + ", studyId=" + studyId + ", comment=" + comment;
+	}
+
 }

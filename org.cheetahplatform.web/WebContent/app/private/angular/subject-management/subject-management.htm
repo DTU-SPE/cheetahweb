@@ -42,6 +42,9 @@
             <li role="presentation">
                 <a role="menuitem" tabindex="-1 " ng-click="showChangeSubjectModal()">Change Subject</a>
             </li>
+            <li role="presentation">
+                <a role="menuitem" tabindex="-1 " ng-click="showUpload()">Upload</a>
+            </li>
         </ul>
     </div>
 </form>
@@ -127,3 +130,27 @@
     </div>
 </div>
 
+
+<div class="modal" id="cheetah-load-csv-dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+                <h4 class="modal-title">Add Subjects via CSV</h4>
+
+            </div>
+            <div class="modal-body container-fluid">
+                <form id="uploadFile" role="form" class="ng-pristine ng-valid"   ng-submit="uploadFile()">
+                    <input id="uploadField" type="file" file-model="myFile" required>
+                    <div class="form-group">
+
+                    </div>
+                    <button type="submit" id="uploadFileButton" class="btn btn-sm btn-primary" style=" float: right;">Upload
+                        File
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

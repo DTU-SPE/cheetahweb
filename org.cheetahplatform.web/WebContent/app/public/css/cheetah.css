@@ -427,3 +427,21 @@ input[type=checkbox] {
 #pupillometry-controls ul {
     height: initial; /*override height: 100% from gridster */
 }
+
+.cheetah-section-description {
+    margin-bottom: 20px;
+}
+
+ul.dropdown-menu a {
+    width: 100%;
+}
+
+.cheetah-pupillometry-visualization .dropdown-menu > li > a {
+    width: auto;
+}
+
+.cheetah-unlink-data {
+    margin-left: 10px;
+    color: red;
+    cursor: pointer;
+}
