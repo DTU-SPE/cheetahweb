@@ -1,69 +1,79 @@
 <div class="container-fluid">
-    <form class="form-horizontal">
-        <div class="form-group">
-            <div class="form-group">
-                <label for="id" class="col-sm-2 control-label">Subject Id</label>
+    <h1>Search for Subject</h1>
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <h4>What can I do here?</h4>
+            <div class="cheetah-section-description">This part of CEP-Web is intended to give you an idea on how your
+                cognitive load data looks. By selecting a subject, you can visualize the data that has been uploaded and
+                processed, i.e., cleaned, for this subject. Go ahead - give it a shot :)
+            </div>
+            <h4>Search for one of your subjects with pupillometric data to visualize</h4>
+            <form class="form-horizontal">
+                <div class="form-group">
+                    <label for="id" class="col-sm-2 control-label">Subject Id</label>
 
-                <div class="col-sm-10">
-                    <input type="text" class="form-control" id="id" placeholder="Subject Id"
-                           ng-model="search.subjectId">
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="id" placeholder="Subject Id"
+                               ng-model="search.subjectId">
+                    </div>
                 </div>
-            </div>
 
-            <div class="form-group">
-                <label for="study" class="col-sm-2 control-label">Study</label>
+                <div class="form-group">
+                    <label for="study" class="col-sm-2 control-label">Study</label>
 
-                <div class="col-sm-10">
-                    <select class="form-control" id="study" ng-model="search.study"
-                            ng-options="study for study in studies">
-                        <option value=""></option>
-                    </select>
+                    <div class="col-sm-10">
+                        <select class="form-control" id="study" ng-model="search.study"
+                                ng-options="study for study in studies">
+                            <option value=""></option>
+                        </select>
+                    </div>
                 </div>
-            </div>
 
-            <div id="cheetah-visualize-button-container">
-                <button class="btn btn-default dropdown-toggle" type="button" id="cheetah-visualize-button-visualize"
-                        ng-click="visualize()">
-                    Visualize Data
-                </button>
-            </div>
+                <div id="cheetah-visualize-button-container">
+                    <button class="btn btn-default dropdown-toggle" type="button"
+                            id="cheetah-visualize-button-visualize"
+                            ng-click="visualize()">
+                        Visualize Data
+                    </button>
+                </div>
+            </form>
+
+
+            <table class="table table-hover table-search">
+                <thead>
+                <tr>
+                    <th>Subject</th>
+                    <th>Study</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="subject in filteredSubjects()" ng-click="setSelection(subject)"
+                    class="{{getSubjectClass(subject)}}">
+                    <td>{{subject.subjectId}}</td>
+                    <td>{{subject.study.name}}</td>
+                </tr>
+                </tbody>
+            </table>
         </div>
-    </form>
-</div>
+    </div>
 
-<table class="table table-hover table-search">
-    <thead>
-    <tr>
-        <th>Subject</th>
-        <th>Study</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr ng-repeat="subject in filteredSubjects()" ng-click="setSelection(subject)" class="{{getSubjectClass(subject)}}">
-        <td>{{subject.subjectId}}</td>
-        <td>{{subject.study.name}}</td>
-    </tr>
-    </tbody>
-</table>
-
-
-<div class="modal fade" tabindex="-1" role="dialog" id="cheetah-visualize-modal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Select Data to Visualize</h4>
-            </div>
-            <div class="modal-body">
-                <div>
-                    <ul class="nav nav-tabs" role="tablist">
-                        <li role="presentation" ng-show="processInstancesToVisualize.length > 0"
-                            id="cheetah-visualize-ppm-tab">
-                            <a href="#cheetah-visualize-by-ppm" aria-controls="cheetah-visualize-by-ppm" role="tab"
-                               data-toggle="tab">Visualize by PPM</a></li>
-                        <li role="presentation" id="cheetah-visualize-custom-tab">
-                            <a href="#cheetah-visualize-custom" aria-controls="cheetah-visualize-custom" role="tab"
-                               data-toggle="tab">Custom Visualization</a></li>
-                    </ul>
+    <div class="modal fade" tabindex="-1" role="dialog" id="cheetah-visualize-modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Select Data to Visualize</h4>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" ng-show="processInstancesToVisualize.length > 0"
+                                id="cheetah-visualize-ppm-tab">
+                                <a href="#cheetah-visualize-by-ppm" aria-controls="cheetah-visualize-by-ppm" role="tab"
+                                   data-toggle="tab">Visualize by PPM</a></li>
+                            <li role="presentation" id="cheetah-visualize-custom-tab">
+                                <a href="#cheetah-visualize-custom" aria-controls="cheetah-visualize-custom" role="tab"
+                                   data-toggle="tab">Custom Visualization</a></li>
+                        </ul>
 
                     <div class="tab-content">
                         <div role="tabpanel" class="tab-pane active" id="cheetah-visualize-by-ppm"
@@ -101,7 +111,6 @@
                                             </label><span class="cheetah-unlink-data icon-cheetah-close" ng-click="deleteData(file,filesToVisualize)"></span>
                                             <br>
                                         </div>
-                                    </div>
 
                                     <div id="cheetah-movies-to-visualize-container" ng-show="moviesToVisualize.length > 0">
                                         <p>Please select the movie to visualize:</p>
@@ -117,95 +126,97 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" ng-click="visualizeData()">Visualize</button>
-                <button type="button" class="btn" data-dismiss="modal">Close</button>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" ng-click="visualizeData()">Visualize</button>
+                    <button type="button" class="btn" data-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<div class="modal fade" tabindex="-1" role="dialog" id="cheetah-connect-modal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Select Files To Prepare</h4>
-            </div>
-            <div class="modal-body">
-                <p>Before data can be visualized, it needs to be prepared before (e.g., compressing large pupillometry
-                    files to speed up visualization). Please select
-                    the files you wish to prepare for visualization.</p>
-                <form role="form" ng-submit="connectFiles()">
-                    <div class="panel panel-primary">
-                        <div class="panel-heading">
-                            <h3 class="panel-title">Connect Data to Subject</h3>
-                        </div>
-                        <div class="panel-body">
-                            <div class="container-fluid">
-                                <div class="form-group">
-                                    <label for="timestampColumnToConnect">Timestamp</label>
-                                    <input type="text" id="timestampColumnToConnect" class="form-control"
-                                           placeholder="timestamp column name"
-                                           ng-model="connectTimestampColumn">
-                                </div>
-                                <div class="form-group">
-                                    <label for="leftPupilColumnToConnect">Left Pupil</label>
-                                    <input type="text" id="leftPupilColumnToConnect" class="form-control"
-                                           placeholder="left pupil column name"
-                                           ng-model="connectLeftPupilColumnName">
-                                </div>
-                                <div class="form-group">
-                                    <label for="rightPupilColumnToConnect">Right Pupil</label>
-                                    <input type="text" id="rightPupilColumnToConnect" class="form-control"
-                                           placeholder="right pupil column name"
-                                           ng-model="connectRightPupilColumnName">
-                                </div>
-                                <label>Files to Prepare</label>
-                                <div ng-repeat="file in candidatesForConnecting">
-                                    <label>
-                                        <input type="checkbox" ng-model="filesToConnect[file.id]"/>
-                                        {{file.filename}}
-                                    </label>
-                                    <br>
+    <div class="modal fade" tabindex="-1" role="dialog" id="cheetah-connect-modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Select Files To Prepare</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Before data can be visualized, it needs to be prepared before (e.g., compressing large
+                        pupillometry
+                        files to speed up visualization). Please select
+                        the files you wish to prepare for visualization.</p>
+                    <form role="form" ng-submit="connectFiles()">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Connect Data to Subject</h3>
+                            </div>
+                            <div class="panel-body">
+                                <div class="container-fluid">
+                                    <div class="form-group">
+                                        <label for="timestampColumnToConnect">Timestamp</label>
+                                        <input type="text" id="timestampColumnToConnect" class="form-control"
+                                               placeholder="timestamp column name"
+                                               ng-model="connectTimestampColumn">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="leftPupilColumnToConnect">Left Pupil</label>
+                                        <input type="text" id="leftPupilColumnToConnect" class="form-control"
+                                               placeholder="left pupil column name"
+                                               ng-model="connectLeftPupilColumnName">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="rightPupilColumnToConnect">Right Pupil</label>
+                                        <input type="text" id="rightPupilColumnToConnect" class="form-control"
+                                               placeholder="right pupil column name"
+                                               ng-model="connectRightPupilColumnName">
+                                    </div>
+                                    <label>Files to Prepare</label>
+                                    <div ng-repeat="file in candidatesForConnecting">
+                                        <label>
+                                            <input type="checkbox" ng-model="filesToConnect[file.id]"/>
+                                            {{file.filename}}
+                                        </label>
+                                        <br>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" ng-click="connectFiles()">Prepare Files</button>
-                <button type="button" class="btn" data-dismiss="modal">Cancel</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" ng-click="connectFiles()">Prepare Files</button>
+                    <button type="button" class="btn" data-dismiss="modal">Cancel</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<div class="modal fade" tabindex="-1" role="dialog" id="cheetah-wait-for-workers-modal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Waiting for Workers</h4>
-            </div>
-            <div class="modal-body">
-                <p>Cheetah Web is currently preparing the selected files. Depending on the available computing capacity,
-                    this may take some time - please stand
-                    by. In case the preparation takes too long, you can leave this page and come back at any time.</p>
-                <p>Please also note that you can speed up this process by manually starting the preparation process
-                    through Data Management --> My Data. Then,
-                    select the files to prepare and click Analyze --> Prepare Data for Visualization.</p>
-                <h4>Status of the workers:</h4>
-                <ul>
-                    <li ng-repeat="worker in workers">{{worker.filename}}: {{worker.status}}</li>
-                </ul>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" ng-click="closePrepareModalAndVisualize()"
-                        id="cheetah-repeat-visualization-button">Continue Visualization
-                </button>
-                <button type="button" class="btn" data-dismiss="modal">Cancel</button>
+    <div class="modal fade" tabindex="-1" role="dialog" id="cheetah-wait-for-workers-modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Waiting for Workers</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Cheetah Web is currently preparing the selected files. Depending on the available computing
+                        capacity,
+                        this may take some time - please stand
+                        by. In case the preparation takes too long, you can leave this page and come back at any
+                        time.</p>
+                    <p>Please also note that you can speed up this process by manually starting the preparation process
+                        through Data Management --> My Data. Then,
+                        select the files to prepare and click Analyze --> Prepare Data for Visualization.</p>
+                    <h4>Status of the workers:</h4>
+                    <ul>
+                        <li ng-repeat="worker in workers">{{worker.filename}}: {{worker.status}}</li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" ng-click="closePrepareModalAndVisualize()"
+                            id="cheetah-repeat-visualization-button">Continue Visualization
+                    </button>
+                    <button type="button" class="btn" data-dismiss="modal">Cancel</button>
+                </div>
             </div>
         </div>
     </div>
-</div>

@@ -1,102 +1,118 @@
 <div class="container-fluid">
-    <div class="panel panel-primary">
-        <div class="panel-heading">
-            <h3 class="panel-title">Available Databases</h3>
-        </div>
+    <h1>Synchronize CEP data to CEP-Web</h1>
+    <div class="panel panel-default">
         <div class="panel-body">
-            <div ng-show="databaseConfigurations.length > 0">
-                <ul>
-                    <li ng-repeat="configuration in databaseConfigurations">
-                        <span>{{configuration.host + ':'+  configuration.port + '/' + configuration.schema}}</span>
-                        <span class="cheetah-delete-database-configuration-icon icon-cheetah-close"
-                              ng-click="deleteDatabaseConfiguration(configuration)"></span>
-                        <span class="cheetah-synchronize-database-configuration-icon icon-cheetah-synchronize"
-                              ng-click="showSyncronizationDialog(configuration)"></span>
-                    </li>
-                </ul>
+            <h4>What can I do here?</h4>
+            <div class="cheetah-section-description">Do you want to analyze the <a href="http://bpm.q-e.at/?page_id=85" target="_blank">Process
+                of Process Modeling</a> with CEP and CEP-Web? Then this is the place to be! Here you can import the data
+                logged with CEP into the database of CEP-Web. This will allow you to perform more sophisticated analyses
+                on how process models are created.
             </div>
-            <div ng-show="databaseConfigurations.length === 0">
-                <p>No database configurations were found.</p>
-            </div>
-        </div>
-    </div>
 
-    <div class="panel panel-primary">
-        <div class="panel-heading">
-            <h3 class="panel-title">Add Database</h3>
-        </div>
-        <div class="panel-body">
-            <form class="form-horizontal">
-                <div class="form-group">
-                    <label for="inputHost" class="col-sm-2 control-label">Host</label>
-                    <div class="col-sm-10">
-                        <input class="form-control" id="inputHost" placeholder="Host"
-                               ng-model="newDatabase.host">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Available Databases</h3>
+                </div>
+                <div class="panel-body">
+                    <div ng-show="databaseConfigurations.length > 0">
+                        <ul>
+                            <li ng-repeat="configuration in databaseConfigurations">
+                                <span>{{configuration.host + ':'+  configuration.port + '/' + configuration.schema}}</span>
+                                <span class="cheetah-delete-database-configuration-icon icon-cheetah-close"
+                                      ng-click="deleteDatabaseConfiguration(configuration)"></span>
+                                <span class="cheetah-synchronize-database-configuration-icon icon-cheetah-synchronize"
+                                      ng-click="showSyncronizationDialog(configuration)"></span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div ng-show="databaseConfigurations.length === 0">
+                        <p>No database configurations were found.</p>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label for="inputPort" class="col-sm-2 control-label">Port</label>
-                    <div class="col-sm-10">
-                        <input class="form-control" id="inputPort" placeholder="Port"
-                               ng-model="newDatabase.port">
-                    </div>
+            </div>
+
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Add Database</h3>
                 </div>
-                <div class="form-group">
-                    <label for="inputSchema" class="col-sm-2 control-label">Schema</label>
-                    <div class="col-sm-10">
-                        <input class="form-control" id="inputSchema" placeholder="Schema"
-                               ng-model="newDatabase.schema">
-                    </div>
+                <div class="panel-body">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label for="inputHost" class="col-sm-2 control-label">Host</label>
+                            <div class="col-sm-10">
+                                <input class="form-control" id="inputHost" placeholder="Host"
+                                       ng-model="newDatabase.host">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputPort" class="col-sm-2 control-label">Port</label>
+                            <div class="col-sm-10">
+                                <input class="form-control" id="inputPort" placeholder="Port"
+                                       ng-model="newDatabase.port">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputSchema" class="col-sm-2 control-label">Schema</label>
+                            <div class="col-sm-10">
+                                <input class="form-control" id="inputSchema" placeholder="Schema"
+                                       ng-model="newDatabase.schema">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputUser" class="col-sm-2 control-label">Username</label>
+                            <div class="col-sm-10">
+                                <input class="form-control" id="inputUser" placeholder="Username"
+                                       ng-model="newDatabase.username">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputPassword" class="col-sm-2 control-label">Password</label>
+                            <div class="col-sm-10">
+                                <input class="form-control" id="inputPassword" placeholder="Password"
+                                       ng-model="newDatabase.password">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button ng-click="addDatabase()" type="submit" class="btn btn-primary">Add
+                                    Database
+                                </button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
-                <div class="form-group">
-                    <label for="inputUser" class="col-sm-2 control-label">Username</label>
-                    <div class="col-sm-10">
-                        <input class="form-control" id="inputUser" placeholder="Username"
-                               ng-model="newDatabase.username">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="inputPassword" class="col-sm-2 control-label">Password</label>
-                    <div class="col-sm-10">
-                        <input class="form-control" id="inputPassword" placeholder="Password"
-                               ng-model="newDatabase.password">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-sm-offset-2 col-sm-10">
-                        <button ng-click="addDatabase()" type="submit" class="btn btn-primary">Add
-                            Database
-                        </button>
-                    </div>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>
-
 
 <div class="modal fade" tabindex="-1" role="dialog" id="cheetah-synchronize-modal">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title">Synchronize Database</h4>
             </div>
             <div class="modal-body">
-                <p>Synchronizing data from database: {{activeDatabase.host + ':'+ activeDatabase.port + '/' + activeDatabase.schema}}</p>
+                <p>Synchronizing data from database: {{activeDatabase.host + ':'+ activeDatabase.port + '/' +
+                    activeDatabase.schema}}</p>
                 <div>
                     <p>Studies found in this database:</p>
                     <ul class="cheetah-available-studies-list">
                         <li ng-repeat="study in activeStudies">
                             <div>
-                                <label class="cheetah-available-study-label"><input type="checkbox" ng-model="study.selected"/>{{study.name}}</label>
+                                <label class="cheetah-available-study-label"><input type="checkbox"
+                                                                                    ng-model="study.selected"/>{{study.name}}</label>
                             </div>
                         </li>
                     </ul>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" ng-click="synchronizeData(activeDatabase)">Synchronize Data</button>
+                <button type="button" class="btn btn-primary" ng-click="synchronizeData(activeDatabase)">Synchronize
+                    Data
+                </button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
         </div>
@@ -112,7 +128,8 @@
             <div class="modal-body">
                 <p>Please stand by, the synchronization could take some minutes.</p>
                 <div class="progress">
-                    <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"
+                    <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100"
+                         aria-valuemin="0" aria-valuemax="100"
                          style="width: 100%">
                         <span class="sr-only">Synchronizing...</span>
                     </div>
