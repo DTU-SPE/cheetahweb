@@ -439,3 +439,9 @@ ul.dropdown-menu a {
 .cheetah-pupillometry-visualization .dropdown-menu > li > a {
     width: auto;
 }
+
+.cheetah-unlink-data {
+    margin-left: 10px;
+    color: red;
+    cursor: pointer;
+}

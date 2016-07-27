@@ -71,12 +71,21 @@
                             <div class="panel panel-default">
                                 <div class="panel-body">
                                     <p>Please select the process of process modeling to visualize:</p>
-                                    <label ng-repeat="processInstance in processInstancesToVisualize">
-                                        <input type="radio" name="selectedProcessInstance"
-                                               ng-model="$parent.selectedProcessInstance.id"
-                                               value="{{processInstance.id}}"/>
-                                        {{processInstance.name}}
-                                    </label>
+                                    <div ng-repeat="processInstance in processInstancesToVisualize">
+                                        <label>
+                                            <input type="radio" name="selectedProcessInstance"
+                                                   ng-model="$parent.selectedProcessInstance.id"
+                                                   value="{{processInstance.id}}"/>
+                                            {{processInstance.name}}
+                                        </label>
+                                        <p>Data associated with this process instance:</p>
+                                        <ul>
+                                            <li ng-repeat="data in processInstance.data">{{data.name}}<span ng-show="data.type === 'data'"
+                                                                                                            class="cheetah-unlink-data icon-cheetah-close"
+                                                                                                            ng-click="deleteData(data,processInstance.data)"></span>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -89,7 +98,7 @@
                                             <label>
                                                 <input type="checkbox" ng-model="selectedFiles[file.id]"/>
                                                 {{file.filename}}
-                                            </label>
+                                            </label><span class="cheetah-unlink-data icon-cheetah-close" ng-click="deleteData(file,filesToVisualize)"></span>
                                             <br>
                                         </div>
                                     </div>
@@ -98,9 +107,7 @@
                                         <p>Please select the movie to visualize:</p>
                                         <div ng-repeat="movie in moviesToVisualize">
                                             <label>
-                                                <input type="radio" name="selectedMovie"
-                                                       ng-model="$parent.selectedMovie.id"
-                                                       value="{{movie.id}}"/>
+                                                <input type="radio" name="selectedMovie" ng-model="$parent.selectedMovie.id" value="{{movie.id}}"/>
                                                 {{getMovieName(movie)}}
                                             </label><br>
                                         </div>

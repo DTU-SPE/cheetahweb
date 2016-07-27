@@ -169,6 +169,31 @@ angular
                         $scope.selectedProcessInstance = $scope.processInstancesToVisualize[0];
                     }
 
+                    $.each(allData, function (index, data) {
+                        var processInstance = undefined;
+                        $.each($scope.processInstancesToVisualize, function (index, instance) {
+                            if (instance.id === data.processInstanceId) {
+                                processInstance = instance;
+                                return false;
+                            }
+                        });
+
+                        if (!processInstance) {
+                            return; //not all data is assigned to a process instance
+                        }
+
+                        processInstance.data = processInstance.data || [];
+                        if (data.filename) {
+                            processInstance.data.push({name: data.filename, id: data.id, type: 'data'}); //files
+                        } else {
+                            //videos
+                            var name = data.url;
+                            name = name.substring(name.lastIndexOf('/'));
+                            name = name.substring(name.indexOf('_') + 1);
+                            processInstance.data.push({name: name, id: data.id, type: 'video'});
+                        }
+                    });
+
                     $('#cheetah-visualize-modal').modal('show');
                     $('#cheetah-visualize-modal').on('shown.bs.modal', function () {
                         if ($scope.processInstancesToVisualize.length > 0) {
@@ -326,6 +351,37 @@ angular
 
             return properties;
         }
+
+        /**
+         * Deletes pre-processed data.
+         * @param data the data to delete
+         * @param container the container where the data should be deleted from
+         */
+        $scope.deleteData = function (data, container) {
+            BootstrapDialog.show({
+                title: 'Delete prepared data?',
+                message: 'What is this good for?<br><br>Before CEP-Web can visualize data, it will strip all unnecessary data and save it in a new file - these are the files you can see here. This is required, since reading the data would take too long otherwise and visualizing the data would not run that fluently. If you do not need these files anymore you can delete them safely - CEP-Web will recreate them, if necessary.',
+                buttons: [{
+                    label: 'Yes',
+                    cssClass: 'btn',
+                    action: function (dialogItself) {
+                        dialogItself.close();
+
+                        $http.get('../../private/deleteData?id=' + data.id).then(function () {
+                            var index = container.indexOf(data);
+                            container.splice(index, 1);
+                        });
+                    }
+                }, {
+                    label: 'No',
+                    cssClass: 'btn btn-primary',
+                    action: function (dialogItself) {
+                        dialogItself.close();
+                    }
+                }]
+            });
+        };
+
     }).config(function ($routeProvider) {
     $routeProvider
         .when('/', {
