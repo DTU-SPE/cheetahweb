@@ -141,7 +141,6 @@ myApp.controller('SubjCtrl', function ($scope, $http, $q, $timeout) {
                             });
 
                             $scope.selection = [];
-                            $scope.studies = uniqueProperties($scope.subjects, "study.name");
                             dialog.close();
                         }
                     });
@@ -248,7 +247,6 @@ myApp.controller('SubjCtrl', function ($scope, $http, $q, $timeout) {
                                         $scope.highLighted = {};
                                     }, 5000);
                                     sortSubjectList();
-                                    $scope.studies = uniqueProperties($scope.subjects, "study.name");
                                 }
                             });
                             dialogSelf.close();
@@ -278,7 +276,6 @@ myApp.controller('SubjCtrl', function ($scope, $http, $q, $timeout) {
                     $scope.highLighted = {};
                 }, 5000);
                 sortSubjectList();
-                $scope.studies = uniqueProperties($scope.subjects, "study.name");
             }
         });
 
@@ -325,7 +322,6 @@ myApp.controller('SubjCtrl', function ($scope, $http, $q, $timeout) {
                 };
                 $scope.subjects.splice(0, 0, createdSubjectWithPK);
                 $scope.highLighted[createdSubjectWithPK.id] = true;
-                $scope.studies = uniqueProperties($scope.subjects, "study.name");
             });
 
             $timeout(function () {
@@ -366,23 +362,7 @@ myApp.controller('SubjCtrl', function ($scope, $http, $q, $timeout) {
         });
     }
 
-    function uniqueProperties(subjects, property) {
-        var properties = [];
 
-        $.each(subjects, function (index, subject) {
-            var value = subject[property];
-            if (property.indexOf('.') !== -1) {
-                var tokens = property.split('.');
-                value = subject[tokens[0]][tokens[1]];
-            }
-
-            if (properties.indexOf(value) == -1) {
-                properties.push(value);
-            }
-        });
-
-        return properties;
-    }
 }).config(function ($routeProvider) {
     $routeProvider.when('/', {
         templateUrl: 'angular/subject-management/subject-management.htm',
