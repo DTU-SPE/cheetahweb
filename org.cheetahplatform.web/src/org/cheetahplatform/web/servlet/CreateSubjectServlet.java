@@ -13,10 +13,6 @@ public class CreateSubjectServlet extends AbstractCheetahServlet {
 
 	private static final long serialVersionUID = 2057615580497961482L;
 
-	/**
-	 * This function does not check if there are any duplicated subjects are in the database To extend it, use the uncomment the code
-	 * commented out and extend it.
-	 */
 	@Override
 	protected void doPostWithDatabaseConnection(Connection connection, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
@@ -29,7 +25,7 @@ public class CreateSubjectServlet extends AbstractCheetahServlet {
 			writeJson(response, createSubject);
 		} else {
 			if (subjectDao.subjectExists(connection, createSubjecRequest.getEmail())) {
-				error = "A user with the email \"" + createSubjecRequest.getEmail() + "\" already exists.";
+				error = "A user with the email adress \"" + createSubjecRequest.getEmail() + "\" exists already in the database.";
 				writeJson(response, new CreateSubjectResponse(error));
 			} else {
 				CreateSubjectResponse createSubject = subjectDao.createSubject(connection, createSubjecRequest);

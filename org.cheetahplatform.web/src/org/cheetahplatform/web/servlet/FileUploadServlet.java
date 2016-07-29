@@ -72,14 +72,15 @@ public class FileUploadServlet extends AbstractCheetahServlet {
 		try {
 			makeCreateSubjectReequests(listOfNewSubjects, studies, reader);
 		} catch (Exception e) {
-			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+
 			writeJson(resp, new FileUploadRespone(e.getMessage()));
 			return;
 		}
 		for (CreateSubjectRequest createSubjecRequest : listOfNewSubjects) {
 			if (subjectDao.subjectExists(connection, createSubjecRequest.getEmail())) {
-				resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-				writeJson(resp, new FileUploadRespone("Duplicate entry\n" + createSubjecRequest.toString() + " already exists."));
+
+				writeJson(resp, new FileUploadRespone(
+						"There is already a subject with the email adress n" + createSubjecRequest.toString() + " in the database."));
 				return;
 			}
 		}
@@ -98,7 +99,7 @@ public class FileUploadServlet extends AbstractCheetahServlet {
 			throws Exception {
 		String line = reader.readLine();
 		if (!line.trim().equals("email;study;subjectId;comment")) {
-			throw new Exception("Heading of File is not correct.\nShould be:email;subjectId;studyId;comment ");
+			throw new Exception("The first line in your CSV is not correct.\n The line should be:email;subjectId;studyId;comment ");
 		}
 		line = reader.readLine();
 		while (line != null) {
@@ -107,7 +108,7 @@ public class FileUploadServlet extends AbstractCheetahServlet {
 			if (!(line.trim().equals(""))) {
 				String[] array = line.split(";");
 				if (array.length != 4) {
-					throw new Exception("There is an error in line " + line);
+					throw new Exception("There is an error in the CSV.\n The wrong line is:\n" + line);
 				}
 				for (StudyDto study : studies) {
 					if (study.getName().equals(array[1])) {
@@ -116,7 +117,7 @@ public class FileUploadServlet extends AbstractCheetahServlet {
 					}
 				}
 				if (studyId == null) {
-					throw new Exception("Study \"" + array[1] + "\" not found");
+					throw new Exception("The study  \"" + array[1] + "\" was not found in the database.");
 				}
 				CreateSubjectRequest createSubjectRequest = new CreateSubjectRequest(false);
 				createSubjectRequest.setEmail(array[0]);
@@ -125,7 +126,7 @@ public class FileUploadServlet extends AbstractCheetahServlet {
 				createSubjectRequest.setComment(array[3]);
 				listOfNewSubjects.add(createSubjectRequest);
 			} else {
-				throw new Exception("File has empty Lines.");
+				throw new Exception("The CSV has empty lines.\nPlease remove them.");
 			}
 			line = reader.readLine();
 		}

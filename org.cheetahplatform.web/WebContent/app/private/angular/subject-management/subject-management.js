@@ -103,7 +103,7 @@ myApp.controller('SubjCtrl', function ($scope, $http, $q, $timeout) {
         });
         BootstrapDialog.show({
             title: 'Delete',
-            message: 'Do you really want to delete subject: "' + objectToDelete + '"?',
+            message: 'Do you really want to delete the subject(s) with ID: "' + objectToDelete + '"?',
             buttons: [{
                 label: 'Yes',
                 action: function (dialog) {
@@ -158,7 +158,7 @@ myApp.controller('SubjCtrl', function ($scope, $http, $q, $timeout) {
         if ($scope.selection.length !== 1) {
             BootstrapDialog.alert({
                 title: 'Select exactly one subject',
-                message: 'You have selected the wrong number of subjects.'
+                message: 'You must select exactly one subject.'
             });
         } else {
             $scope.changeMail = $scope.selection[0].email;
@@ -168,7 +168,7 @@ myApp.controller('SubjCtrl', function ($scope, $http, $q, $timeout) {
         }
     };
 
-    $scope.addSub = function () {
+    $scope.addSubject = function () {
         $scope.selectedStudy = $scope.fullStudies[0];
         $("#cheetah-create-subject-dialog").modal('show');
     };
@@ -203,7 +203,7 @@ myApp.controller('SubjCtrl', function ($scope, $http, $q, $timeout) {
         });
     };
 
-    $scope.addUserToDB = function () {
+    $scope.addSubjectToDB = function () {
         $("#cheetah-create-subject-dialog").modal('hide');
         var createdSubject = {
             email: $scope.mail,
@@ -289,6 +289,7 @@ myApp.controller('SubjCtrl', function ($scope, $http, $q, $timeout) {
         return true;
     }
 
+
     $scope.uploadFile = function () {
         var file = $scope.myFile;
         var postData = new FormData();
@@ -300,7 +301,8 @@ myApp.controller('SubjCtrl', function ($scope, $http, $q, $timeout) {
                 'Content-Type': undefined
             },
             transformRequest: angular.identity
-        }).then(function successCallback(response) {
+        }).then(function (response) {
+            if(response.data.message==null){
             BootstrapDialog.alert({
                 title: 'Successfully uploaded',
                 message: 'Successfully uploaded.'
@@ -331,12 +333,12 @@ myApp.controller('SubjCtrl', function ($scope, $http, $q, $timeout) {
             $scope.myFile = null;
             document.getElementById("uploadField").value = null;
             $("#cheetah-load-csv-dialog").modal('hide');
-        }, function errorCallback(response) {
-            BootstrapDialog.alert({
-                title: 'Error',
-                message: response.data.message
-            });
-        });
+        }else {
+                BootstrapDialog.alert({
+                    title: 'Error',
+                    message: response.data.message
+                });
+            }});
     };
 
 

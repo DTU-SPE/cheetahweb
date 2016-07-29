@@ -45,7 +45,7 @@
                 <a role="menuitem" tabindex="-1" ng-click="deleteSubject()">Delete Selected Subject</a>
             </li>
             <li role="presentation">
-                <a role="menuitem" tabindex="-1 " ng-click="addSub()">Create Subject</a>
+                <a role="menuitem" tabindex="-1 " ng-click="addSubject()">Create Subject</a>
             </li>
             <li role="presentation">
                 <a role="menuitem" tabindex="-1 " ng-click="showChangeSubjectModal()">Change Subject</a>
@@ -84,8 +84,8 @@
                         aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title">Add new Subject</h4>
                 <div class="modal-body container-fluid">
-                    <form id="addUserToDB" role="form"
-                          ng-submit="addUserToDB()">
+                    <form id="addSubjectToDB" role="form"
+                          ng-submit="addSubjectToDB()">
                         <label for="subjectID">Subject Id</label>
                         <input type="text" id="subjectID" class="form-control" ng-model="subjectID" required>
                         <label for="mail">Mail Adress</label>
