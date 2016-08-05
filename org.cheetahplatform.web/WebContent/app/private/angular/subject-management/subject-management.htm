@@ -1,81 +1,84 @@
-<h4>What can I do here?</h4>
-<div class="cheetah-section-description">In every empirical investigation, the management of subjects should be one of
-    your top priorities. This section allows you to create new subjects and assign them to your <a
-            href="study-management.htm">study</a>. Subjects are also
-    required once you start <a href="uploaddata.htm">uploading</a> your collected data since all files need to be
-    assigned to one of your subjects.
+<div class="container-fluid">
+    <h4>What can I do here?</h4>
+    <div class="cheetah-section-description">In every empirical investigation, the management of subjects should be one
+        of
+        your top priorities. This section allows you to create new subjects and assign them to your <a
+                href="study-management.htm">study</a>. Subjects are also
+        required once you start <a href="uploaddata.htm">uploading</a> your collected data since all files need to be
+        assigned to one of your subjects.
+    </div>
+    <h4>Manage your study's subjects</h4>
+    <form class="form-horizontal">
+
+        <div class="form-group">
+            <label for="id" class="col-sm-2 control-label">Subject Id</label>
+
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="id" placeholder="Subject Id" ng-model="search.subjectId">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="study" class="col-sm-2 control-label">Study</label>
+
+            <div class="col-sm-10">
+                <select class="form-control" id="study" ng-model="search.study"
+                        ng-options="study for study in studies">
+                    <option value=""></option>
+                </select>
+            </div>
+        </div>
+
+        <div class="dropdown" id="cheetah-files-visualize-button">
+            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1"
+                    data-toggle="dropdown"
+                    aria-expanded="true">
+                Actions
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                <li role="presentation">
+                    <a role="menuitem" tabindex="-1" ng-click="selectAll()">Select All</a>
+                </li>
+                <li role="presentation">
+                    <a role="menuitem" tabindex="-1" ng-click="deselectAll()">Deselect All</a>
+                </li>
+                <li role="presentation">
+                    <a role="menuitem" tabindex="-1" ng-click="deleteSubject()">Delete Selected Subject</a>
+                </li>
+                <li role="presentation">
+                    <a role="menuitem" tabindex="-1 " ng-click="addSubject()">Create Subject</a>
+                </li>
+                <li role="presentation">
+                    <a role="menuitem" tabindex="-1 " ng-click="showChangeSubjectModal()">Change Subject</a>
+                </li>
+                <li role="presentation">
+                    <a role="menuitem" tabindex="-1 " ng-click="showUpload()">Upload</a>
+                </li>
+            </ul>
+        </div>
+    </form>
+
+    <table class="table table-hover table-search">
+        <thead>
+        <tr>
+            <th></th>
+            <th>Subject</th>
+            <th>Study</th>
+            <th>Comment</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="subject in filteredSubjects()" ng-click="setSelection(subject)"
+            class="{{getSubjectClass(subject)}}">
+            <td><span class="{{isSelected(subject)}}"></span></td>
+            <td>{{subject.subjectId}}</td>
+            <td>{{subject.study.name}}</td>
+            <td>{{subject.comment}}</td>
+        </tr>
+        </tbody>
+    </table>
 </div>
-<h4>Manage your study's subjects</h4>
-<form class="form-horizontal">
-
-    <div class="form-group">
-        <label for="id" class="col-sm-2 control-label">Subject Id</label>
-
-        <div class="col-sm-10">
-            <input type="text" class="form-control" id="id" placeholder="Subject Id" ng-model="search.subjectId">
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label for="study" class="col-sm-2 control-label">Study</label>
-
-        <div class="col-sm-10">
-            <select class="form-control" id="study" ng-model="search.study"
-                    ng-options="study for study in studies">
-                <option value=""></option>
-            </select>
-        </div>
-    </div>
-
-    <div class="dropdown" id="cheetah-files-visualize-button">
-        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1"
-                data-toggle="dropdown"
-                aria-expanded="true">
-            Actions
-            <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-            <li role="presentation">
-                <a role="menuitem" tabindex="-1" ng-click="selectAll()">Select All</a>
-            </li>
-            <li role="presentation">
-                <a role="menuitem" tabindex="-1" ng-click="deselectAll()">Deselect All</a>
-            </li>
-            <li role="presentation">
-                <a role="menuitem" tabindex="-1" ng-click="deleteSubject()">Delete Selected Subject</a>
-            </li>
-            <li role="presentation">
-                <a role="menuitem" tabindex="-1 " ng-click="addSubject()">Create Subject</a>
-            </li>
-            <li role="presentation">
-                <a role="menuitem" tabindex="-1 " ng-click="showChangeSubjectModal()">Change Subject</a>
-            </li>
-            <li role="presentation">
-                <a role="menuitem" tabindex="-1 " ng-click="showUpload()">Upload</a>
-            </li>
-        </ul>
-    </div>
-</form>
-
-<table class="table table-hover table-search">
-    <thead>
-    <tr>
-        <th></th>
-        <th>Subject</th>
-        <th>Study</th>
-        <th>Comment</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr ng-repeat="subject in filteredSubjects()" ng-click="setSelection(subject)" class="{{getSubjectClass(subject)}}">
-        <td><span class="{{isSelected(subject)}}"></span></td>
-        <td>{{subject.subjectId}}</td>
-        <td>{{subject.study.name}}</td>
-        <td>{{subject.comment}}</td>
-    </tr>
-    </tbody>
-</table>
-
 <div class="modal" id="cheetah-create-subject-dialog">
     <div class="modal-dialog">
         <div class="modal-content">
