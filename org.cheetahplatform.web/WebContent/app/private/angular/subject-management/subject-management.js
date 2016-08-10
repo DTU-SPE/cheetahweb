@@ -103,7 +103,7 @@ myApp.controller('SubjCtrl', function ($scope, $http, $q, $timeout) {
         });
         BootstrapDialog.show({
             title: 'Delete',
-            message: 'Do you really want to delete subject: "' + objectToDelete + '"?',
+            message: 'Do you really want to delete the subject(s) with ID: "' + objectToDelete + '"?',
             buttons: [{
                 label: 'Yes',
                 action: function (dialog) {
@@ -141,7 +141,6 @@ myApp.controller('SubjCtrl', function ($scope, $http, $q, $timeout) {
                             });
 
                             $scope.selection = [];
-                            $scope.studies = uniqueProperties($scope.subjects, "study.name");
                             dialog.close();
                         }
                     });
@@ -159,7 +158,7 @@ myApp.controller('SubjCtrl', function ($scope, $http, $q, $timeout) {
         if ($scope.selection.length !== 1) {
             BootstrapDialog.alert({
                 title: 'Select exactly one subject',
-                message: 'You have selected the wrong number of subjects.'
+                message: 'You must select exactly one subject.'
             });
         } else {
             $scope.changeMail = $scope.selection[0].email;
@@ -169,7 +168,7 @@ myApp.controller('SubjCtrl', function ($scope, $http, $q, $timeout) {
         }
     };
 
-    $scope.addSub = function () {
+    $scope.addSubject = function () {
         $scope.selectedStudy = $scope.fullStudies[0];
         $("#cheetah-create-subject-dialog").modal('show');
     };
@@ -204,26 +203,66 @@ myApp.controller('SubjCtrl', function ($scope, $http, $q, $timeout) {
         });
     };
 
-    $scope.addUserToDB = function () {
+    $scope.addSubjectToDB = function () {
         $("#cheetah-create-subject-dialog").modal('hide');
         var createdSubject = {
             email: $scope.mail,
             subjectId: $scope.subjectID,
             studyId: $scope.selectedStudy.id,
-            comment: $scope.comment
+            comment: $scope.comment,
+            allowDouble: false
         };
         $http.post('../../private/createSubject', createdSubject).then(function (response) {
             if (response.data.error) {
-                BootstrapDialog.alert({
+                BootstrapDialog.show({
                     title: 'Subject already exists',
-                    message: 'The subject "' + createdSubject.email + '" already exists.'
+                    message: 'There is already a subject in the database with the email address "' + createdSubject.email + '".\n Do you really want to add another subject with the same email address?',
+                    buttons: [{
+                        label: 'Yes',
+                        action: function (dialogSelf) {
+                            var createdSubject = {
+                                email: $scope.mail,
+                                subjectId: $scope.subjectID,
+                                studyId: $scope.selectedStudy.id,
+                                comment: $scope.comment,
+                                allowDouble: true
+                            };
+                            $http.post('../../private/createSubject', createdSubject).then(function (response) {
+                                if (response.data.error == undefined) {
+                                    BootstrapDialog.alert({
+                                        title: 'Subject created successfully',
+                                        message: 'The subject with the email address "' + createdSubject.email + '" was created successfully.'
+                                    });
+
+                                    var createdSubjectWithPK = {
+                                        id: response.data.id,
+                                        email: response.data.email,
+                                        subjectId: response.data.subjectId,
+                                        study: $scope.selectedStudy,
+                                        comment: response.data.comment
+                                    };
+                                    $scope.subjects.push(createdSubjectWithPK);
+                                    $scope.highLighted[createdSubjectWithPK.id] = true;
+                                    $timeout(function () {
+                                        $scope.highLighted = {};
+                                    }, 5000);
+                                    sortSubjectList();
+                                }
+                            });
+                            dialogSelf.close();
+                        }
+                    }, {
+                        label: 'No',
+                        action: function (dialogSelf) {
+                            dialogSelf.close();
+                        }
+                    }]
                 });
             } else {
                 BootstrapDialog.alert({
                     title: 'Subject created successfully',
                     message: 'The subject "' + createdSubject.email + '" was created successfully.'
                 });
-
                 var createdSubjectWithPK = {
                     id: response.data.id,
                     email: response.data.email,
@@ -233,11 +272,10 @@ myApp.controller('SubjCtrl', function ($scope, $http, $q, $timeout) {
                 };
                 $scope.subjects.push(createdSubjectWithPK);
                 $scope.highLighted[createdSubjectWithPK.id] = true;
-                $timeout(function(){
-                    $scope.highLighted= {};
-                },5000);
+                $timeout(function () {
+                    $scope.highLighted = {};
+                }, 5000);
                 sortSubjectList();
-                $scope.studies = uniqueProperties($scope.subjects, "study.name");
             }
         });
 
@@ -249,63 +287,58 @@ myApp.controller('SubjCtrl', function ($scope, $http, $q, $timeout) {
         }
 
         return true;
-    };
+    }
+
 
     $scope.uploadFile = function () {
         var file = $scope.myFile;
+        var postData = new FormData();
+        postData.append('file', file);
 
-        console.log('file is ');
-        console.dir(file);
-
-        var uploadUrl = "../../private/fileUpload";
-
-        var fd = new FormData();
-        fd.append('file', file);
-        $http.post(uploadUrl, fd, {
-                withCredentials: false,
-                headers: {
-                    'Content-Type': undefined
-                },
-                transformRequest: angular.identity
-            })
-            .then(function successCallback(response) {
-                BootstrapDialog.alert({
-                    title: 'Successfully uploaded',
-                    message: 'Successfully uploaded.'
+        $http.post("../../private/fileUpload", postData, {
+            withCredentials: false,
+            headers: {
+                'Content-Type': undefined
+            },
+            transformRequest: angular.identity
+        }).then(function (response) {
+            if(response.data.message==null){
+            BootstrapDialog.alert({
+                title: 'Successfully uploaded',
+                message: 'Successfully uploaded.'
+            });
+            $.each(response.data.subjectList, function (index, newCreatedSubject) {
+                var studyForSubject = {};
+                $.each($scope.fullStudies, function (index, studyInFullStudies) {
+                    if (studyInFullStudies.id === newCreatedSubject.studyId) {
+                        studyForSubject = studyInFullStudies;
+                        return;
+                    }
                 });
-                $.each(response.data.subjectList, function (index, newCreatedSubject) {
-                    var studyForSubject = {};
-                    $.each($scope.fullStudies, function (index, studyInFullStudies) {
-                        if (studyInFullStudies.id === newCreatedSubject.studyId) {
-                            studyForSubject = studyInFullStudies;
-                            return;
-                        }
-                    })
-                    var createdSubjectWithPK = {
-                        id: newCreatedSubject.id,
-                        email: newCreatedSubject.email,
-                        subjectId: newCreatedSubject.subjectId,
-                        study: studyForSubject,
-                        comment: newCreatedSubject.comment
-                    };
-                    $scope.subjects.splice(0, 0, createdSubjectWithPK);
-                    $scope.highLighted[createdSubjectWithPK.id] = true;
-                    $scope.studies = uniqueProperties($scope.subjects, "study.name");
-                });
-                 $timeout(function(){
-                 $scope.highLighted= {};
-                 },5000);
-                sortSubjectList();
-                $scope.myFile = null;
-                document.getElementById("uploadField").value = null;
-                $("#cheetah-load-csv-dialog").modal('hide');
-            }, function errorCallback(response) {
+                var createdSubjectWithPK = {
+                    id: newCreatedSubject.id,
+                    email: newCreatedSubject.email,
+                    subjectId: newCreatedSubject.subjectId,
+                    study: studyForSubject,
+                    comment: newCreatedSubject.comment
+                };
+                $scope.subjects.splice(0, 0, createdSubjectWithPK);
+                $scope.highLighted[createdSubjectWithPK.id] = true;
+            });
+
+            $timeout(function () {
+                $scope.highLighted = {};
+            }, 5000);
+            sortSubjectList();
+            $scope.myFile = null;
+            document.getElementById("uploadField").value = null;
+            $("#cheetah-load-csv-dialog").modal('hide');
+        }else {
                 BootstrapDialog.alert({
                     title: 'Error',
                     message: response.data.message
                 });
-            });
-
+            }});
     };
 
 
@@ -331,23 +364,7 @@ myApp.controller('SubjCtrl', function ($scope, $http, $q, $timeout) {
         });
     }
 
-    function uniqueProperties(subjects, property) {
-        var properties = [];
 
-        $.each(subjects, function (index, subject) {
-            var value = subject[property];
-            if (property.indexOf('.') !== -1) {
-                var tokens = property.split('.');
-                value = subject[tokens[0]][tokens[1]];
-            }
-
-            if (properties.indexOf(value) == -1) {
-                properties.push(value);
-            }
-        });
-
-        return properties;
-    }
 }).config(function ($routeProvider) {
     $routeProvider.when('/', {
         templateUrl: 'angular/subject-management/subject-management.htm',

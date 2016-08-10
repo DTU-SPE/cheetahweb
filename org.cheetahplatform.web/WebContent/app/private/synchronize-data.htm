@@ -42,12 +42,11 @@
 
 <body role="document">
 
-<div ng-app="cheetah.Navigation" ng-view="" ng-controller="NavigationCtrl" ng-init="setActive('cheetah-data-management')"></div>
+<div ng-app="cheetah.Navigation" ng-view="" ng-controller="NavigationCtrl"
+     ng-init="setActive('cheetah-data-management')"></div>
 
 <div role="main" class="container">
-    <div class="panel panel-default">
-        <div ng-app="cheetah.SynchronizeData" ng-view="" class="panel-body"></div>
-    </div>
+    <div ng-app="cheetah.SynchronizeData" ng-view=""></div>
 </div>
 
 </body>
