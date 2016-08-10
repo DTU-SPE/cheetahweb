@@ -4,37 +4,46 @@
         <div class="panel panel-default">
             <div class="panel-body">
                 <h4>What can I do here?</h4>
-                <div class="cheetah-section-description">This area lets you manage all your studies. Whenever you would
-                    like to perform an empirical investigation with pupillometric analysis, you should create a new
-                    study and <a href="subject-management.htm">assign subjects</a> to it. This will
-                    help you manage all your data in the future.
-                </div>
-                <div id="cheetah-study-management-button-container" class="clearfix">
-                    <button id="cheetah-study-management-add-button" class="btn btn-default"
-                            ng-click="openAddStudyDialog()">
-                        Add Study
-                    </button>
-                    <button id="cheetah-study-management-delete-button" class="btn btn-default"
-                            ng-click="deleteStudy()">
-                        Delete Study
-                    </button>
+                <div ng-show="mode === 'overview'">
+                    <div class="cheetah-section-description">This area lets you manage all your studies. Whenever you would
+                        like to perform an empirical investigation with pupillometric analysis, you should create a new
+                        study and <a href="subject-management.htm">assign subjects</a> to it. This will
+                        help you manage all your data in the future.
+                    </div>
+                    <div id="cheetah-study-management-button-container" class="clearfix">
+                        <button id="cheetah-study-management-add-button" class="btn btn-default"
+                                ng-click="openAddStudyDialog()">
+                            Add Study
+                        </button>
+                        <button class="btn btn-default" ng-click="showDataProcessing()">
+                            Define Data Processing
+                        </button>
+                        <button id="cheetah-study-management-delete-button" class="btn btn-default"
+                                ng-click="deleteStudy()">
+                            Delete Study
+                        </button>
+                    </div>
+
+                    <table class="table table-hover table-search">
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Comment</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="study in studies" ng-class="study.id===selection.id ? 'alert-success' : ''"
+                            ng-click="setSelection(study)">
+                            <td>{{study.name}}</td>
+                            <td>{{study.comment}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
 
-                <table class="table table-hover table-search">
-                    <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Comment</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr ng-repeat="study in studies" ng-class="study.id===selection.id ? 'alert-success' : ''"
-                        ng-click="setSelection(study)">
-                        <td>{{study.name}}</td>
-                        <td>{{study.comment}}</td>
-                    </tr>
-                    </tbody>
-                </table>
+                <div ng-show="mode === 'data_processing'">
+                    data processing goes here.
+                </div>
             </div>
         </div>
     </div>
@@ -77,8 +86,26 @@
                                     </button>
                                 </div>
                             </div>
+                        </div>
                     </form>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="cheetah-test-modal" ng-controller="TestController">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Add Study</h4>
+            </div>
+            <div class="modal-body container-fluid">
+                {{content}}
+
+                <button ng-click="close()">buttonski</button>
             </div>
         </div>
     </div>

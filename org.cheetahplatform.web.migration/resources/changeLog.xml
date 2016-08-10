@@ -427,4 +427,46 @@
 			referencedTableName="user_data" baseColumnNames="fk_derived_from"
 			baseTableName="user_data" referencedColumnNames="pk_user_data" />
 	</changeSet>
+
+	<changeSet id="CEP2.0-25" author="Stefan">
+		<comment>Add tables for storing infrastructure for data analysis, #534</comment>
+
+		<createTable tableName="data_processing">
+			<column name="pk_data_processing" autoIncrement="true"
+				type="BIGINT(20) UNSIGNED">
+				<constraints primaryKey="true" primaryKeyName="pk_data_processing_key" />
+			</column>
+			<column name="fk_study" type="BIGINT(20) UNSIGNED">
+				<constraints unique="true" nullable="false" />
+			</column>
+			<column name="name" type="VARCHAR(255)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+
+		<createTable tableName="data_processing_step">
+			<column name="pk_data_processing_step" autoIncrement="true"
+				type="BIGINT(20) UNSIGNED">
+				<constraints primaryKey="true" primaryKeyName="pk_data_processing_step_key" />
+			</column>
+			<column name="fk_data_processing" type="BIGINT(20) UNSIGNED">
+				<constraints unique="true" nullable="false" />
+			</column>
+			<column name="type" type="VARCHAR(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="version" type="INT" />
+			<column name="name" type="VARCHAR(255)" />
+			<column name="configuration" type="MEDIUMTEXT" />
+		</createTable>
+
+		<addForeignKeyConstraint constraintName="fk_study_from_data_processing"
+			referencedTableName="study" baseColumnNames="fk_study" baseTableName="data_processing"
+			referencedColumnNames="pk_study" onDelete="CASCADE" />
+		<addForeignKeyConstraint
+			constraintName="fk_data_processing_from_data_processing_step"
+			referencedTableName="data_processing" baseColumnNames="fk_data_processing"
+			baseTableName="data_processing_step" referencedColumnNames="pk_data_processing"
+			onDelete="CASCADE" />
+	</changeSet>
 </databaseChangeLog>
