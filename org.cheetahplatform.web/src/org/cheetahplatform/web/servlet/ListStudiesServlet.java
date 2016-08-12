@@ -22,7 +22,9 @@ public class ListStudiesServlet extends AbstractCheetahServlet {
 			throws ServletException, IOException, SQLException {
 		StudyDao studyDao = new StudyDao();
 		long userId = new UserDao().getUserId(connection, request);
-		List<StudyDto> subjects = studyDao.getStudiesForUser(connection, userId);
-		writeJson(response, subjects);
+		List<StudyDto> studies = studyDao.getStudiesForUser(connection, userId);
+		studyDao.addDataProcessing(connection, studies);
+
+		writeJson(response, studies);
 	}
 }

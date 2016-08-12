@@ -449,3 +449,21 @@ ul.dropdown-menu a {
 .cheetah-highlighted {
     background-color: skyblue;
 }
+
+.cheetah-data-processing-container {
+    position: relative;
+}
+
+.cheetah-data-processing-container > button {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.cheetah-data-processing-buttons {
+    float: right;
+}
+
+.cheetah-data-processing-buttons span {
+    cursor: pointer;
+}

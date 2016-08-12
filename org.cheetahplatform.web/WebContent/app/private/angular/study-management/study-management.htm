@@ -3,8 +3,8 @@
         <h1>My Studies</h1>
         <div class="panel panel-default">
             <div class="panel-body">
-                <h4>What can I do here?</h4>
-                <div ng-show="mode === 'overview'">
+                <div ng-show="mode === 'overview'" ng-controller="StudyOverviewController">
+                    <h4>What can I do here?</h4>
                     <div class="cheetah-section-description">This area lets you manage all your studies. Whenever you would
                         like to perform an empirical investigation with pupillometric analysis, you should create a new
                         study and <a href="subject-management.htm">assign subjects</a> to it. This will
@@ -15,7 +15,7 @@
                                 ng-click="openAddStudyDialog()">
                             Add Study
                         </button>
-                        <button class="btn btn-default" ng-click="showDataProcessing()">
+                        <button class="btn btn-default" ng-click="showDataProcessing()" ng-disabled="selection.id === -1">
                             Define Data Processing
                         </button>
                         <button id="cheetah-study-management-delete-button" class="btn btn-default"
@@ -41,8 +41,50 @@
                     </table>
                 </div>
 
-                <div ng-show="mode === 'data_processing'">
-                    data processing goes here.
+                <div ng-show="mode === 'data_processing'" ng-controller="DataProcessingController" class="cheetah-data-processing-container">
+                    <button class="btn btn-default" ng-click="showOverview()">
+                        Back to Studies
+                    </button>
+                    <h4>Define Data Processing of Study '{{study.name}}'</h4>
+                    <div class="cheetah-section-description">This area lets you manage the data processing of this study.
+                    </div>
+                    <div>
+                        <div ng-show="study.dataProcessing.length > 0">
+                            <p>The following steps have been defined for data processing:</p>
+                        </div>
+                        <div ng-show="study.dataProcessing.length === 0">
+                            <p>No data processing steps have been defined yet. Please use the button below to add new data processing routines.</p>
+                        </div>
+
+                        <div class="panel-group">
+                            <div class="panel panel-default" ng-repeat="dataProcessing in study.dataProcessing">
+                                <div class="panel-heading">
+                                    <div class="cheetah-data-processing-buttons">
+                                        <span class="icon-cheetah-close" ng-click="deleteDataProcessing(dataProcessing)"></span>
+                                    </div>
+                                    <h4 class="panel-title">
+                                        <a href="#cheetah-data-processing{{dataProcessing.id}}" data-toggle="collapse">{{dataProcessing.name}}</a>
+                                    </h4>
+                                </div>
+                                <div id="cheetah-data-processing{{dataProcessing.id}}" class="panel-collapse collapse">
+                                    <div class="panel-body">
+                                        <ul class="list-group" ng-show="dataProcessing.steps.length > 0">
+                                            <li class="list-group-item" ng-repeat="step in dataProcessing.steps">Step {{$index + 1}}: {{step.name}}</li>
+                                        </ul>
+                                        <p ng-show="dataProcessing.steps.length === 0">
+                                            For this data processing, no steps have been defined yet. Please use the button below for adding new steps.
+                                        </p>
+
+                                        <div>
+                                            <button class="btn btn-default" ng-click="showAddDataProcessingStepModal()">Add Step</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-default" ng-click="showAddDataProcessingModal()">Add Data Processing</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -94,19 +136,90 @@
     </div>
 </div>
 
-<div class="modal" id="cheetah-test-modal" ng-controller="TestController">
+<div class="modal" id="cheetah-add-data-processing-modal" ng-controller="AddDataProcessingModalController">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                         aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Add Study</h4>
+                <h4 class="modal-title">Add Data Processing</h4>
             </div>
             <div class="modal-body container-fluid">
-                {{content}}
+                <form data-toggle="validator" id="addStudyForm" role="form">
+                    <div class="form-group">
+                        <div><label for="study-name">Name</label></div>
+                        <div><input class="form-control" type="text" ng-model="name" required></div>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <div><label for="study-comment">Comment</label></div>
+                        <div><textarea class="form-control" ng-model="comment" rows="5"></textarea>
+                        </div>
+                    </div>
 
-                <button ng-click="close()">buttonski</button>
+                    <div class="form-group">
+                        <button class="btn btn-primary" ng-click="addDataProcessing()">Add</button>
+                        <button class="btn" data-dismiss="modal" aria-label="Close">Cancel</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 </div>
+
+
+<div class="modal" id="cheetah-add-data-processing-step-modal" ng-controller="AddDataProcessingStepModalController">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Add Data Processing Step</h4>
+            </div>
+            <div class="modal-body container-fluid">
+                <form data-toggle="validator" role="form">
+                    <div class="form-group">
+                        <label>
+                            <input type="radio" ng-model="type" value="clean"> Clean Data
+                        </label><br>
+                        <label>
+                            <input type="radio" ng-model="type" value="analyze"> Analyze Data
+                        </label><br>
+                    </div>
+
+                    <div class="form-group">
+                        <button class="btn btn-primary" ng-click="addDataProcessingStep()">Continue</button>
+                        <button class="btn" data-dismiss="modal" aria-label="Close">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="cheetah-add-clean-step-modal" ng-controller="AddCleanStepModalController">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Add Clean Step</h4>
+            </div>
+            <div class="modal-body container-fluid">
+                <form data-toggle="validator" role="form">
+                    <div class="form-group">
+                        <div><label>Name</label></div>
+                        <div><input class="form-control" type="text" ng-model="name" required></div>
+                        <div class="help-block with-errors"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <button class="btn btn-primary" ng-click="addCleanStep()">Continue</button>
+                        <button class="btn" data-dismiss="modal" aria-label="Close">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+

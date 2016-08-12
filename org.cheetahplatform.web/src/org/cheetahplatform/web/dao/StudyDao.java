@@ -11,8 +11,33 @@ import java.util.List;
 
 import org.cheetahplatform.web.dto.PlainSubjectDto;
 import org.cheetahplatform.web.dto.StudyDto;
+import org.cheetahplatform.web.eyetracking.analysis.DataProcessing;
 
 public class StudyDao {
+	/**
+	 * Queries and adds the data processing for a given list of studies.
+	 *
+	 * @param connection
+	 * @param studies
+	 * @throws SQLException
+	 */
+	public void addDataProcessing(Connection connection, List<StudyDto> studies) throws SQLException {
+		PreparedStatement statement = connection.prepareStatement("select * from data_processing where fk_study = ?");
+		for (StudyDto study : studies) {
+			statement.setLong(1, study.getId());
+			ResultSet resultSet = statement.executeQuery();
+
+			while (resultSet.next()) {
+				long id = resultSet.getLong("pk_data_processing");
+				String name = resultSet.getString("name");
+				String comment = resultSet.getString("comment");
+
+				DataProcessing dataProcessing = new DataProcessing(id, name, comment);
+				study.addDataProcessing(dataProcessing);
+			}
+		}
+	}
+
 	private void assignUserToStudy(Connection connection, long userId, long id) throws SQLException {
 		PreparedStatement assignmentStatement = connection.prepareStatement("insert into studies_to_user (fk_user,fk_study) values (?, ?)");
 		assignmentStatement.setLong(1, userId);

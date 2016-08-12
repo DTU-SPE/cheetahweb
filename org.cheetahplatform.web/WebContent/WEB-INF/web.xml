@@ -547,13 +547,43 @@
     <url-pattern>/private/deleteData</url-pattern>
   </servlet-mapping>
   <servlet>
-  	<description></description>
-  	<display-name>FileUploadServlet</display-name>
-	<servlet-name>FileUploadServlet</servlet-name>
-	<servlet-class>org.cheetahplatform.web.servlet.FileUploadServlet</servlet-class>
+    <description></description>
+    <display-name>FileUploadServlet</display-name>
+    <servlet-name>FileUploadServlet</servlet-name>
+    <servlet-class>org.cheetahplatform.web.servlet.FileUploadServlet</servlet-class>
   </servlet>
   <servlet-mapping>
-	<servlet-name>FileUploadServlet</servlet-name>
-	<url-pattern>/private/fileUpload</url-pattern>
+    <servlet-name>FileUploadServlet</servlet-name>
+    <url-pattern>/private/fileUpload</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>AddDataProcessingServlet</display-name>
+    <servlet-name>AddDataProcessingServlet</servlet-name>
+    <servlet-class>org.cheetahplatform.web.servlet.AddDataProcessingServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AddDataProcessingServlet</servlet-name>
+    <url-pattern>/private/addDataProcessing</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>DeleteDataProcessingServlet</display-name>
+    <servlet-name>DeleteDataProcessingServlet</servlet-name>
+    <servlet-class>org.cheetahplatform.web.servlet.DeleteDataProcessingServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DeleteDataProcessingServlet</servlet-name>
+    <url-pattern>/private/deleteDataProcessing</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>AddDataProcessingStepServlet</display-name>
+    <servlet-name>AddDataProcessingStepServlet</servlet-name>
+    <servlet-class>org.cheetahplatform.web.servlet.AddDataProcessingStepServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AddDataProcessingStepServlet</servlet-name>
+    <url-pattern>/private/addDataProcessingStep</url-pattern>
   </servlet-mapping>
 </web-app>

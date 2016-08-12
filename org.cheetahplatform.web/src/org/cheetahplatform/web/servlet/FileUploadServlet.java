@@ -23,7 +23,7 @@ import org.cheetahplatform.web.dto.StudyDto;
 
 public class FileUploadServlet extends AbstractCheetahServlet {
 
-	private static class FileUploadRespone {
+	static class FileUploadRespone {
 		private String message;
 		private List<CreateSubjectResponse> subjectList;
 

@@ -1,23 +1,39 @@
 package org.cheetahplatform.web.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.cheetahplatform.web.eyetracking.analysis.DataProcessing;
+
 public class StudyDto {
 	private Long id;
 	private String name;
 	private String comment;
 	private Long synchronizedFrom;
+	private List<DataProcessing> dataProcessing;
 
 	public StudyDto() {
-		// for mappers
+		dataProcessing = new ArrayList<>();
 	}
 
 	public StudyDto(Long id, String name, String comment) {
+		this();
+
 		this.id = id;
 		this.name = name;
 		this.comment = comment;
 	}
 
+	public void addDataProcessing(DataProcessing toAdd) {
+		this.dataProcessing.add(toAdd);
+	}
+
 	public String getComment() {
 		return comment;
+	}
+
+	public List<DataProcessing> getDataProcessing() {
+		return dataProcessing;
 	}
 
 	public Long getId() {

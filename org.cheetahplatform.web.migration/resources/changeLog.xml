@@ -437,11 +437,12 @@
 				<constraints primaryKey="true" primaryKeyName="pk_data_processing_key" />
 			</column>
 			<column name="fk_study" type="BIGINT(20) UNSIGNED">
-				<constraints unique="true" nullable="false" />
+				<constraints nullable="false" />
 			</column>
 			<column name="name" type="VARCHAR(255)">
 				<constraints nullable="false" />
 			</column>
+			<column name="comment" type="VARCHAR(1024)" />
 		</createTable>
 
 		<createTable tableName="data_processing_step">
