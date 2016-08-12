@@ -22,6 +22,10 @@ public class DataProcessing {
 		this.comment = comment;
 	}
 
+	public void addStep(DataProcessingStep step) {
+		steps.add(step);
+	}
+
 	public String getComment() {
 		return comment;
 	}

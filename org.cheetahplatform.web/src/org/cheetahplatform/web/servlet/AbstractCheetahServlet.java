@@ -1,6 +1,8 @@
 package org.cheetahplatform.web.servlet;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -100,11 +102,19 @@ public abstract class AbstractCheetahServlet extends HttpServlet {
 	}
 
 	public static <T> T readJson(HttpServletRequest request, Class<T> clazz) throws JsonParseException, IOException {
+		return readJson(request.getInputStream(), clazz);
+	}
+
+	public static <T> T readJson(InputStream input, Class<T> clazz) throws JsonParseException, IOException {
 		JsonFactory factory = new JsonFactory();
 		ObjectMapper mapper = new ObjectMapper(factory);
 		factory.setCodec(mapper);
-		JsonParser parser = factory.createParser(request.getInputStream());
+		JsonParser parser = factory.createParser(input);
 		return parser.readValueAs(clazz);
+	}
+
+	public static <T> T readJson(String json, Class<T> clazz) throws JsonParseException, IOException {
+		return readJson(new ByteArrayInputStream(json.getBytes()), clazz);
 	}
 
 	public static ProcessInstance readPpmInstance(long id) throws SQLException {

@@ -13,6 +13,14 @@ public class DataProcessingStep {
 	private int version;
 	private String configuration;
 
+	public DataProcessingStep(long id, String name, String type, int version, String configuration) {
+		this.id = id;
+		this.name = name;
+		this.type = type;
+		this.version = version;
+		this.configuration = configuration;
+	}
+
 	public String getConfiguration() {
 		return configuration;
 	}

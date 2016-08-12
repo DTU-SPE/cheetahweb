@@ -1,4 +1,4 @@
-angular.module('cheetah.StudyManagement', ['ngRoute']).controller('StudyOverviewController', function ($scope, $http) {
+angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData']).controller('StudyOverviewController', function ($scope, $http) {
 }).controller('StudyController', function ($rootScope, $scope, $http) {
     $scope.studies = [];
     $scope.newStudyName = "";
@@ -70,10 +70,6 @@ angular.module('cheetah.StudyManagement', ['ngRoute']).controller('StudyOverview
         $scope.study = study;
     });
 
-    $scope.$on('cheetah-show-data-processing', function (event, study) {
-        $scope.study = study;
-    });
-
     $scope.showOverview = function () {
         $scope.$emit('cheetah-show-overview');
     };
@@ -104,11 +100,11 @@ angular.module('cheetah.StudyManagement', ['ngRoute']).controller('StudyOverview
         });
     };
 
-    $scope.showAddDataProcessingStepModal = function () {
-        cheetah.showModal($rootScope, 'cheetah-add-data-processing-step-modal');
+    $scope.showAddDataProcessingStepModal = function (dataProcessing) {
+        cheetah.showModal($rootScope, 'cheetah-add-data-processing-step-modal', dataProcessing);
     };
 }).controller('AddDataProcessingModalController', function ($scope, $http) {
-    $scope.$on('cheetah-add-data-processing-modal', function (event, study) {
+    $scope.$on('cheetah-add-data-processing-modal.show', function (event, study) {
         $scope.study = study;
         $scope.name = '';
         $scope.comment = '';
@@ -127,21 +123,47 @@ angular.module('cheetah.StudyManagement', ['ngRoute']).controller('StudyOverview
             cheetah.hideModal($scope, 'cheetah-add-data-processing-modal');
         });
     };
-}).controller('AddDataProcessingStepModalController', function ($rootScope, $scope) {
-    $scope.$on('cheetah-add-data-processing-step-modal', function () {
+}).controller('AddDataProcessingStepModalController', function ($rootScope, $scope, $http) {
+    $scope.$on('cheetah-add-data-processing-step-modal.show', function (event, dataProcessing) {
         $scope.type = 'clean';
+        $scope.name = '';
+        $scope.dataProcessing = dataProcessing;
+    });
+
+    $rootScope.$on('cheetah-clean-data-modal.hide', function (event, data) {
+        var step = {
+            dataProcessingId: $scope.dataProcessing.id,
+            name: $scope.name,
+            type: $scope.type,
+            configuration: angular.toJson({
+                filters: data.filters,
+                parameters: data.parameters,
+                decimalSeparator: data.decimalSeparator,
+                fileNamePostFix: data.fileNamePostFix
+            })
+        };
+
+        $http.post('../../private/addDataProcessingStep', step).then(function (id) {
+            step.id = id;
+            $scope.dataProcessing.steps.push(step);
+        });
     });
 
     $scope.addDataProcessingStep = function () {
+        if ($scope.name.trim().length === 0) {
+            BootstrapDialog.alert({title: 'Name Missing', message: 'Please enter a name for the step.'});
+            return;
+        }
+
         if ($scope.type === 'clean') {
             cheetah.hideModal($scope, 'cheetah-add-data-processing-step-modal');
-            cheetah.showModal($rootScope, 'cheetah-add-clean-step-modal');
+            cheetah.showModal($rootScope, 'cheetah-clean-data-modal');
         } else {
             throw "The following step is not supported yet: " + $scope.type;
         }
     };
 }).controller('AddCleanStepModalController', function ($scope, $http) {
-    $scope.$on('cheetah-add-clean-step-modal', function () {
+    $scope.$on('cheetah-add-clean-step-modal.show', function () {
 
     });
 }).config(function ($routeProvider) {

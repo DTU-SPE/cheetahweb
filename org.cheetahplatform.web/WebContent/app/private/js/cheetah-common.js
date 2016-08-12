@@ -7,7 +7,7 @@ var cheetah = cheetah || {};
  * @param data the data produced in the modal
  */
 cheetah.hideModal = function ($scope, id, data) {
-    $scope.$emit(id, data);
+    $scope.$emit(id + '.hide', data);
     $('#' + id).modal('hide');
 };
 
@@ -19,5 +19,5 @@ cheetah.hideModal = function ($scope, id, data) {
  */
 cheetah.showModal = function ($scope, id, data) {
     $('#' + id).modal('show');
-    $scope.$broadcast(id, data);
+    $scope.$broadcast(id + '.show', data);
 };

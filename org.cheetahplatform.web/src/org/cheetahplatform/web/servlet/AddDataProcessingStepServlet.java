@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.cheetahplatform.web.dao.DataProcessingStepDao;
+import org.cheetahplatform.web.eyetracking.analysis.CleanDataConfiguration;
 
 public class AddDataProcessingStepServlet extends AbstractCheetahServlet {
 	static class AddDataProcessingStepRequest {
@@ -54,8 +55,18 @@ public class AddDataProcessingStepServlet extends AbstractCheetahServlet {
 	protected void doPostWithDatabaseConnection(Connection connection, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		AddDataProcessingStepRequest addRequest = readJson(request, AddDataProcessingStepRequest.class);
+		// try to parse the configuration to ensure we do not get any incorrect data
+		String type = addRequest.getType();
+		if (type.equals("clean")) {
+			readJson(addRequest.getConfiguration(), CleanDataConfiguration.class);
+		} else {
+			throw new RuntimeException("Unknown step: " + type);
+		}
+
 		DataProcessingStepDao dao = new DataProcessingStepDao();
-		dao.insert(connection, addRequest.getDataProcessingId(), addRequest.getType(), addRequest.getName(), addRequest.getConfiguration());
+		long id = dao.insert(connection, addRequest.getDataProcessingId(), addRequest.getType(), addRequest.getName(),
+				addRequest.getConfiguration());
+		writeJson(response, id);
 	}
 
 }

@@ -7,11 +7,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.cheetahplatform.web.dto.PlainSubjectDto;
 import org.cheetahplatform.web.dto.StudyDto;
 import org.cheetahplatform.web.eyetracking.analysis.DataProcessing;
+import org.cheetahplatform.web.eyetracking.analysis.DataProcessingStep;
 
 public class StudyDao {
 	/**
@@ -22,18 +25,32 @@ public class StudyDao {
 	 * @throws SQLException
 	 */
 	public void addDataProcessing(Connection connection, List<StudyDto> studies) throws SQLException {
-		PreparedStatement statement = connection.prepareStatement("select * from data_processing where fk_study = ?");
+		PreparedStatement statement = connection.prepareStatement(
+				"select * from data_processing left outer join data_processing_step on pk_data_processing = fk_data_processing where fk_study = ?");
 		for (StudyDto study : studies) {
 			statement.setLong(1, study.getId());
 			ResultSet resultSet = statement.executeQuery();
 
+			Map<Long, DataProcessing> idToDataProcessing = new HashMap<>();
 			while (resultSet.next()) {
 				long id = resultSet.getLong("pk_data_processing");
-				String name = resultSet.getString("name");
-				String comment = resultSet.getString("comment");
+				DataProcessing dataProcessing = idToDataProcessing.get(id);
+				if (dataProcessing == null) {
+					String name = resultSet.getString("data_processing.name");
+					String comment = resultSet.getString("comment");
 
-				DataProcessing dataProcessing = new DataProcessing(id, name, comment);
-				study.addDataProcessing(dataProcessing);
+					dataProcessing = new DataProcessing(id, name, comment);
+					idToDataProcessing.put(id, dataProcessing);
+					study.addDataProcessing(dataProcessing);
+				}
+
+				long stepId = resultSet.getLong("pk_data_processing_step");
+				int version = resultSet.getInt("version");
+				String type = resultSet.getString("type");
+				String name = resultSet.getString("data_processing_step.name");
+				String configuration = resultSet.getString("configuration");
+
+				dataProcessing.addStep(new DataProcessingStep(stepId, name, type, version, configuration));
 			}
 		}
 	}

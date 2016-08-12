@@ -451,7 +451,7 @@
 				<constraints primaryKey="true" primaryKeyName="pk_data_processing_step_key" />
 			</column>
 			<column name="fk_data_processing" type="BIGINT(20) UNSIGNED">
-				<constraints unique="true" nullable="false" />
+				<constraints nullable="false" />
 			</column>
 			<column name="type" type="VARCHAR(255)">
 				<constraints nullable="false" />
