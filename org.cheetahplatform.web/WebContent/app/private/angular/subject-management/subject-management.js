@@ -213,7 +213,7 @@ myApp.controller('SubjCtrl', function ($scope, $http, $q, $timeout) {
             allowDouble: false
         };
         $http.post('../../private/createSubject', createdSubject).then(function (response) {
-            if (response.data.error) {
+            if (response.data.error === "email") {
                 BootstrapDialog.show({
                     title: 'Subject already exists',
                     message: 'There is already a subject in the database with the email address "' + createdSubject.email + '".\n Do you really want to add another subject with the same email address?',
@@ -257,6 +257,11 @@ myApp.controller('SubjCtrl', function ($scope, $http, $q, $timeout) {
                             dialogSelf.close();
                         }
                     }]
+                });
+            }else if (response.data.error==="idInStudy"){
+                BootstrapDialog.alert({
+                    title: 'Subject already exists',
+                    message: 'There is already a subject in the study "'+ $scope.selectedStudy.name + '" with the ID "' + $scope.subjectID + '".'
                 });
             } else {
                 BootstrapDialog.alert({

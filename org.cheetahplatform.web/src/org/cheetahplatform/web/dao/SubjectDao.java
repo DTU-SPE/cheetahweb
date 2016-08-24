@@ -211,4 +211,14 @@ public class SubjectDao extends AbstractCheetahDao {
 		int existingStudyCount = resultSet.getInt(1);
 		return existingStudyCount > 0;
 	}
+
+	public boolean subjectIDExistsInStudy(Connection connection, String subjectID, long study) throws SQLException {
+		PreparedStatement statement = connection.prepareStatement("select count(*) from subject where subject_id = ? AND fk_study = ?");
+		statement.setString(1, subjectID);
+		statement.setLong(2, study);
+		ResultSet resultSet = statement.executeQuery();
+		resultSet.next();
+		int existingStudyCount = resultSet.getInt(1);
+		return existingStudyCount > 0;
+	}
 }
