@@ -99,7 +99,7 @@ public class FileUploadServlet extends AbstractCheetahServlet {
 			throws Exception {
 		String line = reader.readLine();
 		if (!line.trim().equals("email;study;subjectId;comment")) {
-			throw new Exception("The first line in your CSV is not correct.\n The line should be:email;subjectId;studyId;comment ");
+			throw new Exception("The first line in your CSV is not correct.\n The line should email;study;subjectId;comment ");
 		}
 		line = reader.readLine();
 		while (line != null) {

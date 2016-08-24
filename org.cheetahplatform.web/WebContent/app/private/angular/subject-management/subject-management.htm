@@ -53,7 +53,7 @@
                     <a role="menuitem" tabindex="-1 " ng-click="showChangeSubjectModal()">Change Subject</a>
                 </li>
                 <li role="presentation">
-                    <a role="menuitem" tabindex="-1 " ng-click="showUpload()">Upload</a>
+                    <a role="menuitem" tabindex="-1 " ng-click="showUpload()">Import</a>
                 </li>
             </ul>
         </div>
@@ -63,7 +63,8 @@
         <thead>
         <tr>
             <th></th>
-            <th>Subject</th>
+            <th>Subject-ID</th>
+            <th>Email</th>
             <th>Study</th>
             <th>Comment</th>
         </tr>
@@ -73,6 +74,7 @@
             class="{{getSubjectClass(subject)}}">
             <td><span class="{{isSelected(subject)}}"></span></td>
             <td>{{subject.subjectId}}</td>
+            <td>{{subject.email}}</td>
             <td>{{subject.study.name}}</td>
             <td>{{subject.comment}}</td>
         </tr>
@@ -149,6 +151,18 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                         aria-hidden="true">×</span></button>
                 <h4 class="modal-title">Add Subjects via CSV</h4>
+                <div>
+                    The file should have a header-line and datas with comma seperated. The first line should be "email;study;subjectId;comment".<br>
+                    In every new line is a new subject. There are 4 rows, in the first is the email address, in the second the name of the study, in the third the ID of the subject,
+                    and in the last a comment.<br>
+                    An example would be:
+                    <p>
+                        email;study;subjectId;comment<br>
+                        user@mail.com;StudyName;123;Here a comment
+                    </p>
+                </div>
+            </div>
+            <div>
 
             </div>
             <div class="modal-body container-fluid">
