@@ -12,7 +12,7 @@ public class EyetrackingAnalysisWorkItem extends AbstractCheetahWorkItem {
 	private List<IEyeTrackingDataAnalyzer> analyzers;
 
 	public EyetrackingAnalysisWorkItem(long userId, List<IEyeTrackingDataAnalyzer> analyzers) {
-		super(userId);
+		super(userId, "Running Eye Tracking Analysis");
 		this.analyzers = analyzers;
 	}
 
@@ -58,6 +58,6 @@ public class EyetrackingAnalysisWorkItem extends AbstractCheetahWorkItem {
 
 	@Override
 	public String getDisplayName() {
-		return "Running Eye Tracking Analysis";
+		return message;
 	}
 }

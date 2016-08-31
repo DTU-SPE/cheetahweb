@@ -31,16 +31,12 @@ public class CleanPupillometryDataWorkItem extends AbstractCheetahWorkItem {
 	 */
 	private FilterRequest request;
 	/**
-	 * The id of the file to be cleaned.
-	 */
-	private long fileId;
-	/**
 	 * The path of the file to be cleaned.
 	 */
 	private String filePath;
 
 	public CleanPupillometryDataWorkItem(long userId, FilterRequest request, long fileId, String filePath) {
-		super(userId);
+		super(userId, "Cleaning pupillometry data");
 		this.request = request;
 		this.fileId = fileId;
 		this.filePath = filePath;
@@ -365,8 +361,4 @@ public class CleanPupillometryDataWorkItem extends AbstractCheetahWorkItem {
 		userFileDao.addTags(cleanedId, UserFileDao.TAG_CLEANED);
 	}
 
-	@Override
-	public String getDisplayName() {
-		return "Cleaning pupillometry data";
-	}
 }

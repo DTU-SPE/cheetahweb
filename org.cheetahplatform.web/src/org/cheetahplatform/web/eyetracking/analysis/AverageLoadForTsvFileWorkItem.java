@@ -17,14 +17,13 @@ import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileColumn;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileUtils;
 
 public class AverageLoadForTsvFileWorkItem extends AbstractCheetahWorkItem {
-	private long fileId;
 	private String leftPupilColumn;
 	private String rightPupilColumn;
 	private CheetahWorkItemGuard guard;
 
 	public AverageLoadForTsvFileWorkItem(long fileId, String leftPupilColumn, String rightPupilColumn, long userId,
 			CheetahWorkItemGuard guard) {
-		super(userId);
+		super(userId, "Calculating Average Load for .tsv file");
 		this.fileId = fileId;
 		this.leftPupilColumn = leftPupilColumn;
 		this.rightPupilColumn = rightPupilColumn;
@@ -64,8 +63,4 @@ public class AverageLoadForTsvFileWorkItem extends AbstractCheetahWorkItem {
 		guard.reportResult(reportableResult);
 	}
 
-	@Override
-	public String getDisplayName() {
-		return "Calculating Average Load for .tsv file";
-	}
 }

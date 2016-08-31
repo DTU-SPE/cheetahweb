@@ -47,16 +47,13 @@ public abstract class AbstractActivityBasedWorkItem extends AbstractCheetahWorkI
 	 */
 	private List<CodeAndExperimentActivity> activities;
 	/**
-	 * The id of the file to be worked on.
-	 */
-	protected long fileId;
-	/**
 	 * The name of the column in which the timestamp can be found.
 	 */
 	private String timestampColumnName;
 
-	public AbstractActivityBasedWorkItem(long userId, long fileId, List<CodeAndExperimentActivity> activities, String timestampColumn) {
-		super(userId);
+	public AbstractActivityBasedWorkItem(long userId, long fileId, List<CodeAndExperimentActivity> activities, String timestampColumn,
+			String message) {
+		super(userId, message);
 
 		this.fileId = fileId;
 		this.activities = activities;

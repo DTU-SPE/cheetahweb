@@ -34,6 +34,13 @@ angular.module('cheetah.ServerStatus', ['ngRoute']).controller('ServerStatusCtrl
         });
     };
 
+    $scope.computeWorkItemClass = function (editable) {
+        if (editable) {
+            return "alert-success";
+        }
+        return "alert-info";
+    };
+
     $interval($scope.refreshServerStatus, 1000);
 }).config(function ($routeProvider) {
     $routeProvider

@@ -35,11 +35,8 @@ public class ConnectPupillometricDataWorkItem extends AbstractConnectWorkItem {
 	private static final String SEPARATOR = ";";
 	private static final String EYE_TRACKER_TIMESTAMP = "EyeTrackerTimestamp";
 
-	protected long fileId;
-
 	public ConnectPupillometricDataWorkItem(long userId, long fileId, ConnectRequest request) {
-		super(userId, fileId, request);
-
+		super(userId, fileId, request, "Connecting pupillometry data to subject");
 		this.fileId = fileId;
 	}
 
@@ -159,11 +156,6 @@ public class ConnectPupillometricDataWorkItem extends AbstractConnectWorkItem {
 				logSuccessNotification("Connected '" + file.getFilename() + "' with subject '" + subjectName + "'.");
 			}
 		}
-	}
-
-	@Override
-	public String getDisplayName() {
-		return "Connecting pupillometry data to subject";
 	}
 
 }

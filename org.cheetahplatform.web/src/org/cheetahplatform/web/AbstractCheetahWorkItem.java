@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.cheetahplatform.web.dao.NotificationDao;
+import org.cheetahplatform.web.dao.UserFileDao;
 import org.cheetahplatform.web.dto.PpmInstanceDto;
 import org.cheetahplatform.web.dto.SubjectDto;
 import org.cheetahplatform.web.util.FileUtils;
@@ -37,8 +38,15 @@ public abstract class AbstractCheetahWorkItem implements ICheetahWorkItem {
 
 	protected long userId;
 
-	public AbstractCheetahWorkItem(long userId) {
+	private String filename;
+
+	protected String message;
+
+	protected long fileId;
+
+	public AbstractCheetahWorkItem(long userId, String message) {
 		this.userId = userId;
+		this.message = message;
 	}
 
 	@Override
@@ -57,6 +65,18 @@ public abstract class AbstractCheetahWorkItem implements ICheetahWorkItem {
 			}
 		}
 		return timestampIndex;
+	}
+
+	@Override
+	public String getDisplayName() {
+		if (filename == null) {
+			try {
+				filename = new UserFileDao().getFile(fileId).getFilename();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return message + ": " + filename;
 	}
 
 	@Override

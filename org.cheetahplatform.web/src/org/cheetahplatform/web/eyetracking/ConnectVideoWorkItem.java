@@ -31,7 +31,7 @@ import org.cheetahplatform.web.servlet.AbstractCheetahServlet;
 public class ConnectVideoWorkItem extends AbstractConnectWorkItem {
 
 	public ConnectVideoWorkItem(long userId, long fileId, ConnectRequest request) {
-		super(userId, fileId, request);
+		super(userId, fileId, request, "Connecting video to subject");
 	}
 
 	@Override
@@ -94,10 +94,5 @@ public class ConnectVideoWorkItem extends AbstractConnectWorkItem {
 				logSuccessNotification("Connected video '" + movieFile.getFilename() + "' to subject '" + subjectName + "'.");
 			}
 		}
-	}
-
-	@Override
-	public String getDisplayName() {
-		return "Connecting video to subject";
 	}
 }

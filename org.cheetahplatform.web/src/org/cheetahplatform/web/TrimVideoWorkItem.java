@@ -36,7 +36,7 @@ public class TrimVideoWorkItem extends AbstractActivityBasedWorkItem {
 	private static final String[] FFMPEG_LOCATIONS = new String[] { "C:\\Program Files\\ffmpeg\\bin", "/usr/local/lib/ffmpeg/64bit" };
 
 	public TrimVideoWorkItem(long userId, long fileId, List<CodeAndExperimentActivity> activities, String timestampColumn) {
-		super(userId, fileId, activities, timestampColumn);
+		super(userId, fileId, activities, timestampColumn, "Trimming Video");
 	}
 
 	private String formatTimestamp(long timestamp) {
@@ -48,11 +48,6 @@ public class TrimVideoWorkItem extends AbstractActivityBasedWorkItem {
 		DecimalFormat format = new DecimalFormat("00");
 		DecimalFormat msFormat = new DecimalFormat("000");
 		return format.format(hours) + ":" + format.format(minutes) + ":" + format.format(seconds) + "." + msFormat.format(ms);
-	}
-
-	@Override
-	public String getDisplayName() {
-		return "Trimming Video";
 	}
 
 	/**

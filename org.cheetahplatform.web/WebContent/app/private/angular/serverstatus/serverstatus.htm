@@ -28,7 +28,7 @@
                                 <div class="alert alert-info">No work in sight! Hang loose! 😎</div>
                             </div>
                             <div ng-repeat="workItem in status.workItems">
-                                <div class="alert alert-info">
+                                <div class="alert {{computeWorkItemClass(workItem.editable)}}">
                                     <span>{{workItem.message}}</span>
                                     <span class="cheetah-server-status-workitem-editable icon-server-status-workitem-cancelable-{{workItem.editable}}"
                                           ng-click="cancelWorkItem(workItem)"></span>

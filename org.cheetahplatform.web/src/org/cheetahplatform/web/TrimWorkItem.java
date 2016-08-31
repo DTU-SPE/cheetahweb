@@ -26,12 +26,7 @@ import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileLine;
 public class TrimWorkItem extends AbstractActivityBasedWorkItem {
 
 	public TrimWorkItem(long userId, long fileId, String timestampColumn, List<CodeAndExperimentActivity> activities) {
-		super(userId, fileId, activities, timestampColumn);
-	}
-
-	@Override
-	public String getDisplayName() {
-		return "Trimming Pupillometric Data.";
+		super(userId, fileId, activities, timestampColumn, "Trimming Pupillometric Data");
 	}
 
 	@Override

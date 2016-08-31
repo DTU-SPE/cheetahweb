@@ -9,11 +9,10 @@ import org.cheetahplatform.web.AbstractCheetahWorkItem;
 import org.cheetahplatform.web.dto.ConnectRequest;
 
 public abstract class AbstractConnectWorkItem extends AbstractCheetahWorkItem {
-	protected long fileId;
 	protected ConnectRequest request;
 
-	public AbstractConnectWorkItem(long userId, long fileId, ConnectRequest request) {
-		super(userId);
+	public AbstractConnectWorkItem(long userId, long fileId, ConnectRequest request, String message) {
+		super(userId, message);
 
 		this.fileId = fileId;
 		this.request = request;
