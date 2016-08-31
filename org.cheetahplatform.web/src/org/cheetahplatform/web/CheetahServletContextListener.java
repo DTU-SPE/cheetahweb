@@ -16,8 +16,7 @@ import org.cheetahplatform.web.util.UserfileCleanup;
  * @author Jakob
  */
 public class CheetahServletContextListener implements ServletContextListener {
-	// private static final int NUMBER_OF_WORKERS = Math.max(Runtime.getRuntime().availableProcessors() - 1, 1);
-	private static final int NUMBER_OF_WORKERS = 1;// TODO Bei commit löschen...
+	private static final int NUMBER_OF_WORKERS = Math.max(Runtime.getRuntime().availableProcessors() - 1, 1);
 	private static List<CheetahWorker> workers;
 
 	public static List<CheetahWorker> getWorkers() {
