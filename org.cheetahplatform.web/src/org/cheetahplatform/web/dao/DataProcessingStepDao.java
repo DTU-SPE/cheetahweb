@@ -8,6 +8,13 @@ import java.sql.Statement;
 
 public class DataProcessingStepDao {
 
+	public void delete(Connection connection, long id) throws SQLException {
+		PreparedStatement statement = connection.prepareStatement("delete from data_processing_step where pk_data_processing_step = ?");
+		statement.setLong(1, id);
+		statement.execute();
+		statement.close();
+	}
+
 	/**
 	 * Inserts a new data processing step.
 	 *
@@ -32,7 +39,10 @@ public class DataProcessingStepDao {
 
 		ResultSet keys = statement.getGeneratedKeys();
 		keys.next();
-		return keys.getLong(1);
+		long id = keys.getLong(1);
+		statement.close();
+
+		return id;
 	}
 
 }

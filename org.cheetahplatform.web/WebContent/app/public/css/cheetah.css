@@ -467,3 +467,9 @@ ul.dropdown-menu a {
 .cheetah-data-processing-buttons span {
     cursor: pointer;
 }
+
+.cheetah-delete-dataprocessing-step {
+    float: right;
+    cursor: pointer;
+    padding-left: 5px;
+}

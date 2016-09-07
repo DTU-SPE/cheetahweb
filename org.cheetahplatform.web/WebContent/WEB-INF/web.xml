@@ -586,4 +586,14 @@
     <servlet-name>AddDataProcessingStepServlet</servlet-name>
     <url-pattern>/private/addDataProcessingStep</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>DeleteDataProcessingStepServlet</display-name>
+    <servlet-name>DeleteDataProcessingStepServlet</servlet-name>
+    <servlet-class>org.cheetahplatform.web.servlet.DeleteDataProcessingStepServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DeleteDataProcessingStepServlet</servlet-name>
+    <url-pattern>/private/deleteDataProcessingStep</url-pattern>
+  </servlet-mapping>
 </web-app>
