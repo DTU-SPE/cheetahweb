@@ -5,7 +5,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.cheetahplatform.web.dto.ChangeSubjectRequest;
 import org.cheetahplatform.web.dto.CreateSubjectRequest;
@@ -107,6 +110,25 @@ public class SubjectDao extends AbstractCheetahDao {
 
 		statement.close();
 		return subjects;
+	}
+
+	public Map<Long, Long> getStudyIdsForSubjects(Set<Long> subjectIds) throws SQLException {
+		Connection connection = AbstractCheetahServlet.getDatabaseConnection();
+
+		String in = buildIn(subjectIds);
+		String sql = "select pk_subject, fk_study from subject where pk_subject in (" + in + ");";
+		PreparedStatement statement = connection.prepareStatement(sql);
+
+		Map<Long, Long> mapping = new HashMap<>();
+		ResultSet result = statement.executeQuery();
+		while (result.next()) {
+			long subjectId = result.getLong(1);
+			long studyId = result.getLong(2);
+			mapping.put(subjectId, studyId);
+		}
+		cleanUp(connection, statement, result);
+
+		return mapping;
 	}
 
 	public SubjectDto getSubjectForPpmInstanceId(long userId, long ppmInstanceId) throws SQLException {

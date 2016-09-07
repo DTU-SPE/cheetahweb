@@ -1,9 +1,9 @@
 package org.cheetahplatform.web.dao;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Collection;
 
 public class AbstractCheetahDao {
@@ -27,17 +27,17 @@ public class AbstractCheetahDao {
 		return builder.toString();
 	}
 
-	public void cleanUp(Connection connection, PreparedStatement statement) throws SQLException {
+	public void cleanUp(Connection connection, Statement statement) throws SQLException {
 		statement.close();
 		connection.close();
 	}
 
-	public void cleanUp(Connection connection, PreparedStatement statement, ResultSet resultSet) throws SQLException {
+	public void cleanUp(Connection connection, Statement statement, ResultSet resultSet) throws SQLException {
 		resultSet.close();
 		cleanUp(connection, statement);
 	}
 
-	protected void cleanUp(ResultSet result, PreparedStatement statement) throws SQLException {
+	protected void cleanUp(ResultSet result, Statement statement) throws SQLException {
 		result.close();
 		statement.close();
 	}

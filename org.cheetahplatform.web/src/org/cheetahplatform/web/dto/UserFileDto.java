@@ -12,7 +12,8 @@ public class UserFileDto {
 	private List<UserFileTagDto> tags;
 	private long processInstanceId;
 	private String processInstanceName;
-	private Long subjectId;
+	private Long subjectId = null;
+	private Long studyId;
 
 	public UserFileDto() {
 		// JSON
@@ -53,6 +54,10 @@ public class UserFileDto {
 
 	public String getProcessInstanceName() {
 		return processInstanceName;
+	}
+
+	public Long getStudyId() {
+		return studyId;
 	}
 
 	public Long getSubjectId() {
@@ -100,6 +105,10 @@ public class UserFileDto {
 
 	public void setProcessInstanceName(String processInstanceName) {
 		this.processInstanceName = processInstanceName;
+	}
+
+	public void setStudyId(Long studyId) {
+		this.studyId = studyId;
 	}
 
 	public void setTags(List<UserFileTagDto> tags) {

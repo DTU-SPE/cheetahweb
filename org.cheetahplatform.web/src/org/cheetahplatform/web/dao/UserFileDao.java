@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.io.IOUtils;
@@ -60,6 +61,25 @@ public class UserFileDao extends AbstractCheetahDao {
 		}
 
 		return archive;
+	}
+
+	private void addStudyToFiles(List<UserFileDto> files) throws SQLException {
+		Set<Long> ids = new java.util.HashSet<>();
+		for (UserFileDto userFileDto : files) {
+			Long subjectId = userFileDto.getSubjectId();
+			if (subjectId == null) {
+				continue;
+			}
+
+			ids.add(subjectId);
+		}
+
+		Map<Long, Long> studyIdsForSubjects = new SubjectDao().getStudyIdsForSubjects(ids);
+		for (UserFileDto userFileDto : files) {
+			Long subjectId = userFileDto.getSubjectId();
+			Long studyId = studyIdsForSubjects.get(subjectId);
+			userFileDto.setStudyId(studyId);
+		}
 	}
 
 	public void addTags(Long fileId, String... tags) throws SQLException {
@@ -146,6 +166,9 @@ public class UserFileDao extends AbstractCheetahDao {
 		String url = path.replaceAll("webapps", "../..");
 		String comment = result.getString("comment");
 		Long subjectId = result.getLong("user_data.fk_subject");
+		if (result.wasNull()) {
+			subjectId = null;
+		}
 
 		UserFileDto userFileDto = new UserFileDto(id, filename, type, url, comment, subjectId);
 		if (extractProcessInstance) {
@@ -167,6 +190,7 @@ public class UserFileDao extends AbstractCheetahDao {
 			files.add(extractFile(result, extractProcessInstance));
 		}
 		addTagsToFiles(files);
+		addStudyToFiles(files);
 		return files;
 	}
 
@@ -229,6 +253,7 @@ public class UserFileDao extends AbstractCheetahDao {
 
 		cleanUp(connection, statement, result);
 		addTagsToFiles(files);
+		addStudyToFiles(files);
 		return files;
 	}
 
@@ -244,6 +269,7 @@ public class UserFileDao extends AbstractCheetahDao {
 		cleanUp(connection, statement, result);
 
 		addTagsToFile(file);
+		addStudyToFiles(Arrays.asList(file));
 
 		return file;
 	}

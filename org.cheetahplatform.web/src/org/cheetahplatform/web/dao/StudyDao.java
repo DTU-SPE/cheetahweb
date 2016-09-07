@@ -7,16 +7,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import org.cheetahplatform.web.dto.PlainSubjectDto;
 import org.cheetahplatform.web.dto.StudyDto;
 import org.cheetahplatform.web.eyetracking.analysis.DataProcessing;
-import org.cheetahplatform.web.eyetracking.analysis.DataProcessingStep;
 
-public class StudyDao {
+public class StudyDao extends AbstractCheetahDao {
 	/**
 	 * Queries and adds the data processing for a given list of studies.
 	 *
@@ -25,32 +23,12 @@ public class StudyDao {
 	 * @throws SQLException
 	 */
 	public void addDataProcessing(Connection connection, List<StudyDto> studies) throws SQLException {
-		PreparedStatement statement = connection.prepareStatement(
-				"select * from data_processing left outer join data_processing_step on pk_data_processing = fk_data_processing where fk_study = ?");
+		DataProcessingDao dataProcessingDao = new DataProcessingDao();
 		for (StudyDto study : studies) {
-			statement.setLong(1, study.getId());
-			ResultSet resultSet = statement.executeQuery();
-
-			Map<Long, DataProcessing> idToDataProcessing = new HashMap<>();
-			while (resultSet.next()) {
-				long id = resultSet.getLong("pk_data_processing");
-				DataProcessing dataProcessing = idToDataProcessing.get(id);
-				if (dataProcessing == null) {
-					String name = resultSet.getString("data_processing.name");
-					String comment = resultSet.getString("comment");
-
-					dataProcessing = new DataProcessing(id, name, comment);
-					idToDataProcessing.put(id, dataProcessing);
-					study.addDataProcessing(dataProcessing);
-				}
-
-				long stepId = resultSet.getLong("pk_data_processing_step");
-				int version = resultSet.getInt("version");
-				String type = resultSet.getString("type");
-				String name = resultSet.getString("data_processing_step.name");
-				String configuration = resultSet.getString("configuration");
-
-				dataProcessing.addStep(new DataProcessingStep(stepId, name, type, version, configuration));
+			Long studyId = study.getId();
+			Collection<DataProcessing> dataProcessings = dataProcessingDao.selectDataProcessingForStudy(connection, studyId).values();
+			for (DataProcessing dataProcessing : dataProcessings) {
+				study.addDataProcessing(dataProcessing);
 			}
 		}
 	}
@@ -91,7 +69,6 @@ public class StudyDao {
 		statement.setLong(2, studyId);
 		statement.executeUpdate();
 		statement.close();
-
 	}
 
 	public List<StudyDto> getStudies(Connection connection) throws SQLException {
@@ -106,8 +83,7 @@ public class StudyDao {
 
 			studies.add(new StudyDto(id, name, comment));
 		}
-		studyResult.close();
-		statement.close();
+		cleanUp(studyResult, statement);
 		return studies;
 	}
 
@@ -182,5 +158,4 @@ public class StudyDao {
 
 		return synchronizedStudy;
 	}
-
 }
