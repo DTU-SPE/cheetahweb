@@ -35,21 +35,24 @@ public class DataProcessingDao extends AbstractCheetahDao {
 	 * @param comment
 	 * @throws SQLException
 	 */
-	public DataProcessing insert(Connection connection, long studyId, String name, String comment) throws SQLException {
-		PreparedStatement statement = connection.prepareStatement("insert into data_processing (fk_study, name, comment) values (?, ?, ?)",
+	public DataProcessing insert(Connection connection, long studyId, String name, String comment, String timestampColumn,
+			String leftPupilColumn, String rightPupilColumn) throws SQLException {
+		PreparedStatement statement = connection.prepareStatement(
+				"insert into data_processing (fk_study, name, comment, timestamp_column, left_pupil_column, right_pupil_column) values (?, ?, ?, ?, ?, ?)",
 				Statement.RETURN_GENERATED_KEYS);
 		statement.setLong(1, studyId);
 		statement.setString(2, name);
 		statement.setString(3, comment);
+		statement.setString(4, timestampColumn);
+		statement.setString(5, leftPupilColumn);
+		statement.setString(6, rightPupilColumn);
 		statement.execute();
 
 		ResultSet keys = statement.getGeneratedKeys();
 		keys.next();
 		long id = keys.getLong(1);
 
-		cleanUp(keys, statement);
-
-		return new DataProcessing(id, name, comment);
+		return new DataProcessing(id, name, comment, timestampColumn, leftPupilColumn, rightPupilColumn);
 	}
 
 	/**
@@ -77,8 +80,11 @@ public class DataProcessingDao extends AbstractCheetahDao {
 			if (dataProcessing == null) {
 				String name = resultSet.getString("data_processing.name");
 				String comment = resultSet.getString("comment");
+				String timestampColumn = resultSet.getString("timestamp_column");
+				String leftPupilColumn = resultSet.getString("left_pupil_column");
+				String rightPupilColumn = resultSet.getString("right_pupil_column");
 
-				dataProcessing = new DataProcessing(id, name, comment);
+				dataProcessing = new DataProcessing(id, name, comment, timestampColumn, leftPupilColumn, rightPupilColumn);
 				idToDataProcessing.put(id, dataProcessing);
 			}
 

@@ -150,13 +150,28 @@
                 <form data-toggle="validator" id="addStudyForm" role="form">
                     <div class="form-group">
                         <div><label for="study-name">Name</label></div>
-                        <div><input class="form-control" type="text" ng-model="name" required></div>
+                        <div><input class="form-control" type="text" ng-model="name" placeholder="The name of the data processing" required></div>
                         <div class="help-block with-errors"></div>
                     </div>
                     <div class="form-group">
                         <div><label for="study-comment">Comment</label></div>
-                        <div><textarea class="form-control" ng-model="comment" rows="5"></textarea>
+                        <div><textarea class="form-control" ng-model="comment" rows="5" placeholder="Short comment on the data processing"></textarea>
                         </div>
+                    </div>
+                    <div class="form-group">
+                        <div><label for="study-name">Timestamp Column</label></div>
+                        <div><input class="form-control" type="text" ng-model="timestampColumn" placeholder="The name of the column in which the timestamp can be found" required></div>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <div><label for="study-name">Left Pupil Column</label></div>
+                        <div><input class="form-control" type="text" ng-model="leftPupilColumn" placeholder="The name of the column in which the size of the left pupil can be found" required></div>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <div><label for="study-name">Right Pupil Column</label></div>
+                        <div><input class="form-control" type="text" ng-model="rightPupilColumn" placeholder="The name of the column in which the size of the right pupil can be found" required></div>
+                        <div class="help-block with-errors"></div>
                     </div>
 
                     <div class="form-group">

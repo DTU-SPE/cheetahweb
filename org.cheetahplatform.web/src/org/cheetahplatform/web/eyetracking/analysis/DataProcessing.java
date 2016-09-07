@@ -14,8 +14,14 @@ public class DataProcessing {
 	private String name;
 	private String comment;
 	private List<DataProcessingStep> steps;
+	private String timestampColumn;
+	private String leftPupilColumn;
+	private String rightPupilColumn;
 
-	public DataProcessing(long id, String name, String comment) {
+	public DataProcessing(long id, String name, String comment, String timestampColumn, String leftPupilColumn, String rightPupilColumn) {
+		this.timestampColumn = timestampColumn;
+		this.leftPupilColumn = leftPupilColumn;
+		this.rightPupilColumn = rightPupilColumn;
 		this.steps = new ArrayList<>();
 		this.id = id;
 		this.name = name;
@@ -34,12 +40,24 @@ public class DataProcessing {
 		return id;
 	}
 
+	public String getLeftPupilColumn() {
+		return leftPupilColumn;
+	}
+
 	public String getName() {
 		return name;
 	}
 
+	public String getRightPupilColumn() {
+		return rightPupilColumn;
+	}
+
 	public List<DataProcessingStep> getSteps() {
 		return steps;
+	}
+
+	public String getTimestampColumn() {
+		return timestampColumn;
 	}
 
 }

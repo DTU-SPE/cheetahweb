@@ -130,6 +130,9 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData']).cont
         $scope.study = study;
         $scope.name = '';
         $scope.comment = '';
+        $scope.timestampColumn = '';
+        $scope.leftPupilColumn = '';
+        $scope.rightPupilColumn = '';
     });
 
     $scope.addDataProcessing = function () {
@@ -138,7 +141,12 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData']).cont
         }
 
         var postData = {
-            studyId: $scope.study.id, name: $scope.name, comment: $scope.comment
+            studyId: $scope.study.id,
+            name: $scope.name,
+            comment: $scope.comment,
+            timestampColumn: $scope.timestampColumn,
+            leftPupilColumn: $scope.leftPupilColumn,
+            rightPupilColumn: $scope.rightPupilColumn
         };
         $http.post('../../private/addDataProcessing', postData).then(function (response) {
             $scope.study.dataProcessing.push(response.data);

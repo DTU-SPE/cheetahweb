@@ -470,4 +470,20 @@
 			baseTableName="data_processing_step" referencedColumnNames="pk_data_processing"
 			onDelete="CASCADE" />
 	</changeSet>
+
+	<changeSet id="CEP2.0-26" author="Stefan">
+		<comment>Add additional columns required for data processing, #534</comment>
+
+		<addColumn tableName="data_processing">
+			<column name="timestamp_column" type="VARCHAR(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="left_pupil_column" type="VARCHAR(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="right_pupil_column" type="VARCHAR(255)">
+				<constraints nullable="false" />
+			</column>
+		</addColumn>
+	</changeSet>
 </databaseChangeLog>

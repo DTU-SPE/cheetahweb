@@ -13,29 +13,57 @@ public class AddDataProcessingServlet extends AbstractCheetahServlet {
 		private long studyId;
 		private String name;
 		private String comment;
+		private String timestampColumn;
+		private String leftPupilColumn;
+
+		private String rightPupilColumn;
 
 		public String getComment() {
 			return comment;
+		}
+
+		public String getLeftPupilColumn() {
+			return leftPupilColumn;
 		}
 
 		public String getName() {
 			return name;
 		}
 
+		public String getRightPupilColumn() {
+			return rightPupilColumn;
+		}
+
 		public long getStudyId() {
 			return studyId;
+		}
+
+		public String getTimestampColumn() {
+			return timestampColumn;
 		}
 
 		public void setComment(String comment) {
 			this.comment = comment;
 		}
 
+		public void setLeftPupilColumn(String leftPupilColumn) {
+			this.leftPupilColumn = leftPupilColumn;
+		}
+
 		public void setName(String name) {
 			this.name = name;
 		}
 
+		public void setRightPupilColumn(String rightPupilColumn) {
+			this.rightPupilColumn = rightPupilColumn;
+		}
+
 		public void setStudyId(long studyId) {
 			this.studyId = studyId;
+		}
+
+		public void setTimestampColumn(String timestampColumn) {
+			this.timestampColumn = timestampColumn;
 		}
 
 	}
@@ -47,7 +75,9 @@ public class AddDataProcessingServlet extends AbstractCheetahServlet {
 			throws Exception {
 		AddDataProcessingRequest addRequest = readJson(request, AddDataProcessingRequest.class);
 		DataProcessingDao dao = new DataProcessingDao();
-		DataProcessing dataProcessing = dao.insert(connection, addRequest.getStudyId(), addRequest.getName(), addRequest.getComment());
+		DataProcessing dataProcessing = dao.insert(connection, addRequest.getStudyId(), addRequest.getName(), addRequest.getComment(),
+				addRequest.getTimestampColumn(), addRequest.getLeftPupilColumn(), addRequest.getRightPupilColumn());
+
 		writeJson(response, dataProcessing);
 	}
 
