@@ -472,3 +472,9 @@ ul.dropdown-menu a {
   float: right;
   margin-top: 10px;
 }
+
+.cheetah-delete-dataprocessing-step {
+    float: right;
+    cursor: pointer;
+    padding-left: 5px;
+}

@@ -1,10 +1,10 @@
 @font-face {
     font-family: 'icomoon';
-    src:    url('fonts/icomoon.eot?w86vwk');
-    src:    url('fonts/icomoon.eot?w86vwk#iefix') format('embedded-opentype'),
-        url('fonts/icomoon.ttf?w86vwk') format('truetype'),
-        url('fonts/icomoon.woff?w86vwk') format('woff'),
-        url('fonts/icomoon.svg?w86vwk#icomoon') format('svg');
+    src:  url('fonts/icomoon.eot?gf6lti');
+    src:  url('fonts/icomoon.eot?gf6lti#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?gf6lti') format('truetype'),
+    url('fonts/icomoon.woff?gf6lti') format('woff'),
+    url('fonts/icomoon.svg?gf6lti#icomoon') format('svg');
     font-weight: normal;
     font-style: normal;
 }
@@ -50,5 +50,8 @@
 }
 .icon-cheetah-arrow-left:before {
     content: "\ea40";
+}
+.icon-cheetah-edit:before {
+    content: "\e905";
 }
 

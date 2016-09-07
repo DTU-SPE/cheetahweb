@@ -37,6 +37,7 @@ angular.module('cheetah.CleanData', []).controller('CleanDataModalController', f
 
     $scope.$on('cheetah-clean-data-modal.show', function () {
         $http.get("../../private/availablePupillometryFilters").success(function (filters) {
+            $scope.parameters = [];
             $scope.filters = [];
             var timestamp = 9999999999900;
 

@@ -103,6 +103,28 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData']).cont
     $scope.showAddDataProcessingStepModal = function (dataProcessing) {
         cheetah.showModal($rootScope, 'cheetah-add-data-processing-step-modal', dataProcessing);
     };
+
+    $scope.deleteDataProcessingStep = function (dataProcessing, step) {
+        BootstrapDialog.show({
+            title: 'Delete Data Processing Step?',
+            message: 'Do you really want to delete this data processing step?',
+            buttons: [{
+                label: 'Yes',
+                action: function (dialog) {
+                    $http.get('../../private/deleteDataProcessingStep?id=' + step.id).then(function () {
+                        var index = dataProcessing.steps.indexOf(step);
+                        dataProcessing.steps.splice(index, 1);
+                        dialog.close();
+                    });
+                }
+            }, {
+                label: 'No',
+                action: function (dialog) {
+                    dialog.close();
+                }
+            }]
+        });
+    };
 }).controller('AddDataProcessingModalController', function ($scope, $http) {
     $scope.$on('cheetah-add-data-processing-modal.show', function (event, study) {
         $scope.study = study;

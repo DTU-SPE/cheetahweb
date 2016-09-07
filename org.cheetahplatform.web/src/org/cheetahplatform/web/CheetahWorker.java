@@ -29,7 +29,6 @@ public class CheetahWorker extends Thread {
 	 */
 	private static final Map<Long, ICheetahWorkItem> ACTIVE_WORKERS = new ConcurrentHashMap<Long, ICheetahWorkItem>();
 	private static long idCounter = 1;
-	private static Object myLocker = new Object();
 
 	private static boolean canAlter(long userId, ICheetahWorkItem workItem) {
 		if (workItem != null) {

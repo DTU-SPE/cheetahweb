@@ -69,7 +69,9 @@
                                 <div id="cheetah-data-processing{{dataProcessing.id}}" class="panel-collapse collapse">
                                     <div class="panel-body">
                                         <ul class="list-group" ng-show="dataProcessing.steps.length > 0">
-                                            <li class="list-group-item" ng-repeat="step in dataProcessing.steps">Step {{$index + 1}}: {{step.name}}</li>
+                                            <li class="list-group-item" ng-repeat="step in dataProcessing.steps">Step {{$index + 1}} ({{step.type}}): {{step.name}}<span
+                                                    class="icon-cheetah-close cheetah-delete-dataprocessing-step" ng-click="deleteDataProcessingStep(dataProcessing, step)"> </span> <span
+                                                    class="icon-cheetah-edit cheetah-delete-dataprocessing-step" ng-click="editDataProcessingStep(step)"> </span> </li>
                                         </ul>
                                         <p ng-show="dataProcessing.steps.length === 0">
                                             For this data processing, no steps have been defined yet. Please use the button below for adding new steps.
