@@ -21,7 +21,7 @@ import org.cheetahplatform.web.util.FileUtils;
  * @author stefan.zugal
  *
  */
-public class CleanPupillometryDataWorkItem extends AbstractCheetahWorkItem {
+public class CleanPupillometryDataWorkItem extends AbstractCheetahWorkItem implements IDataProcessingWorkItem {
 
 	public static final String STUDIO_EVENT_DATA = "StudioEventData";
 	public static final String STUDIO_EVENT = "StudioEvent";
@@ -252,12 +252,84 @@ public class CleanPupillometryDataWorkItem extends AbstractCheetahWorkItem {
 	@Override
 	public void doWork() throws Exception {
 		UserFileDao userFileDao = new UserFileDao();
-		File file = userFileDao.getUserFile(filePath);
 		UserFileDto originalFileDto = userFileDao.getFile(fileId);
 
-		System.out.println("Reading file content...");
-		PupillometryFile reader = new PupillometryFile(file, PupillometryFile.SEPARATOR_TABULATOR, true, request.getDecimalSeparator());
-		PupillometryFileHeader header = reader.getHeader();
+		File file = userFileDao.getUserFile(filePath);
+		PupillometryFile pupillometryFile = new PupillometryFile(file, PupillometryFile.SEPARATOR_TABULATOR, true,
+				request.getDecimalSeparator());
+
+		performPreProcessing(originalFileDto, pupillometryFile);
+
+		List<DataProcessingResult> results = processFilters(originalFileDto, pupillometryFile);
+
+		StringBuilder appliedFilters = new StringBuilder();
+		for (DataProcessingResult dataProcessingResult : results) {
+			// something went wrong - let the user know.
+			if (dataProcessingResult.isError()) {
+				String errorMessage = dataProcessingResult.getMessage();
+				if (dataProcessingResult.getAdditionalInformation() != null) {
+					errorMessage = errorMessage + "(" + dataProcessingResult.getAdditionalInformation() + ").";
+				}
+				logErrorNotification(errorMessage);
+				return;
+			}
+
+			if (appliedFilters.length() > 0) {
+				appliedFilters.append(", ");
+			}
+
+			appliedFilters.append(dataProcessingResult.getMessage());
+			if (dataProcessingResult.getAdditionalInformation() != null) {
+				appliedFilters.append(" (");
+				appliedFilters.append(dataProcessingResult.getAdditionalInformation());
+				appliedFilters.append(")");
+			}
+		}
+
+		String newName = null;
+		String fileName = originalFileDto.getFilename();
+		String subjectName = FileUtils.getSubjectName(fileName, originalFileDto.getSubjectId(), userId);
+		if (!subjectName.trim().isEmpty()) {
+			subjectName = subjectName + CheetahWebConstants.FILENAME_PATTERN_SEPARATOR;
+		}
+
+		String fileNamePostFix = request.getFileNamePostFix();
+		if (fileNamePostFix != null && !fileNamePostFix.trim().isEmpty()
+				&& fileName.contains(CheetahWebConstants.FILENAME_PATTERN_SEPARATOR)) {
+
+			newName = subjectName + fileNamePostFix + FileUtils.getFileExtension(fileName);
+		} else {
+			int position = fileName.lastIndexOf(".");
+			newName = subjectName + fileName.substring(0, position) + CheetahWebConstants.FILENAME_PATTERN_SEPARATOR + "filtered"
+					+ fileName.substring(position);
+		}
+
+		String relativePath = userFileDao.generateRelativePath(userId, newName);
+
+		if (request.isAnalyisDefined()) {
+			System.out.println("Running analysis...");
+			analyzeData(pupillometryFile, request, userId, originalFileDto, request.resolveAnalysisContributor());
+			System.out.println("Analysis finished.");
+		}
+
+		String absolutePath = userFileDao.getAbsolutePath(relativePath);
+		pupillometryFile.writeToFile(new File(absolutePath));
+		long cleanedId = userFileDao.insertUserFile(userId, newName, relativePath, originalFileDto.getType(),
+				"Applied filters: " + appliedFilters.toString(), null, originalFileDto.getSubjectId(), false, null);
+		logSuccessNotification("Pupillometry data cleaned successfully! New file: " + newName);
+		userFileDao.addTags(cleanedId, UserFileDao.TAG_CLEANED);
+	}
+
+	@Override
+	public void doWork(PupillometryFile file, DataProcessingContext context) throws Exception {
+		UserFileDao userFileDao = new UserFileDao();
+		UserFileDto originalFileDto = userFileDao.getFile(fileId);
+		List<DataProcessingResult> results = processFilters(originalFileDto, file);
+		context.addAllDataProcessingResults(results);
+	}
+
+	private void performPreProcessing(UserFileDto originalFileDto, PupillometryFile pupillometryFile) throws SQLException, IOException {
+		PupillometryFileHeader header = pupillometryFile.getHeader();
 		PupillometryFileColumn timestampColumn = header.getColumn(request.getTimestampColumn());
 		if (timestampColumn == null) {
 			logErrorNotification(
@@ -282,83 +354,49 @@ public class CleanPupillometryDataWorkItem extends AbstractCheetahWorkItem {
 		// some particular processing for Thomas Maran
 		IAnalysisContributor contributor = request.resolveAnalysisContributor();
 		if (request.isAnalyisDefined()) {
-			reader.processSceneColumns(contributor);
-			reader.copyColumn(leftPupilColumn, leftPupilColumn.getName() + " (raw)");
-			reader.copyColumn(rightPupilColumn, rightPupilColumn.getName() + " (raw)");
+			pupillometryFile.processSceneColumns(contributor);
+			pupillometryFile.copyColumn(leftPupilColumn, leftPupilColumn.getName() + " (raw)");
+			pupillometryFile.copyColumn(rightPupilColumn, rightPupilColumn.getName() + " (raw)");
 		}
 
 		// do some pre-processing
-		reader.collapseEmptyColumns(timestampColumn);
-		reader.removeNullValues("-1");
-		reader.adaptTimestamps(timestampColumn);
+		pupillometryFile.collapseEmptyColumns(timestampColumn);
+		pupillometryFile.removeNullValues("-1");
+		pupillometryFile.adaptTimestamps(timestampColumn);
+	}
 
-		for (IPupillometryFilter filter : request.getPupillometryFilters()) {
+	private List<DataProcessingResult> processFilters(UserFileDto originalFileDto, PupillometryFile pupillometryFile)
+			throws IOException, SQLException {
+		PupillometryFileHeader header = pupillometryFile.getHeader();
+		List<IPupillometryFilter> filters = request.getPupillometryFilters();
+		List<DataProcessingResult> results = new ArrayList<>();
+
+		for (IPupillometryFilter filter : filters) {
 			for (PupillometryParameter parameter : filter.getDto().getParameters()) {
 				String columnName = request.getParameter(parameter.getKey());
 				if (parameter.isDataColumn() && !header.hasColumn(columnName)) {
-					logErrorNotification("Could not find the following column: " + columnName);
-					return;
+					DataProcessingResult dataProcessingResult = new DataProcessingResult(filter.getName(), true);
+					String additionalInfomation = "Could not find the following column: " + columnName;
+					dataProcessingResult.setAdditionalInformation(additionalInfomation);
+					return results;
 				}
 			}
 		}
 
-		StringBuilder appliedFilters = new StringBuilder();
-
-		List<IPupillometryFilter> filters = request.getPupillometryFilters();
 		for (IPupillometryFilter filter : filters) {
-			System.out.println("running filter " + filter.getName());
-
-			String result = "";
+			DataProcessingResult dataProcessingResult = new DataProcessingResult(filter.getName());
+			results.add(dataProcessingResult);
 			try {
-				result = filter.run(request, reader);
+				String result = filter.run(request, pupillometryFile);
+				dataProcessingResult.setAdditionalInformation(result);
 			} catch (Exception e) {
 				e.printStackTrace();
-				logErrorNotification("An error occured when cleaning file: " + originalFileDto.getFilename());
-				return;
-			}
-			if (appliedFilters.length() > 0) {
-				appliedFilters.append(", ");
-			}
-
-			appliedFilters.append(filter.getName());
-			if (result != null) {
-				appliedFilters.append(" (");
-				appliedFilters.append(result);
-				appliedFilters.append(")");
+				String errorMessage = "An error occured when cleaning file: " + originalFileDto.getFilename();
+				dataProcessingResult.setAdditionalInformation(errorMessage);
+				dataProcessingResult.setError(true);
+				return results;
 			}
 		}
-		String newName = null;
-		String fileName = originalFileDto.getFilename();
-		String subjectName = FileUtils.getSubjectName(fileName, originalFileDto.getSubjectId(), userId);
-		if (!subjectName.trim().isEmpty()) {
-			subjectName = subjectName + CheetahWebConstants.FILENAME_PATTERN_SEPARATOR;
-		}
-
-		String fileNamePostFix = request.getFileNamePostFix();
-		if (fileNamePostFix != null && !fileNamePostFix.trim().isEmpty()
-				&& fileName.contains(CheetahWebConstants.FILENAME_PATTERN_SEPARATOR)) {
-
-			newName = subjectName + fileNamePostFix + FileUtils.getFileExtension(fileName);
-		} else {
-			int position = fileName.lastIndexOf(".");
-			newName = subjectName + fileName.substring(0, position) + CheetahWebConstants.FILENAME_PATTERN_SEPARATOR + "filtered"
-					+ fileName.substring(position);
-		}
-
-		String relativePath = userFileDao.generateRelativePath(userId, newName);
-
-		if (request.isAnalyisDefined()) {
-			System.out.println("Running analysis...");
-			analyzeData(reader, request, userId, originalFileDto, contributor);
-			System.out.println("Analysis finished.");
-		}
-
-		String absolutePath = userFileDao.getAbsolutePath(relativePath);
-		reader.writeToFile(new File(absolutePath));
-		long cleanedId = userFileDao.insertUserFile(userId, newName, relativePath, originalFileDto.getType(),
-				"Applied filters: " + appliedFilters.toString(), null, originalFileDto.getSubjectId(), false, null);
-		logSuccessNotification("Pupillometry data cleaned successfully! New file: " + newName);
-		userFileDao.addTags(cleanedId, UserFileDao.TAG_CLEANED);
+		return results;
 	}
-
 }

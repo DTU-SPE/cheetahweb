@@ -13,6 +13,9 @@ angular.module('cheetah.MyFiles', ['ngRoute', 'cheetah.CleanData']).controller('
     $scope.filesToRename = [];
     $scope.cleanFileNamePattern = "";
     $scope.search = "";
+    $scope.studies = [];
+    $scope.selectedStudy;
+
     //include default tags with fixed colors.
     $scope.tagColors = {
         "raw-data": {
@@ -82,6 +85,22 @@ angular.module('cheetah.MyFiles', ['ngRoute', 'cheetah.CleanData']).controller('
         $("#renameFilesDialog").modal();
     };
 
+    $scope.openExecuteDataProcessDialog = function () {
+        var data = {};
+        data.selectedFiles = [];
+        getSelectedFiles(data.selectedFiles);
+        data.selectedStudy = undefined;
+        if ($scope.selectedStudy) {
+            $.each($scope.studies, function (index, study) {
+                if (study.id === parseInt($scope.selectedStudy, 10)) {
+                    data.selectedStudy = study;
+                    return false;
+                }
+            });
+        }
+        cheetah.showModal($rootScope, 'cheetah-execute-data-processing', data);
+    };
+
     $scope.submitRenameFiles = function () {
         var postData = {files: {}};
         $.each($scope.filesToRename, function (index, file) {
@@ -113,6 +132,10 @@ angular.module('cheetah.MyFiles', ['ngRoute', 'cheetah.CleanData']).controller('
     };
 
     $scope.refreshFiles();
+
+    $http.get("../../private/listStudies").success(function (studies) {
+        $scope.studies = studies;
+    });
 
     $http.get("../../private/defaultUserDataTags").success(function (defaultTags) {
         $scope.defaultTags = defaultTags;
@@ -207,6 +230,14 @@ angular.module('cheetah.MyFiles', ['ngRoute', 'cheetah.CleanData']).controller('
         });
     }
 
+    function getSelectedFiles(selectedFiles) {
+        $.each($scope.files, function (index, file) {
+            if (file.selection) {
+                selectedFiles.push(file);
+            }
+        });
+    }
+
     $scope.numberOfSelectedFiles = function () {
         var selected = [];
         extractFiles(selected);
@@ -244,6 +275,18 @@ angular.module('cheetah.MyFiles', ['ngRoute', 'cheetah.CleanData']).controller('
             return false;
         }
 
+        function matchesStudy(file) {
+            if (!$scope.selectedStudy) {
+                return true;
+            }
+
+            if (!file.studyId) {
+                return false;
+            }
+
+            return $scope.selectedStudy === file.studyId.toString();
+        }
+
         var filtered = $.grep($scope.files, function (file, index) {
             var searchString = $scope.search.toLowerCase();
             var splitted = searchString.split(" ");
@@ -257,6 +300,10 @@ angular.module('cheetah.MyFiles', ['ngRoute', 'cheetah.CleanData']).controller('
 
             if (tagFound) {
                 return true;
+            }
+
+            if (!matchesStudy(file)) {
+                return false;
             }
 
             return filter(file.filename) || filter(file.type) || filter(file.comment);
@@ -395,6 +442,44 @@ angular.module('cheetah.MyFiles', ['ngRoute', 'cheetah.CleanData']).controller('
         $("#connectVideoToPpmInstanceDialog").modal('hide');
     };
 
+}).controller('ExecuteDataProcessingController', function ($rootScope, $scope, $http) {
+    $scope.$on('cheetah-execute-data-processing.show', function (event, data) {
+        $scope.selectedFiles = data.selectedFiles;
+        $scope.selectedStudy = data.selectedStudy;
+        $scope.containsFilesFromOtherStudy = false;
+        $scope.selectedDataProcessing = undefined;
+
+        if ($scope.selectedStudy) {
+            $.each($scope.selectedFiles, function (index, file) {
+                if (file.studyId !== $scope.selectedStudy.id) {
+                    $scope.containsFilesFromOtherStudy = true;
+                    return false;
+                }
+            })
+        }
+    });
+
+    $scope.startProcessing = function () {
+        var postData = {};
+        postData.fileIds = [];
+        postData.dataProcessingId = parseInt($scope.selectedDataProcessing, 10);
+        postData.studyId = $scope.selectedStudy.id;
+
+        $.each($scope.selectedFiles, function (index, file) {
+            if (file.studyId === $scope.selectedStudy.id) {
+                postData.fileIds.push(file.id);
+            }
+        });
+
+
+        $http.post('../../private/executeDataProcessingStep', postData).success(function () {
+            cheetah.hideModal($scope, 'cheetah-execute-data-processing');
+        });
+    };
+
+    $scope.closeDialog = function () {
+        cheetah.hideModal($scope, 'cheetah-execute-data-processing');
+    }
 }).config(function ($routeProvider) {
     $routeProvider
         .when('/', {

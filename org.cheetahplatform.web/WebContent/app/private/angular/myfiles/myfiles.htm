@@ -1,7 +1,7 @@
 <div>
     <div class="container-fluid">
         <h1>My Files</h1>
-        <div class="panel panel-default">
+        <div class="panel panel-default" ng-controller="MyFilesCtrl">
             <div class="panel-body">
                 <h4>What can I do here?</h4>
                 <div class="cheetah-section-description">This area lets you manage all your uploaded data. Use the
@@ -21,10 +21,20 @@
                                 <input type="text" class="form-control" placeholder="Search in all columns..."
                                        id="cheetah-files-search-input" ng-model="search"/>
                             </div>
-                            <div id="cheetah-files-status-bar">
-                                <span>Total number of files: </span> <span class="cheetah-files-status-value">{{files.length}}</span>
-                                <span>Number of displayed files: </span> <span class="cheetah-files-status-value">{{filteredFiles().length}}</span>
-                                <span>Number of selected files: </span> <span class="cheetah-files-status-value">{{numberOfSelectedFiles()}}</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="cheetah-files-search-input">Study</label>
+                            <div class="col-sm-10">
+                                <select class="form-control" id="study" ng-model="selectedStudy">
+                                    <option value=""></option>
+                                    <option ng-repeat="study in studies" value="{{study.id}}">{{study.name}}</option>
+                                </select>
+                                <div id="cheetah-files-status-bar">
+                                    <span>Total number of files: </span> <span
+                                        class="cheetah-files-status-value">{{files.length}}</span>
+                                    <span>Number of displayed files: </span> <span class="cheetah-files-status-value">{{filteredFiles().length}}</span>
+                                    <span>Number of selected files: </span> <span class="cheetah-files-status-value">{{numberOfSelectedFiles()}}</span>
+                                </div>
                             </div>
                         </div>
                     </form>
@@ -52,6 +62,11 @@
                                     <a role="menuitem" tabindex="-1" ng-click="openCalculateAverageLoadDialog()">Calculate
                                         average load</a>
                                 </li>
+                                <li role="presentation">
+                                    <a role="menuitem" tabindex="-1" ng-click="openExecuteDataProcessDialog()">Execute
+                                        study data processing</a>
+                                </li>
+
                             </ul>
                         </div>
 
@@ -133,10 +148,12 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close">Get me
-                            outa here!
-                        </button>
-                        <button type="submit" id="deleteConfirmationButton" class="btn">Delete</button>
+                        <div class="cheetah-dialog-button-container">
+                            <button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close">Get me
+                                outa here!
+                            </button>
+                            <button type="submit" id="deleteConfirmationButton" class="btn">Delete</button>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -182,8 +199,10 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <button type="submit" id="submitTrimtToPpmInstanceButton" class="btn btn-primary">Trim
-                        </button>
+                        <div class="cheetah-dialog-button-container">
+                            <button type="submit" id="submitTrimtToPpmInstanceButton" class="btn btn-primary">Trim
+                            </button>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -227,9 +246,12 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <button type="submit" id="submitCalculateAverageLoad" class="btn btn-primary">Calculate Average
-                            Load
-                        </button>
+                        <div class="cheetah-dialog-button-container">
+                            <button type="submit" id="submitCalculateAverageLoad" class="btn btn-primary">Calculate
+                                Average
+                                Load
+                            </button>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -293,8 +315,10 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <button type="submit" id="submitConnectToPpmInstanceButton" class="btn btn-primary">Connect
-                        </button>
+                        <div class="cheetah-dialog-button-container">
+                            <button type="submit" id="submitConnectToPpmInstanceButton" class="btn btn-primary">Connect
+                            </button>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -331,9 +355,11 @@
                 </div>
 
                 <div class="form-group">
-                    <button type="submit" id="submitAddTagsToFiles"
-                            class="btn btn-primary" ng-click="submitTagsToAdd()">Add Tags to Selected Files
-                    </button>
+                    <div class="cheetah-dialog-button-container">
+                        <button type="submit" id="submitAddTagsToFiles"
+                                class="btn btn-primary" ng-click="submitTagsToAdd()">Add Tags to Selected Files
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -363,10 +389,12 @@
                 </div>
 
                 <div class="form-group">
-                    <button type="submit" id="submitRemoveTagFromFiles"
-                            class="btn btn-primary" ng-click="submitRemoveTagFromFiles()">Remove Tags from Selected
-                        Files
-                    </button>
+                    <div class="cheetah-dialog-button-container">
+                        <button type="submit" id="submitRemoveTagFromFiles"
+                                class="btn btn-primary" ng-click="submitRemoveTagFromFiles()">Remove Tags from Selected
+                            Files
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -390,13 +418,66 @@
                         </label><input type="text" class="form-control" ng-model="file.newName"
                                        id="cheetah-rename-files-input"></div>
                     </div>
-                    <button type="submit" id="submitRenameFiles"
-                            class="btn btn-primary" ng-click="submitRenameFiles()">Rename Files
+                    <div class="cheetah-dialog-button-container">
+                        <button type="submit" id="submitRenameFiles"
+                                class="btn btn-primary" ng-click="submitRenameFiles()">Rename Files
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal" id="cheetah-execute-data-processing" ng-controller="ExecuteDataProcessingController">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Execute study data processing</h4>
+            </div>
+            <div class="modal-body container-fluid">
+                <div ng-show="selectedStudy===undefined">Please select a study using the filter in order to execute a
+                    predefined data processing.
+                </div>
+                <div ng-show="selectedStudy && selectedStudy.dataProcessing.length>0" class="form-group">
+                    <h4>Select a data processing routine</h4>
+                    <div class="cheetah-section-description">This section allows you to run pre-defined data processing routine on the selected file. This
+                        might include filtering steps, but also data analysis steps can be included. For more
+                        information fo to <a href="study-management.htm">My Studies</a>.
+                    </div>
+                    <div ng-show="containsFilesFromOtherStudy" class="alert alert-warning">Some of the files you
+                        selected
+                        correspond to a different
+                        study. We will skip these files when executing the data processing.
+                    </div>
+                    <label class="control-label" for="cheeta-data-processing-select">Data processing routine</label>
+                    <select class="form-control" id="cheeta-data-processing-select" ng-model="selectedDataProcessing">
+                        <option ng-repeat="processing in selectedStudy.dataProcessing"
+                                value="{{processing.id}}">{{processing.name}}
+                        </option>
+                    </select>
+                </div>
+                <div ng-show="selectedStudy && selectedStudy.dataProcessing.length===0">No data processing routine has
+                    been defined for the selected study. Go to <a href="study-management.htm">My Studies</a> to define a
+                    data processing routine.
+                </div>
+                <div class="cheetah-dialog-button-container">
+                    <button ng-show="selectedStudy===undefined || selectedStudy.dataProcessing.length===0 || !selectedDataProcessing" type="submit"
+                            id="cheetah-close-execute-data-processing"
+                            class="btn btn-primary" ng-click="closeDialog()">Close
+                    </button>
+                    <button ng-show="selectedStudy && selectedStudy.dataProcessing.length>0 && selectedDataProcessing" type="submit"
+                            id="cheetah-start-data-processing"
+                            class="btn btn-primary" ng-click="startProcessing()">Start study data processing
                     </button>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 
 <div ng-include="'angular/clean-data/clean-data.htm'"></div>
