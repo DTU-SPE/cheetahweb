@@ -37,6 +37,10 @@ angular.module('cheetah.MyFiles', ['ngRoute', 'cheetah.CleanData']).controller('
         result: {
             color: "black",
             'background-color': "lightgreen"
+        },
+        "study-data-processed": {
+            color: "white",
+            'background-color': "darkorange"
         }
     };
     $scope.availableColors = [{color: "black", 'background-color': "pink"}, {
@@ -54,9 +58,6 @@ angular.module('cheetah.MyFiles', ['ngRoute', 'cheetah.CleanData']).controller('
     }, {
         color: "black",
         'background-color': "aqua"
-    }, {
-        color: "white",
-        'background-color': "blueviolet"
     }, {
         color: "white",
         'background-color': "cornflowerblue"
