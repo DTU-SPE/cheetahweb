@@ -17,6 +17,7 @@ public class DataProcessing {
 	private String timestampColumn;
 	private String leftPupilColumn;
 	private String rightPupilColumn;
+	public static final String DATA_PROCESSING_TYPE_CLEAN = "clean";
 
 	public DataProcessing(long id, String name, String comment, String timestampColumn, String leftPupilColumn, String rightPupilColumn) {
 		this.timestampColumn = timestampColumn;

@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.cheetahplatform.web.dao.DataProcessingStepDao;
 import org.cheetahplatform.web.eyetracking.analysis.CleanDataConfiguration;
+import org.cheetahplatform.web.eyetracking.analysis.DataProcessing;
 
 public class AddDataProcessingStepServlet extends AbstractCheetahServlet {
 	static class AddDataProcessingStepRequest {
@@ -57,7 +58,7 @@ public class AddDataProcessingStepServlet extends AbstractCheetahServlet {
 		AddDataProcessingStepRequest addRequest = readJson(request, AddDataProcessingStepRequest.class);
 		// try to parse the configuration to ensure we do not get any incorrect data
 		String type = addRequest.getType();
-		if (type.equals("clean")) {
+		if (type.equals(DataProcessing.DATA_PROCESSING_TYPE_CLEAN)) {
 			readJson(addRequest.getConfiguration(), CleanDataConfiguration.class);
 		} else {
 			throw new RuntimeException("Unknown step: " + type);

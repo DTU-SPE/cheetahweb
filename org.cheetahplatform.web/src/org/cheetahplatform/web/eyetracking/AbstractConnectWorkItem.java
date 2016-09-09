@@ -12,9 +12,7 @@ public abstract class AbstractConnectWorkItem extends AbstractCheetahWorkItem {
 	protected ConnectRequest request;
 
 	public AbstractConnectWorkItem(long userId, long fileId, ConnectRequest request, String message) {
-		super(userId, message);
-
-		this.fileId = fileId;
+		super(userId, fileId, message);
 		this.request = request;
 	}
 

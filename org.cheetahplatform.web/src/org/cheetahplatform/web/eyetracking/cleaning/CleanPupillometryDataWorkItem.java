@@ -30,16 +30,10 @@ public class CleanPupillometryDataWorkItem extends AbstractCheetahWorkItem imple
 	 * The filter request to be processed.
 	 */
 	private FilterRequest request;
-	/**
-	 * The path of the file to be cleaned.
-	 */
-	private String filePath;
 
-	public CleanPupillometryDataWorkItem(long userId, FilterRequest request, long fileId, String filePath) {
-		super(userId, "Cleaning pupillometry data");
+	public CleanPupillometryDataWorkItem(long userId, FilterRequest request, long fileId) {
+		super(userId, fileId, "Cleaning pupillometry data");
 		this.request = request;
-		this.fileId = fileId;
-		this.filePath = filePath;
 	}
 
 	/**
@@ -254,6 +248,7 @@ public class CleanPupillometryDataWorkItem extends AbstractCheetahWorkItem imple
 		UserFileDao userFileDao = new UserFileDao();
 		UserFileDto originalFileDto = userFileDao.getFile(fileId);
 
+		String filePath = userFileDao.getPath(fileId);
 		File file = userFileDao.getUserFile(filePath);
 		PupillometryFile pupillometryFile = new PupillometryFile(file, PupillometryFile.SEPARATOR_TABULATOR, true,
 				request.getDecimalSeparator());
@@ -321,11 +316,17 @@ public class CleanPupillometryDataWorkItem extends AbstractCheetahWorkItem imple
 	}
 
 	@Override
-	public void doWork(PupillometryFile file, DataProcessingContext context) throws Exception {
+	public boolean doWork(PupillometryFile file, DataProcessingContext context) throws Exception {
 		UserFileDao userFileDao = new UserFileDao();
 		UserFileDto originalFileDto = userFileDao.getFile(fileId);
 		List<DataProcessingResult> results = processFilters(originalFileDto, file);
 		context.addAllDataProcessingResults(results);
+		for (DataProcessingResult dataProcessingResult : results) {
+			if (dataProcessingResult.isError()) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	private void performPreProcessing(UserFileDto originalFileDto, PupillometryFile pupillometryFile) throws SQLException, IOException {

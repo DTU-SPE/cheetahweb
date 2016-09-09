@@ -53,9 +53,8 @@ public abstract class AbstractActivityBasedWorkItem extends AbstractCheetahWorkI
 
 	public AbstractActivityBasedWorkItem(long userId, long fileId, List<CodeAndExperimentActivity> activities, String timestampColumn,
 			String message) {
-		super(userId, message);
+		super(userId, fileId, message);
 
-		this.fileId = fileId;
 		this.activities = activities;
 		this.timestampColumnName = timestampColumn;
 	}

@@ -42,11 +42,12 @@ public abstract class AbstractCheetahWorkItem implements ICheetahWorkItem {
 
 	protected String message;
 
-	protected long fileId;
+	protected Long fileId;
 
-	public AbstractCheetahWorkItem(long userId, String message) {
+	public AbstractCheetahWorkItem(long userId, Long fileId, String message) {
 		this.userId = userId;
 		this.message = message;
+		this.fileId = fileId;
 	}
 
 	@Override
@@ -69,6 +70,10 @@ public abstract class AbstractCheetahWorkItem implements ICheetahWorkItem {
 
 	@Override
 	public String getDisplayName() {
+		if (fileId == null) {
+			return message;
+		}
+
 		if (filename == null) {
 			try {
 				filename = new UserFileDao().getFile(fileId).getFilename();

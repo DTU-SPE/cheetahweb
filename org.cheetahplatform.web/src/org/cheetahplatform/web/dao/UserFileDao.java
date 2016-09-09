@@ -42,6 +42,7 @@ public class UserFileDao extends AbstractCheetahDao {
 	public static final String TAG_CLEANED = "cleaned";
 	public static final String TAG_VIDEO = "video";
 	public static final String TAG_RESULT = "result";
+	public static final String TAG_STUDY_DATA_PROCESSED = "study-data-processed";
 	public static final List<String> STANDARD_TAGS;
 
 	static {

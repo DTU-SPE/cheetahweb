@@ -12,7 +12,7 @@ public class EyetrackingAnalysisWorkItem extends AbstractCheetahWorkItem {
 	private List<IEyeTrackingDataAnalyzer> analyzers;
 
 	public EyetrackingAnalysisWorkItem(long userId, List<IEyeTrackingDataAnalyzer> analyzers) {
-		super(userId, "Running Eye Tracking Analysis");
+		super(userId, null, "Running Eye Tracking Analysis");
 		this.analyzers = analyzers;
 	}
 

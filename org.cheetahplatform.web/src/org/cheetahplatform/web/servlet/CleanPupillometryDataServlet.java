@@ -28,9 +28,8 @@ public class CleanPupillometryDataServlet extends AbstractCheetahServlet {
 
 		for (Entry<Long, String> entry : paths.entrySet()) {
 			Long fileId = entry.getKey();
-			String filePath = entry.getValue();
 
-			ICheetahWorkItem item = new CleanPupillometryDataWorkItem(userId, request, fileId, filePath);
+			ICheetahWorkItem item = new CleanPupillometryDataWorkItem(userId, request, fileId);
 			CheetahWorker.schedule(item);
 		}
 	}

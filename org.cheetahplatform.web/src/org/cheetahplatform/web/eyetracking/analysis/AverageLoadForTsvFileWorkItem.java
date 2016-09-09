@@ -23,8 +23,7 @@ public class AverageLoadForTsvFileWorkItem extends AbstractCheetahWorkItem {
 
 	public AverageLoadForTsvFileWorkItem(long fileId, String leftPupilColumn, String rightPupilColumn, long userId,
 			CheetahWorkItemGuard guard) {
-		super(userId, "Calculating Average Load for .tsv file");
-		this.fileId = fileId;
+		super(userId, fileId, "Calculating Average Load for .tsv file");
 		this.leftPupilColumn = leftPupilColumn;
 		this.rightPupilColumn = rightPupilColumn;
 		this.guard = guard;
