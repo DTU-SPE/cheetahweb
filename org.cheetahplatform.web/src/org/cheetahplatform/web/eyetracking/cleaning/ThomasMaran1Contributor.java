@@ -13,9 +13,6 @@ import java.util.ListIterator;
  */
 public class ThomasMaran1Contributor implements IAnalysisContributor {
 
-	public static final String SCENE_ENDED = "SceneEnded";
-	public static final String SCENE_STARTED = "SceneStarted";
-
 	@SuppressWarnings("unchecked")
 	@Override
 	public void computeTrialColumn(PupillometryFile file, PupillometryFileColumn trialColumn, PupillometryFileColumn studioEventColumn,
@@ -79,9 +76,9 @@ public class ThomasMaran1Contributor implements IAnalysisContributor {
 		while (iterator.hasNext()) {
 			PupillometryFileLine current = iterator.next();
 			String event = current.get(eventColumn);
-			if (event.equals("SceneStarted")) {
+			if (event.equals(SCENE_STARTED)) {
 				currentScene = current.get(eventDataColumn);
-			} else if (event.equals("SceneEnded")) {
+			} else if (event.equals(SCENE_ENDED)) {
 				currentScene = "";
 			}
 

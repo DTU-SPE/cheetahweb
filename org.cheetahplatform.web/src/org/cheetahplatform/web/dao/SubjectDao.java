@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -113,6 +114,10 @@ public class SubjectDao extends AbstractCheetahDao {
 	}
 
 	public Map<Long, Long> getStudyIdsForSubjects(Set<Long> subjectIds) throws SQLException {
+		if (subjectIds.isEmpty()) {
+			return Collections.emptyMap();
+		}
+
 		Connection connection = AbstractCheetahServlet.getDatabaseConnection();
 
 		String in = buildIn(subjectIds);

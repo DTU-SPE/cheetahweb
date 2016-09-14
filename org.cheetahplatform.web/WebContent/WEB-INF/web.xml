@@ -606,7 +606,7 @@
     <servlet-name>ExecuteDataProcessingServlet</servlet-name>
     <url-pattern>/private/executeDataProcessingStep</url-pattern>
   </servlet-mapping>
-   <servlet>
+  <servlet>
     <description></description>
     <display-name>UpdateDataProcessingServlet</display-name>
     <servlet-name>UpdateDataProcessingServlet</servlet-name>
@@ -615,5 +615,25 @@
   <servlet-mapping>
     <servlet-name>UpdateDataProcessingServlet</servlet-name>
     <url-pattern>/private/updateDataProcessing</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>ComputeScenesServlet</display-name>
+    <servlet-name>ComputeScenesServlet</servlet-name>
+    <servlet-class>org.cheetahplatform.web.servlet.ComputeScenesServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ComputeScenesServlet</servlet-name>
+    <url-pattern>/private/computeScenes</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>ListAvailablePupillometryFilesServlet</display-name>
+    <servlet-name>ListAvailablePupillometryFilesServlet</servlet-name>
+    <servlet-class>org.cheetahplatform.web.servlet.ListAvailablePupillometryFilesServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ListAvailablePupillometryFilesServlet</servlet-name>
+    <url-pattern>/private/listAvailablePupillometryFiles</url-pattern>
   </servlet-mapping>
 </web-app>

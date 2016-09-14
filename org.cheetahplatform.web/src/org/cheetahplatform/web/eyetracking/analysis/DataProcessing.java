@@ -11,6 +11,7 @@ import java.util.List;
  */
 public class DataProcessing {
 	public static final String DATA_PROCESSING_TYPE_CLEAN = "clean";
+
 	private long id;
 	private String name;
 	private String comment;
@@ -19,13 +20,15 @@ public class DataProcessing {
 	private String leftPupilColumn;
 	private String rightPupilColumn;
 	private String decimalSeparator;
+	private String trialComputationConfiguration;
 
 	public DataProcessing(long id, String name, String comment, String timestampColumn, String leftPupilColumn, String rightPupilColumn,
-			String decimalSeparator) {
+			String decimalSeparator, String trialComputationConfiguration) {
 		this.timestampColumn = timestampColumn;
 		this.leftPupilColumn = leftPupilColumn;
 		this.rightPupilColumn = rightPupilColumn;
 		this.decimalSeparator = decimalSeparator;
+		this.trialComputationConfiguration = trialComputationConfiguration;
 		this.steps = new ArrayList<>();
 		this.id = id;
 		this.name = name;
@@ -66,6 +69,10 @@ public class DataProcessing {
 
 	public String getTimestampColumn() {
 		return timestampColumn;
+	}
+
+	public String getTrialComputationConfiguration() {
+		return trialComputationConfiguration;
 	}
 
 }

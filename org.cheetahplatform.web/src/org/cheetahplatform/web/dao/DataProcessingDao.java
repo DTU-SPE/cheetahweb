@@ -54,7 +54,7 @@ public class DataProcessingDao extends AbstractCheetahDao {
 		keys.next();
 		long id = keys.getLong(1);
 
-		return new DataProcessing(id, name, comment, timestampColumn, leftPupilColumn, rightPupilColumn, decimalSeparator);
+		return new DataProcessing(id, name, comment, timestampColumn, leftPupilColumn, rightPupilColumn, decimalSeparator, null);
 	}
 
 	/**
@@ -86,9 +86,10 @@ public class DataProcessingDao extends AbstractCheetahDao {
 				String leftPupilColumn = resultSet.getString("left_pupil_column");
 				String rightPupilColumn = resultSet.getString("right_pupil_column");
 				String decimalSeparator = resultSet.getString("decimal_separator");
+				String trialComputationConfiguration = resultSet.getString("trial_computation_configuration");
 
-				dataProcessing = new DataProcessing(id, name, comment, timestampColumn, leftPupilColumn, rightPupilColumn,
-						decimalSeparator);
+				dataProcessing = new DataProcessing(id, name, comment, timestampColumn, leftPupilColumn, rightPupilColumn, decimalSeparator,
+						trialComputationConfiguration);
 				idToDataProcessing.put(id, dataProcessing);
 			}
 

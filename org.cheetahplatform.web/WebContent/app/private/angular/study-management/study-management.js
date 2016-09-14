@@ -141,6 +141,32 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData']).cont
             throw 'Editing step of type ' + step.type + ' is not supported yet.';
         }
     };
+
+    $scope.getTrialProcessingLabel = function (dataProcessing) {
+        if (!dataProcessing.trialComputationConfiguration) {
+            return 'No trial computation defined';
+        }
+
+        return 'Data processing defined';
+    };
+
+    $scope.showEditTrialComputationModal = function (dataProcessing) {
+        var postData = {studyId: $scope.study.id};
+        $http.post('../../private/listAvailablePupillometryFiles', postData).then(function (response) {
+            var data = response.data;
+            if (data.length === 0) {
+                BootstrapDialog.alert({
+                    title: 'No data available',
+                    message: 'The definition of the trial computation requires at least one pupillometry file from which the scenes can be extracted. Please upload a data file for this study first.'
+                });
+            } else {
+                cheetah.showModal($rootScope, 'cheetah-select-pupillometry-file-modal', {
+                    dataProcessing: dataProcessing,
+                    files: data
+                });
+            }
+        });
+    };
 }).controller('AddDataProcessingModalController', function ($scope, $http) {
     $scope.$on('cheetah-add-data-processing-modal.show', function (event, study) {
         $scope.study = study;
@@ -237,6 +263,27 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData']).cont
 
             cheetah.hideModal($scope, 'cheetah-edit-data-processing-modal');
         });
+    };
+}).controller('SelectPupillometryFileModalController', function ($scope, $http) {
+    $scope.$on('cheetah-select-pupillometry-file-modal.show', function (event, data) {
+        $scope.dataProcessing = data.dataProcessing;
+        $scope.files = data.files;
+        delete $scope.selectedFile;
+    });
+
+    $scope.showScenes = function () {
+        if (!$scope.selectedFile) {
+            BootstrapDialog.alert({title: 'No File Selected', message: 'Please select the file to be parsed.'});
+        } else {
+            var postData = {fileId: $scope.selectedFile.id, timestampColumn: $scope.dataProcessing.timestampColumn};
+
+            cheetah.hideModal($scope, 'cheetah-select-pupillometry-file-modal');
+            cheetah.showModal($scope, 'cheetah-prepare-pupillometry-file-modal');
+
+            $http.post('../../private/computeScenes', postData).then(function (response) {
+                console.log(response);
+            });
+        }
     };
 }).config(function ($routeProvider) {
     $routeProvider.when('/', {

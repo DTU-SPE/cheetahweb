@@ -11,6 +11,9 @@ import java.util.ListIterator;
  *
  */
 public interface IAnalysisContributor {
+	String SCENE_ENDED = "SceneEnded";
+	String SCENE_STARTED = "SceneStarted";
+
 	/**
 	 * Aggregates the studio events to trials.
 	 *
