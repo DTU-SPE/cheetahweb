@@ -15,11 +15,15 @@ public class AddDataProcessingServlet extends AbstractCheetahServlet {
 		private String comment;
 		private String timestampColumn;
 		private String leftPupilColumn;
-
 		private String rightPupilColumn;
+		private String decimalSeparator;
 
 		public String getComment() {
 			return comment;
+		}
+
+		public String getDecimalSeparator() {
+			return decimalSeparator;
 		}
 
 		public String getLeftPupilColumn() {
@@ -44,6 +48,10 @@ public class AddDataProcessingServlet extends AbstractCheetahServlet {
 
 		public void setComment(String comment) {
 			this.comment = comment;
+		}
+
+		public void setDecimalSeparator(String decimalSeparator) {
+			this.decimalSeparator = decimalSeparator;
 		}
 
 		public void setLeftPupilColumn(String leftPupilColumn) {
@@ -76,7 +84,8 @@ public class AddDataProcessingServlet extends AbstractCheetahServlet {
 		AddDataProcessingRequest addRequest = readJson(request, AddDataProcessingRequest.class);
 		DataProcessingDao dao = new DataProcessingDao();
 		DataProcessing dataProcessing = dao.insert(connection, addRequest.getStudyId(), addRequest.getName(), addRequest.getComment(),
-				addRequest.getTimestampColumn(), addRequest.getLeftPupilColumn(), addRequest.getRightPupilColumn());
+				addRequest.getTimestampColumn(), addRequest.getLeftPupilColumn(), addRequest.getRightPupilColumn(),
+				addRequest.getDecimalSeparator());
 
 		writeJson(response, dataProcessing);
 	}

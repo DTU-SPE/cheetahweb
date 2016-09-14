@@ -486,4 +486,14 @@
 			</column>
 		</addColumn>
 	</changeSet>
+	
+	<changeSet id="CEP2.0-27" author="Stefan">
+		<comment>Add column for the decimal separator in the data processing, #534</comment>
+
+		<addColumn tableName="data_processing">
+			<column name="decimal_separator" type="VARCHAR(10)" defaultValue=".">
+				<constraints nullable="false" />
+			</column>
+		</addColumn>
+	</changeSet>
 </databaseChangeLog>

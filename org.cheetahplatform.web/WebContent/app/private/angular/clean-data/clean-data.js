@@ -35,7 +35,7 @@ angular.module('cheetah.CleanData', []).controller('CleanDataModalController', f
         }
     }
 
-    $scope.$on('cheetah-clean-data-modal.show', function () {
+    $scope.$on('cheetah-clean-data-modal.show', function (event, data) {
         $http.get("../../private/availablePupillometryFilters").success(function (filters) {
             $scope.parameters = [];
             $scope.filters = [];
@@ -47,6 +47,37 @@ angular.module('cheetah.CleanData', []).controller('CleanDataModalController', f
                 value.timestamp = timestamp++;
                 $scope.filters.push(value);
             });
+
+            //show predefined data, if provided
+            if (data) {
+                if (data.parameters) {
+                    var allParameters = {};
+                    $.each($scope.filters, function (index, filter) {
+                        $.each(filter.parameters, function (index, parameter) {
+                            allParameters[parameter.key] = parameter;
+                        });
+                    });
+
+                    $.each(data.parameters, function (key, value) {
+                        var preselectedParameter = allParameters[key];
+                        preselectedParameter.value = value;
+                        $scope.parameters.push(preselectedParameter);
+                    });
+                }
+                if (data.filters) {
+                    $.each($scope.filters, function (index, filter) {
+                        if (data.filters.indexOf(filter.id) !== -1) {
+                            filter.selected = true;
+                        }
+                    });
+                }
+                if (data.decimalSeparator) {
+                    $scope.decimalSeparator = data.decimalSeparator;
+                }
+                if (data.fileNamePostFix) {
+                    $scope.fileNamePostFix = data.fileNamePostFix;
+                }
+            }
         });
     });
 

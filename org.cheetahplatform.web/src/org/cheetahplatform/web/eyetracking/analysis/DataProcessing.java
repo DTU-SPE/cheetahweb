@@ -10,6 +10,7 @@ import java.util.List;
  *
  */
 public class DataProcessing {
+	public static final String DATA_PROCESSING_TYPE_CLEAN = "clean";
 	private long id;
 	private String name;
 	private String comment;
@@ -17,12 +18,14 @@ public class DataProcessing {
 	private String timestampColumn;
 	private String leftPupilColumn;
 	private String rightPupilColumn;
-	public static final String DATA_PROCESSING_TYPE_CLEAN = "clean";
+	private String decimalSeparator;
 
-	public DataProcessing(long id, String name, String comment, String timestampColumn, String leftPupilColumn, String rightPupilColumn) {
+	public DataProcessing(long id, String name, String comment, String timestampColumn, String leftPupilColumn, String rightPupilColumn,
+			String decimalSeparator) {
 		this.timestampColumn = timestampColumn;
 		this.leftPupilColumn = leftPupilColumn;
 		this.rightPupilColumn = rightPupilColumn;
+		this.decimalSeparator = decimalSeparator;
 		this.steps = new ArrayList<>();
 		this.id = id;
 		this.name = name;
@@ -35,6 +38,10 @@ public class DataProcessing {
 
 	public String getComment() {
 		return comment;
+	}
+
+	public String getDecimalSeparator() {
+		return decimalSeparator;
 	}
 
 	public long getId() {

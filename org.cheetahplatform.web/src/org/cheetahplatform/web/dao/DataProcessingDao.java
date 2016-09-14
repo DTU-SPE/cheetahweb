@@ -33,12 +33,13 @@ public class DataProcessingDao extends AbstractCheetahDao {
 	 * @param studyId
 	 * @param name
 	 * @param comment
+	 * @param decimalSeparator
 	 * @throws SQLException
 	 */
 	public DataProcessing insert(Connection connection, long studyId, String name, String comment, String timestampColumn,
-			String leftPupilColumn, String rightPupilColumn) throws SQLException {
+			String leftPupilColumn, String rightPupilColumn, String decimalSeparator) throws SQLException {
 		PreparedStatement statement = connection.prepareStatement(
-				"insert into data_processing (fk_study, name, comment, timestamp_column, left_pupil_column, right_pupil_column) values (?, ?, ?, ?, ?, ?)",
+				"insert into data_processing (fk_study, name, comment, timestamp_column, left_pupil_column, right_pupil_column, decimal_separator) values (?, ?, ?, ?, ?, ?, ?)",
 				Statement.RETURN_GENERATED_KEYS);
 		statement.setLong(1, studyId);
 		statement.setString(2, name);
@@ -46,13 +47,14 @@ public class DataProcessingDao extends AbstractCheetahDao {
 		statement.setString(4, timestampColumn);
 		statement.setString(5, leftPupilColumn);
 		statement.setString(6, rightPupilColumn);
+		statement.setString(7, decimalSeparator);
 		statement.execute();
 
 		ResultSet keys = statement.getGeneratedKeys();
 		keys.next();
 		long id = keys.getLong(1);
 
-		return new DataProcessing(id, name, comment, timestampColumn, leftPupilColumn, rightPupilColumn);
+		return new DataProcessing(id, name, comment, timestampColumn, leftPupilColumn, rightPupilColumn, decimalSeparator);
 	}
 
 	/**
@@ -83,8 +85,10 @@ public class DataProcessingDao extends AbstractCheetahDao {
 				String timestampColumn = resultSet.getString("timestamp_column");
 				String leftPupilColumn = resultSet.getString("left_pupil_column");
 				String rightPupilColumn = resultSet.getString("right_pupil_column");
+				String decimalSeparator = resultSet.getString("decimal_separator");
 
-				dataProcessing = new DataProcessing(id, name, comment, timestampColumn, leftPupilColumn, rightPupilColumn);
+				dataProcessing = new DataProcessing(id, name, comment, timestampColumn, leftPupilColumn, rightPupilColumn,
+						decimalSeparator);
 				idToDataProcessing.put(id, dataProcessing);
 			}
 
@@ -100,5 +104,27 @@ public class DataProcessingDao extends AbstractCheetahDao {
 		cleanUp(resultSet, statement);
 
 		return idToDataProcessing;
+	}
+
+	/**
+	 * Updates a data processing.
+	 *
+	 * @param connection
+	 * @param dataProcessingId
+	 * @param timestampColumn
+	 * @param leftPupilColumn
+	 * @param rightPupilColumn
+	 * @throws SQLException
+	 */
+	public void update(Connection connection, long dataProcessingId, String timestampColumn, String leftPupilColumn,
+			String rightPupilColumn, String decimalSeparator) throws SQLException {
+		PreparedStatement statement = connection.prepareStatement(
+				"update data_processing set timestamp_column = ?, left_pupil_column = ?, right_pupil_column = ?, decimal_separator = ? where pk_data_processing = ?");
+		statement.setString(1, timestampColumn);
+		statement.setString(2, leftPupilColumn);
+		statement.setString(3, rightPupilColumn);
+		statement.setString(4, decimalSeparator);
+		statement.setLong(5, dataProcessingId);
+		statement.executeUpdate();
 	}
 }

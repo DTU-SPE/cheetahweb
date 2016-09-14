@@ -5,7 +5,8 @@
             <div class="panel-body">
                 <div ng-show="mode === 'overview'" ng-controller="StudyOverviewController">
                     <h4>What can I do here?</h4>
-                    <div class="cheetah-section-description">This area lets you manage all your studies. Whenever you would
+                    <div class="cheetah-section-description">This area lets you manage all your studies. Whenever you
+                        would
                         like to perform an empirical investigation with pupillometric analysis, you should create a new
                         study and <a href="subject-management.htm">assign subjects</a> to it. This will
                         help you manage all your data in the future.
@@ -15,7 +16,8 @@
                                 ng-click="openAddStudyDialog()">
                             Add Study
                         </button>
-                        <button class="btn btn-default" ng-click="showDataProcessing()" ng-disabled="selection.id === -1">
+                        <button class="btn btn-default" ng-click="showDataProcessing()"
+                                ng-disabled="selection.id === -1">
                             Define Data Processing
                         </button>
                         <button id="cheetah-study-management-delete-button" class="btn btn-default"
@@ -41,26 +43,30 @@
                     </table>
                 </div>
 
-                <div ng-show="mode === 'data_processing'" ng-controller="DataProcessingController" class="cheetah-data-processing-container">
+                <div ng-show="mode === 'data_processing'" ng-controller="DataProcessingController"
+                     class="cheetah-data-processing-container">
                     <button class="btn btn-default" ng-click="showOverview()">
                         Back to Studies
                     </button>
                     <h4>Define Data Processing of Study '{{study.name}}'</h4>
-                    <div class="cheetah-section-description">This area lets you manage the data processing of this study.
+                    <div class="cheetah-section-description">This area lets you manage the data processing of this
+                        study.
                     </div>
                     <div>
                         <div ng-show="study.dataProcessing.length > 0">
                             <p>The following steps have been defined for data processing:</p>
                         </div>
                         <div ng-show="study.dataProcessing.length === 0">
-                            <p>No data processing steps have been defined yet. Please use the button below to add new data processing routines.</p>
+                            <p>No data processing steps have been defined yet. Please use the button below to add new
+                                data processing routines.</p>
                         </div>
 
                         <div class="panel-group">
                             <div class="panel panel-default" ng-repeat="dataProcessing in study.dataProcessing">
                                 <div class="panel-heading">
                                     <div class="cheetah-data-processing-buttons">
-                                        <span class="icon-cheetah-close" ng-click="deleteDataProcessing(dataProcessing)"></span>
+                                        <span class="icon-cheetah-close"
+                                              ng-click="deleteDataProcessing(dataProcessing)"></span>
                                     </div>
                                     <h4 class="panel-title">
                                         <a href="#cheetah-data-processing{{dataProcessing.id}}" data-toggle="collapse">{{dataProcessing.name}}</a>
@@ -68,24 +74,47 @@
                                 </div>
                                 <div id="cheetah-data-processing{{dataProcessing.id}}" class="panel-collapse collapse">
                                     <div class="panel-body">
+                                        <div class="cheetah-data-processing-columns-container">
+                                            <span><strong>Timestamp Column:</strong> {{dataProcessing.timestampColumn}} <span
+                                                    class="icon-cheetah-edit cheetah-edit-data-processing-columns-button"
+                                                    ng-click="showEditDataProcessingColumnsModal(dataProcessing)"> </span><br></span>
+                                            <span><strong>Left Pupil Column:</strong> {{dataProcessing.leftPupilColumn}} <span
+                                                    class="icon-cheetah-edit cheetah-edit-data-processing-columns-button"
+                                                    ng-click="showEditDataProcessingColumnsModal(dataProcessing)"> </span><br></span>
+                                            <span><strong>Right Pupil Column:</strong> {{dataProcessing.rightPupilColumn}} <span
+                                                    class="icon-cheetah-edit cheetah-edit-data-processing-columns-button"
+                                                    ng-click="showEditDataProcessingColumnsModal(dataProcessing)"> </span><br></span>
+                                            <span><strong>Decimal Separator:</strong> {{dataProcessing.decimalSeparator}} <span
+                                                    class="icon-cheetah-edit cheetah-edit-data-processing-columns-button"
+                                                    ng-click="showEditDataProcessingColumnsModal(dataProcessing)"> </span><br></span>
+                                        </div>
+
                                         <ul class="list-group" ng-show="dataProcessing.steps.length > 0">
-                                            <li class="list-group-item" ng-repeat="step in dataProcessing.steps">Step {{$index + 1}} ({{step.type}}): {{step.name}}<span
-                                                    class="icon-cheetah-close cheetah-delete-dataprocessing-step" ng-click="deleteDataProcessingStep(dataProcessing, step)"> </span> <span
-                                                    class="icon-cheetah-edit cheetah-delete-dataprocessing-step" ng-click="editDataProcessingStep(step)"> </span> </li>
+                                            <li class="list-group-item" ng-repeat="step in dataProcessing.steps">Step
+                                                {{$index + 1}} ({{step.type}}): {{step.name}}<span
+                                                        class="icon-cheetah-close cheetah-delete-dataprocessing-step"
+                                                        ng-click="deleteDataProcessingStep(dataProcessing, step)"> </span>
+                                         <!--       <span
+                                                        class="icon-cheetah-edit cheetah-delete-dataprocessing-step"
+                                                        ng-click="showEditDataProcessingStepModal(step)"> </span>--></li>
                                         </ul>
                                         <p ng-show="dataProcessing.steps.length === 0">
-                                            For this data processing, no steps have been defined yet. Please use the button below for adding new steps.
+                                            For this data processing, no steps have been defined yet. Please use the
+                                            button below for adding new steps.
                                         </p>
 
                                         <div>
-                                            <button class="btn btn-default" ng-click="showAddDataProcessingStepModal(dataProcessing)">Add Step</button>
+                                            <button class="btn btn-default"
+                                                    ng-click="showAddDataProcessingStepModal(dataProcessing)">Add Step
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <button class="btn btn-default" ng-click="showAddDataProcessingModal()">Add Data Processing</button>
+                        <button class="btn btn-default" ng-click="showAddDataProcessingModal()">Add Data Processing
+                        </button>
                     </div>
                 </div>
             </div>
@@ -150,27 +179,42 @@
                 <form data-toggle="validator" id="addStudyForm" role="form">
                     <div class="form-group">
                         <div><label for="study-name">Name</label></div>
-                        <div><input class="form-control" type="text" ng-model="name" placeholder="The name of the data processing" required></div>
+                        <div><input class="form-control" type="text" ng-model="name"
+                                    placeholder="The name of the data processing" required></div>
                         <div class="help-block with-errors"></div>
                     </div>
                     <div class="form-group">
                         <div><label for="study-comment">Comment</label></div>
-                        <div><textarea class="form-control" ng-model="comment" rows="5" placeholder="Short comment on the data processing"></textarea>
+                        <div><textarea class="form-control" ng-model="comment" rows="5"
+                                       placeholder="Short comment on the data processing"></textarea>
                         </div>
                     </div>
                     <div class="form-group">
                         <div><label for="study-name">Timestamp Column</label></div>
-                        <div><input class="form-control" type="text" ng-model="timestampColumn" placeholder="The name of the column in which the timestamp can be found" required></div>
+                        <div><input class="form-control" type="text" ng-model="timestampColumn"
+                                    placeholder="The name of the column in which the timestamp can be found" required>
+                        </div>
                         <div class="help-block with-errors"></div>
                     </div>
                     <div class="form-group">
                         <div><label for="study-name">Left Pupil Column</label></div>
-                        <div><input class="form-control" type="text" ng-model="leftPupilColumn" placeholder="The name of the column in which the size of the left pupil can be found" required></div>
+                        <div><input class="form-control" type="text" ng-model="leftPupilColumn"
+                                    placeholder="The name of the column in which the size of the left pupil can be found"
+                                    required></div>
                         <div class="help-block with-errors"></div>
                     </div>
                     <div class="form-group">
                         <div><label for="study-name">Right Pupil Column</label></div>
-                        <div><input class="form-control" type="text" ng-model="rightPupilColumn" placeholder="The name of the column in which the size of the right pupil can be found" required></div>
+                        <div><input class="form-control" type="text" ng-model="rightPupilColumn"
+                                    placeholder="The name of the column in which the size of the right pupil can be found"
+                                    required></div>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <div><label for="study-name">Decimal Separator</label></div>
+                        <div><input class="form-control" type="text" ng-model="decimalSeparator"
+                                    placeholder="The decimal separator to be used in the output files"
+                                    required></div>
                         <div class="help-block with-errors"></div>
                     </div>
 
@@ -197,7 +241,8 @@
                 <form data-toggle="validator" role="form">
                     <div class="form-group">
                         <div><label>Name</label></div>
-                        <div><input class="form-control" type="text" ng-model="name" placeholder="Short description of the processing step"></div>
+                        <div><input class="form-control" type="text" ng-model="name"
+                                    placeholder="Short description of the processing step"></div>
                         <div class="help-block with-errors"></div>
                     </div>
 
@@ -219,6 +264,56 @@
         </div>
     </div>
 </div>
+
+<div class="modal" id="cheetah-edit-data-processing-modal" ng-controller="EditDataProcessingModalController">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Edit Data Processing</h4>
+            </div>
+            <div class="modal-body container-fluid">
+                <form data-toggle="validator" role="form">
+                    <div class="form-group">
+                        <div><label for="study-name">Timestamp Column</label></div>
+                        <div><input class="form-control" type="text" ng-model="timestampColumn"
+                                    placeholder="The name of the column in which the timestamp can be found" required>
+                        </div>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <div><label for="study-name">Left Pupil Column</label></div>
+                        <div><input class="form-control" type="text" ng-model="leftPupilColumn"
+                                    placeholder="The name of the column in which the size of the left pupil can be found"
+                                    required></div>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <div><label for="study-name">Right Pupil Column</label></div>
+                        <div><input class="form-control" type="text" ng-model="rightPupilColumn"
+                                    placeholder="The name of the column in which the size of the right pupil can be found"
+                                    required></div>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group">
+                        <div><label for="study-name">Decimal Separator</label></div>
+                        <div><input class="form-control" type="text" ng-model="decimalSeparator"
+                                    placeholder="The decimal separator to be used in the output files"
+                                    required></div>
+                        <div class="help-block with-errors"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <button class="btn btn-primary" ng-click="saveDataProcessing()">Save</button>
+                        <button class="btn" data-dismiss="modal" aria-label="Close">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <div ng-include="'angular/clean-data/clean-data.htm'"></div>
 

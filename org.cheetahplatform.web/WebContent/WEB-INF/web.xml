@@ -606,4 +606,14 @@
     <servlet-name>ExecuteDataProcessingServlet</servlet-name>
     <url-pattern>/private/executeDataProcessingStep</url-pattern>
   </servlet-mapping>
+   <servlet>
+    <description></description>
+    <display-name>UpdateDataProcessingServlet</display-name>
+    <servlet-name>UpdateDataProcessingServlet</servlet-name>
+    <servlet-class>org.cheetahplatform.web.servlet.UpdateDataProcessingServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UpdateDataProcessingServlet</servlet-name>
+    <url-pattern>/private/updateDataProcessing</url-pattern>
+  </servlet-mapping>
 </web-app>

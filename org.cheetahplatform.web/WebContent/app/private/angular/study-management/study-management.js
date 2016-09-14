@@ -102,6 +102,7 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData']).cont
 
     $scope.showAddDataProcessingStepModal = function (dataProcessing) {
         cheetah.showModal($rootScope, 'cheetah-add-data-processing-step-modal', dataProcessing);
+        $rootScope.dataProcessingMode = 'add';
     };
 
     $scope.deleteDataProcessingStep = function (dataProcessing, step) {
@@ -125,6 +126,21 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData']).cont
             }]
         });
     };
+
+    $scope.showEditDataProcessingColumnsModal = function (dataProcessing) {
+        cheetah.showModal($rootScope, 'cheetah-edit-data-processing-modal', dataProcessing);
+    };
+
+    $scope.showEditDataProcessingStepModal = function (step) {
+        $rootScope.dataProcessingMode = 'edit';
+
+        if (step.type === 'clean') {
+            var configuration = JSON.parse(step.configuration);
+            cheetah.showModal($rootScope, 'cheetah-clean-data-modal', configuration);
+        } else {
+            throw 'Editing step of type ' + step.type + ' is not supported yet.';
+        }
+    };
 }).controller('AddDataProcessingModalController', function ($scope, $http) {
     $scope.$on('cheetah-add-data-processing-modal.show', function (event, study) {
         $scope.study = study;
@@ -133,6 +149,7 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData']).cont
         $scope.timestampColumn = '';
         $scope.leftPupilColumn = '';
         $scope.rightPupilColumn = '';
+        $scope.decimalSeparator = '';
     });
 
     $scope.addDataProcessing = function () {
@@ -146,7 +163,8 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData']).cont
             comment: $scope.comment,
             timestampColumn: $scope.timestampColumn,
             leftPupilColumn: $scope.leftPupilColumn,
-            rightPupilColumn: $scope.rightPupilColumn
+            rightPupilColumn: $scope.rightPupilColumn,
+            decimalSeparator: $scope.decimalSeparator
         };
         $http.post('../../private/addDataProcessing', postData).then(function (response) {
             $scope.study.dataProcessing.push(response.data);
@@ -192,10 +210,34 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData']).cont
             throw "The following step is not supported yet: " + $scope.type;
         }
     };
-}).controller('AddCleanStepModalController', function ($scope, $http) {
-    $scope.$on('cheetah-add-clean-step-modal.show', function () {
-
+}).controller('EditDataProcessingModalController', function ($scope, $http) {
+    $scope.$on('cheetah-edit-data-processing-modal.show', function (event, dataProcessing) {
+        $scope.timestampColumn = dataProcessing.timestampColumn;
+        $scope.leftPupilColumn = dataProcessing.leftPupilColumn;
+        $scope.rightPupilColumn = dataProcessing.rightPupilColumn;
+        $scope.decimalSeparator = dataProcessing.decimalSeparator;
+        $scope.dataProcessing = dataProcessing;
     });
+
+    $scope.saveDataProcessing = function () {
+        var postData = {
+            dataProcessingId: $scope.dataProcessing.id,
+            timestampColumn: $scope.timestampColumn,
+            leftPupilColumn: $scope.leftPupilColumn,
+            rightPupilColumn: $scope.rightPupilColumn,
+            decimalSeparator: $scope.decimalSeparator
+        };
+
+        $http.post('../../private/updateDataProcessing', postData).then(function () {
+            //post request was ok, update the data
+            $scope.dataProcessing.timestampColumn = $scope.timestampColumn;
+            $scope.dataProcessing.leftPupilColumn = $scope.leftPupilColumn;
+            $scope.dataProcessing.rightPupilColumn = $scope.rightPupilColumn;
+            $scope.dataProcessing.decimalSeparator = $scope.decimalSeparator;
+
+            cheetah.hideModal($scope, 'cheetah-edit-data-processing-modal');
+        });
+    };
 }).config(function ($routeProvider) {
     $routeProvider.when('/', {
         templateUrl: 'angular/study-management/study-management.htm',
