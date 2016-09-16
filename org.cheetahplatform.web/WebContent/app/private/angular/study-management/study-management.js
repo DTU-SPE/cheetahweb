@@ -65,6 +65,7 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData']).cont
             $scope.newStudyComment = "";
         });
     };
+    $(".js-example-basic-single").select2();
 }).controller('DataProcessingController', function ($rootScope, $scope, $http) {
     $scope.$on('cheetah-show-data-processing', function (event, study) {
         $scope.study = study;
@@ -264,7 +265,7 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData']).cont
             cheetah.hideModal($scope, 'cheetah-edit-data-processing-modal');
         });
     };
-}).controller('SelectPupillometryFileModalController', function ($scope, $http) {
+}).controller('SelectPupillometryFileModalController', function ($scope, $http, $rootScope) {
     $scope.$on('cheetah-select-pupillometry-file-modal.show', function (event, data) {
         $scope.dataProcessing = data.dataProcessing;
         $scope.files = data.files;
@@ -281,10 +282,15 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData']).cont
             cheetah.showModal($scope, 'cheetah-prepare-pupillometry-file-modal');
 
             $http.post('../../private/computeScenes', postData).then(function (response) {
-                console.log(response);
+                cheetah.hideModal($scope, "cheetah-prepare-pupillometry-file-modal");
+                cheetah.showModal($rootScope, "cheetah-define-trial-modal", response.data);
             });
         }
     };
+}).controller('DefineTrialController', function ($scope, $http, $rootScope) {
+    $scope.$on('cheetah-define-trial-modal.show', function (event, data) {
+        $scope.scenes = data;
+    });
 }).config(function ($routeProvider) {
     $routeProvider.when('/', {
         templateUrl: 'angular/study-management/study-management.htm',
