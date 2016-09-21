@@ -1,5 +1,5 @@
 angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData']).controller('StudyOverviewController', function ($scope, $http) {
-}).controller('StudyController', function ($rootScope, $scope, $http) {
+}).controller('StudyController', function ($rootScope, $scope, $http, $timeout) {
     $scope.studies = [];
     $scope.newStudyName = "";
     $scope.newStudyComment = "";
@@ -65,7 +65,11 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData']).cont
             $scope.newStudyComment = "";
         });
     };
-    $(".js-example-basic-single").select2();
+
+    //there is a bug with select2 - see http://stackoverflow.com/questions/27572255/angularjs-and-select2-model-state-not-rendering-after-select-box
+    $timeout(function () {
+        $(".js-example-basic-single").select2();
+    });
 }).controller('DataProcessingController', function ($rootScope, $scope, $http) {
     $scope.$on('cheetah-show-data-processing', function (event, study) {
         $scope.study = study;
@@ -283,14 +287,72 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData']).cont
 
             $http.post('../../private/computeScenes', postData).then(function (response) {
                 cheetah.hideModal($scope, "cheetah-prepare-pupillometry-file-modal");
-                cheetah.showModal($rootScope, "cheetah-define-trial-modal", response.data);
+
+                var data = {};
+                data.scenes = response.data;
+                data.config = {};
+
+                cheetah.showModal($rootScope, "cheetah-define-trial-modal", data);
             });
         }
     };
-}).controller('DefineTrialController', function ($scope, $http, $rootScope) {
+}).controller('DefineTrialController', function ($scope, $rootScope) {
     $scope.$on('cheetah-define-trial-modal.show', function (event, data) {
-        $scope.scenes = data;
+        $scope.data = data;
+        if (!$scope.data.config.useTrialStartForTrialEnd) {
+            $scope.data.config.useTrialStartForTrialEnd = true;
+        }
+
+        $scope.data.aggregatedScenes = {};
+
+        $.each($scope.data.scenes, function (index, scene) {
+            if (!$scope.data.aggregatedScenes[scene]) {
+                $scope.data.aggregatedScenes[scene] = {
+                    name: scene,
+                    count: 1
+                };
+            } else {
+                var temp = $scope.data.aggregatedScenes[scene];
+                $scope.data.aggregatedScenes[scene] = {
+                    name: scene,
+                    count: temp.count + 1
+                };
+            }
+        });
     });
+
+    $scope.showStimulus = function () {
+        //make sure there is unnecessary data in the dialog.
+        if ($scope.data.config.useTrialStartForTrialEnd === true) {
+            $scope.data.config.trialEnd = undefined;
+        }
+
+        cheetah.hideModal($rootScope, "cheetah-define-trial-modal");
+        cheetah.showModal($rootScope, "cheetah-define-stimulus-modal", $scope.data);
+    };
+}).controller('DefineStimulusController', function ($scope, $rootScope) {
+    $scope.$on('cheetah-define-stimulus-modal.show', function (event, data) {
+        $scope.data = data;
+    });
+
+    $scope.showTrials = function () {
+        cheetah.hideModal($rootScope, "cheetah-define-stimulus-modal");
+        cheetah.showModal($rootScope, "cheetah-define-trial-modal", $scope.data);
+    };
+
+    $scope.showBaseline = function () {
+        cheetah.hideModal($rootScope, "cheetah-define-stimulus-modal");
+        cheetah.showModal($rootScope, "cheetah-define-baseline-modal", $scope.data);
+    };
+}).controller('DefineBaselineController', function ($scope, $rootScope) {
+    $scope.$on('cheetah-define-baseline-modal.show', function (event, data) {
+        $scope.data = data;
+    });
+
+    $scope.showStimulus = function () {
+        cheetah.hideModal($rootScope, "cheetah-define-baseline-modal");
+        cheetah.showModal($rootScope, "cheetah-define-stimulus-modal", $scope.data);
+    };
 }).config(function ($routeProvider) {
     $routeProvider.when('/', {
         templateUrl: 'angular/study-management/study-management.htm',

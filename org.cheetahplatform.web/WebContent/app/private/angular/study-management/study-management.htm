@@ -346,9 +346,9 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <button class="btn btn-primary" ng-click="showScenes()">OK</button>
+                    <div class="form-group cheetah-dialog-button-container">
                         <button class="btn" data-dismiss="modal" aria-label="Close">Cancel</button>
+                        <button class="btn btn-primary" ng-click="showScenes()">Next</button>
                     </div>
                 </form>
             </div>
@@ -363,7 +363,7 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                         aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Map files to subjects</h4>
+                <h4 class="modal-title">Define the trials</h4>
             </div>
             <div class="modal-body container-fluid">
                 <div class="cheetah-section-description">While scanning the selected file, we identified the following
@@ -377,7 +377,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr ng-repeat="scene in scenes track by $index">
+                    <tr ng-repeat="scene in data.scenes track by $index">
                         <td>{{$index}}</td>
                         <td>{{scene}}</td>
                     </tr>
@@ -388,10 +388,119 @@
                     some information on where to cut the data file. Please select the scene that marks the beginning of
                     a trial below.
                 </div>
-                <label for="cheetah-start-trial-select">Start marker for a trial</label>
-                <select class="js-example-basic-single" id="cheetah-start-trial-select"  style="width: 100%">
-                    <option ng-repeat="scene in scenes track by $index" value="{{$index}}">{{scene}}</option>
-                </select>
+
+                <form>
+                    <div class="form-group">
+                        <label for="cheetah-start-trial-select">Start marker for a trial</label>
+                        <select class="js-example-basic-single" id="cheetah-start-trial-select" style="width: 100%"
+                                ng-model="data.config.trialStart">
+                            <option ng-repeat="scene in data.aggregatedScenes" value="{{scene.name}}">{{scene.name}}
+                                ({{scene.count}} occurrences)
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="cheetah-use-trial-start-for-trial-end">The end of a trial is the start of the next
+                            trial</label>
+                        <input type="checkbox" ng-model="data.config.useTrialStartForTrialEnd"
+                               id="cheetah-use-trial-start-for-trial-end">
+                    </div>
+                    <div class="form-group" ng-hide="data.config.useTrialStartForTrialEnd">
+                        <label for="cheetah-end-trial-select">End marker for a
+                            trial</label>
+                        <select class="js-example-basic-single" id="cheetah-end-trial-select" style="width: 100%"
+                                ng-model="data.config.trialEnd">
+                            <option ng-repeat="scene in data.aggregatedScenes" value="{{scene.name}}">{{scene.name}}
+                                ({{scene.count}} occurrences)
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-group cheetah-dialog-button-container">
+                        <button class="btn" data-dismiss="modal" aria-label="Close">Cancel</button>
+                        <button class="btn btn-primary" ng-click="showStimulus()">Next</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal" id="cheetah-define-stimulus-modal" ng-controller="DefineStimulusController">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Define the stimulus for the trials</h4>
+            </div>
+            <div class="modal-body container-fluid">
+                <div class="cheetah-section-description">We know know where your trials start and where they end. Next,
+                    we need to know the actual stimulus you are trying to investigate within those trials. Subsequently,
+                    we show you all markers found in the file.
+                </div>
+                <table class="cheetah-scene-preview-table">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Event</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="scene in data.scenes track by $index">
+                        <td>{{$index}}</td>
+                        <td>{{scene}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div class="cheetah-section-description">Please select the stimulus within your trials below.
+                </div>
+
+                <form>
+                    <div class="form-group">
+                        <label for="cheetah-end-trial-select">Marker for the stimulus</label>
+                        <select class="js-example-basic-single" id="cheetah-stimulus-select" style="width: 100%"
+                                ng-model="data.config.stimulus">
+                            <option ng-repeat="scene in data.aggregatedScenes" value="{{scene.name}}">{{scene.name}}
+                                ({{scene.count}} occurrences)
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-group cheetah-dialog-button-container">
+                        <button class="btn" data-dismiss="modal" aria-label="Close">Cancel</button>
+                        <button class="btn" ng-click="showTrials()">Previous</button>
+                        <button class="btn btn-primary" ng-click="showBaseline()">Next</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal" id="cheetah-define-baseline-modal" ng-controller="DefineBaselineController">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Define a baseline for the trials</h4>
+            </div>
+            <div class="modal-body container-fluid">
+                <div class="cheetah-section-description">We know when your trial starts, when it ends, and when you display your Stimulus. Additionally,
+                    we could try to establish a baseline for your cognitive load measurement.
+                </div>
+                <form>
+                    <div class="form-group">
+                        
+                    </div>
+                    <div class="form-group cheetah-dialog-button-container">
+                        <button class="btn" data-dismiss="modal" aria-label="Close">Cancel</button>
+                        <button class="btn" ng-click="showStimulus()">Previous</button>
+                        <button class="btn btn-primary" ng-click="showLoadCalculations()">Next</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
