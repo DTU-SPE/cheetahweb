@@ -322,9 +322,9 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData']).cont
     });
 
     $scope.showStimulus = function () {
-        //make sure there is unnecessary data in the dialog.
+        //make sure there is no unnecessary data in the dialog.
         if ($scope.data.config.useTrialStartForTrialEnd === true) {
-            $scope.data.config.trialEnd = undefined;
+            delete $scope.data.config.trialEnd;
         }
 
         cheetah.hideModal($rootScope, "cheetah-define-trial-modal");
@@ -333,6 +333,11 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData']).cont
 }).controller('DefineStimulusController', function ($scope, $rootScope) {
     $scope.$on('cheetah-define-stimulus-modal.show', function (event, data) {
         $scope.data = data;
+        if (!$scope.data.config.stimulus) {
+            $scope.data.config.stimulus = {
+                stimulusEndsWithTrialEnd: true
+            };
+        }
     });
 
     $scope.showTrials = function () {
@@ -341,17 +346,47 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData']).cont
     };
 
     $scope.showBaseline = function () {
+        //make sure there is no unnecessary data in the dialog.
+        if ($scope.data.config.stimulus.stimulusEndsWithTrialEnd === true) {
+            delete $scope.data.config.stimulus.stimulusEnd;
+        }
+
         cheetah.hideModal($rootScope, "cheetah-define-stimulus-modal");
         cheetah.showModal($rootScope, "cheetah-define-baseline-modal", $scope.data);
     };
 }).controller('DefineBaselineController', function ($scope, $rootScope) {
+    $scope.baseLineCalcuationsTypes = [{
+        id: 'baseline-duration-before-stimulus',
+        label: "Predefined duration before stimulus"
+    }];
+
     $scope.$on('cheetah-define-baseline-modal.show', function (event, data) {
         $scope.data = data;
+        if (!$scope.data.config.baseline) {
+            $scope.data.config.baseline = {}
+        }
     });
+
+    $scope.isValid = function () {
+        if ($scope.data) {
+            if ($scope.data.config.baseline.baselineCalculation === 'baseline-duration-before-stimulus') {
+                if ($scope.data.config.baseline.durationBeforeStimulus && !isNaN($scope.data.config.baseline.durationBeforeStimulus)) {
+                    return true;
+                }
+                return false;
+            }
+        }
+
+        return false;
+    };
 
     $scope.showStimulus = function () {
         cheetah.hideModal($rootScope, "cheetah-define-baseline-modal");
         cheetah.showModal($rootScope, "cheetah-define-stimulus-modal", $scope.data);
+    };
+
+    $scope.showLoadCalculations = function () {
+        console.log($scope.data.config);
     };
 }).config(function ($routeProvider) {
     $routeProvider.when('/', {

@@ -417,7 +417,10 @@
                     </div>
                     <div class="form-group cheetah-dialog-button-container">
                         <button class="btn" data-dismiss="modal" aria-label="Close">Cancel</button>
-                        <button class="btn btn-primary" ng-click="showStimulus()">Next</button>
+                        <button class="btn btn-primary" ng-click="showStimulus()"
+                                ng-disabled="(!data.config.trialStart) || (data.config.useTrialStartForTrialEnd === false && !data.config.trialEnd)">
+                            Next
+                        </button>
                     </div>
                 </form>
             </div>
@@ -456,12 +459,25 @@
 
                 <div class="cheetah-section-description">Please select the stimulus within your trials below.
                 </div>
-
                 <form>
                     <div class="form-group">
-                        <label for="cheetah-end-trial-select">Marker for the stimulus</label>
-                        <select class="js-example-basic-single" id="cheetah-stimulus-select" style="width: 100%"
-                                ng-model="data.config.stimulus">
+                        <label for="cheetah-stimulus-start-select">Marker for the stimulus</label>
+                        <select class="js-example-basic-single" id="cheetah-stimulus-start-select" style="width: 100%"
+                                ng-model="data.config.stimulus.stimulusStart">
+                            <option ng-repeat="scene in data.aggregatedScenes" value="{{scene.name}}">{{scene.name}}
+                                ({{scene.count}} occurrences)
+                            </option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="cheetah-stimulus-ends-with-trial-end">Stimulus ends with end of trial</label>
+                        <input type="checkbox" ng-model="data.config.stimulus.stimulusEndsWithTrialEnd"
+                               id="cheetah-stimulus-ends-with-trial-end">
+                    </div>
+                    <div class="form-group" ng-hide="data.config.stimulus.stimulusEndsWithTrialEnd===true">
+                        <label for="cheetah-stimulus-end-select">Marker for the stimulus end</label>
+                        <select class="js-example-basic-single" id="cheetah-stimulus-end-select" style="width: 100%"
+                                ng-model="data.config.stimulus.stimulusEnd">
                             <option ng-repeat="scene in data.aggregatedScenes" value="{{scene.name}}">{{scene.name}}
                                 ({{scene.count}} occurrences)
                             </option>
@@ -470,7 +486,10 @@
                     <div class="form-group cheetah-dialog-button-container">
                         <button class="btn" data-dismiss="modal" aria-label="Close">Cancel</button>
                         <button class="btn" ng-click="showTrials()">Previous</button>
-                        <button class="btn btn-primary" ng-click="showBaseline()">Next</button>
+                        <button class="btn btn-primary" ng-click="showBaseline()"
+                                ng-disabled="!data.config.stimulus.stimulusStart || (data.config.stimulus.stimulusEndsWithTrialEnd===false && !data.config.stimulus.stimulusEnd)">
+                            Next
+                        </button>
                     </div>
                 </form>
             </div>
@@ -488,17 +507,34 @@
                 <h4 class="modal-title">Define a baseline for the trials</h4>
             </div>
             <div class="modal-body container-fluid">
-                <div class="cheetah-section-description">We know when your trial starts, when it ends, and when you display your Stimulus. Additionally,
+                <div class="cheetah-section-description">We know when your trial starts, when it ends, and when you
+                    display your Stimulus. Additionally,
                     we could try to establish a baseline for your cognitive load measurement.
                 </div>
                 <form>
                     <div class="form-group">
-                        
+                        <label for="cheetah-select-baseline-calculation-type">Baseline Berechnung</label>
+                        <select class="js-example-basic-single" id="cheetah-select-baseline-calculation-type"
+                                ng-model="data.config.baseline.baselineCalculation" style="width: 100%">
+                            <option ng-repeat="calculation in baseLineCalcuationsTypes" value="{{calculation.id}}">
+                                {{calculation.label}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-group"
+                         ng-show="data.config.baseline.baselineCalculation==='baseline-duration-before-stimulus'">
+                        <label for="cheetah-baseline-duration-before-stimulus">Duration [ms] prior to the
+                            stimulus</label>
+                        <input type="text" class="form-control"
+                               id="cheetah-baseline-duration-before-stimulus"
+                               ng-model="data.config.baseline.durationBeforeStimulus">
                     </div>
                     <div class="form-group cheetah-dialog-button-container">
                         <button class="btn" data-dismiss="modal" aria-label="Close">Cancel</button>
                         <button class="btn" ng-click="showStimulus()">Previous</button>
-                        <button class="btn btn-primary" ng-click="showLoadCalculations()">Next</button>
+                        <button class="btn btn-primary" ng-click="showLoadCalculations()" ng-disabled="!isValid()">
+                            Next
+                        </button>
                     </div>
                 </form>
             </div>
