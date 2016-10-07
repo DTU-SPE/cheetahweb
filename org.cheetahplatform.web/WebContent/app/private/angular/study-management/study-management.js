@@ -156,6 +156,21 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData']).cont
     };
 
     $scope.showEditTrialComputationModal = function (dataProcessing) {
+        if (!dataProcessing.timestampColumn || dataProcessing.timestampColumn.trim().length === 0) {
+            BootstrapDialog.alert({
+                title: 'No timestamp column defined',
+                message: 'The definition of the trial computation requires the definition of the timestamp column.'
+            });
+            return;
+        }
+        if (!dataProcessing.decimalSeparator || dataProcessing.decimalSeparator.trim().length === 0) {
+            BootstrapDialog.alert({
+                title: 'No decimal separator defined',
+                message: 'The definition of the trial computation requires the definition of the decimal separator.'
+            });
+            return;
+        }
+
         var postData = {studyId: $scope.study.id};
         $http.post('../../private/listAvailablePupillometryFiles', postData).then(function (response) {
             var data = response.data;
