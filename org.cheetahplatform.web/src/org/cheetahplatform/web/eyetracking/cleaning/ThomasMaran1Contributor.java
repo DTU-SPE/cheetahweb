@@ -23,7 +23,7 @@ public class ThomasMaran1Contributor implements IAnalysisContributor {
 			List<PupillometryFileLine> collapsed = (List<PupillometryFileLine>) line.getMarking(PupillometryFile.COLLAPSED_COLUMNS);
 
 			if (collapsed != null) {
-				for (PupillometryFileLine collapsedLine : collapsed) {
+				for (IPupillometryFileLine collapsedLine : collapsed) {
 					String event = collapsedLine.get(studioEventColumn);
 					String currentEvent = collapsedLine.get(studioEventDataColumn);
 
@@ -50,7 +50,7 @@ public class ThomasMaran1Contributor implements IAnalysisContributor {
 		PupillometryFileColumn studioEventColumn = file.getHeader().getColumn(CleanPupillometryDataWorkItem.STUDIO_EVENT);
 
 		if (collapsed != null) {
-			for (PupillometryFileLine collapsedLine : collapsed) {
+			for (IPupillometryFileLine collapsedLine : collapsed) {
 				String event = collapsedLine.get(studioEventColumn);
 				if (type.equals(event)) {
 					return true;

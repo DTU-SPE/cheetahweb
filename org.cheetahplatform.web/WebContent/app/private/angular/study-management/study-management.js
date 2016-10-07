@@ -290,6 +290,8 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData']).cont
 
                 var data = {};
                 data.scenes = response.data;
+                data.selectedFile = $scope.selectedFile.id;
+                data.dataProcessing = $scope.dataProcessing;
                 data.config = {};
 
                 cheetah.showModal($rootScope, "cheetah-define-trial-modal", data);
@@ -354,7 +356,7 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData']).cont
         cheetah.hideModal($rootScope, "cheetah-define-stimulus-modal");
         cheetah.showModal($rootScope, "cheetah-define-baseline-modal", $scope.data);
     };
-}).controller('DefineBaselineController', function ($scope, $rootScope) {
+}).controller('DefineBaselineController', function ($scope, $rootScope, $http) {
     $scope.baseLineCalcuationsTypes = [{
         id: 'baseline-duration-before-stimulus',
         label: "Predefined duration before stimulus"
@@ -370,10 +372,7 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData']).cont
     $scope.isValid = function () {
         if ($scope.data) {
             if ($scope.data.config.baseline.baselineCalculation === 'baseline-duration-before-stimulus') {
-                if ($scope.data.config.baseline.durationBeforeStimulus && !isNaN($scope.data.config.baseline.durationBeforeStimulus)) {
-                    return true;
-                }
-                return false;
+                return $scope.data.config.baseline.durationBeforeStimulus && !isNaN($scope.data.config.baseline.durationBeforeStimulus);
             }
         }
 
@@ -386,8 +385,37 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData']).cont
     };
 
     $scope.showLoadCalculations = function () {
-        console.log($scope.data.config);
+        cheetah.hideModal($rootScope, "cheetah-define-baseline-modal");
+        cheetah.showModal($rootScope, "cheetah-prepare-pupillometry-file-modal");
+
+        var request = {};
+        request.config = $scope.data.config;
+        request.fileId = $scope.data.selectedFile;
+        request.timestampColumn = $scope.data.dataProcessing.timestampColumn;
+        request.decimalSeparator = $scope.data.dataProcessing.decimalSeparator;
+
+
+        $http.post("../../private/computeTrials", request).success(function (data) {
+            cheetah.hideModal($rootScope, "cheetah-prepare-pupillometry-file-modal");
+            console.log(data);
+            $scope.data.trialOverview = data;
+            cheetah.showModal($rootScope, "cheetah-trial-overview-modal", $scope.data)
+        });
     };
+
+}).controller('TrialOverviewController', function ($http, $scope, $rootScope) {
+    $scope.$on('cheetah-trial-overview-modal.show', function (event, data) {
+        $scope.data = data;
+    });
+
+    $scope.showBaseline = function () {
+        cheetah.hideModal($rootScope, "cheetah-trial-overview-modal");
+        cheetah.showModal($rootScope, "cheetah-define-baseline-modal", $scope.data);
+    };
+
+    $scope.saveTrialConfiguration = function () {
+
+    }
 }).config(function ($routeProvider) {
     $routeProvider.when('/', {
         templateUrl: 'angular/study-management/study-management.htm',
