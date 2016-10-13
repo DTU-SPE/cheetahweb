@@ -123,7 +123,6 @@ path.sliding-window {
 }
 
 .modal-dialog {
-  top: 200px;
   z-index: 1000;
 }
 
@@ -511,4 +510,9 @@ ul.dropdown-menu a {
 .cheetah-scene-preview-table td:last-child, .cheetah-scene-preview-table th:last-child {
   width: 100%;
   padding-right: 10px;
+}
+
+.cheetah-trial-preview-container {
+  max-height: 600px;
+  overflow-y: auto;
 }

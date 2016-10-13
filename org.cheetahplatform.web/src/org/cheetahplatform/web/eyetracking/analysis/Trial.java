@@ -4,10 +4,6 @@ public class Trial extends AbstractPupillometryFileSection {
 	private Stimulus stimulus;
 	private Baseline baseline;
 
-	public Trial() {
-		super();
-	}
-
 	public Baseline getBaseline() {
 		return baseline;
 	}

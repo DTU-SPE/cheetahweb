@@ -649,4 +649,14 @@
 		<servlet-name>ComputeTrialsServlet</servlet-name>
 		<url-pattern>/private/computeTrials</url-pattern>
 	</servlet-mapping>
+	<servlet>
+    	<description></description>
+    	<display-name>PreviewTrialsServlet</display-name>
+    	<servlet-name>PreviewTrialsServlet</servlet-name>
+    	<servlet-class>org.cheetahplatform.web.servlet.PreviewTrialsServlet</servlet-class>
+  	</servlet>
+  	<servlet-mapping>
+	    <servlet-name>PreviewTrialsServlet</servlet-name>
+	    <url-pattern>/private/previewTrials</url-pattern>
+  	</servlet-mapping>
 </web-app>

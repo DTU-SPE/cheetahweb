@@ -3,6 +3,9 @@ package org.cheetahplatform.web.eyetracking.analysis;
 import static org.cheetahplatform.web.eyetracking.cleaning.CleanPupillometryDataWorkItem.STUDIO_EVENT_DATA;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,23 +46,54 @@ public class TrialDetector extends AbstractPupillopmetryFileDetector {
 	}
 
 	public List<Trial> detectTrials() throws Exception {
+		PupillometryFile pupillometryFile = loadPupillometryFile();
+
+		List<Trial> trials = splitFileIntoTrials(pupillometryFile);
+		detectStimulus(pupillometryFile, trials);
+		detectBaseline(pupillometryFile.getHeader().getColumn(timestampColumn), trials);
+
+		return trials;
+	}
+
+	/**
+	 * Loads the pupillometry file defined in this detector.
+	 *
+	 * @return
+	 * @throws SQLException
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	public PupillometryFile loadPupillometryFile() throws SQLException, FileNotFoundException, IOException {
 		UserFileDao userFileDao = new UserFileDao();
 		String filePath = userFileDao.getPath(fileId);
 		File file = userFileDao.getUserFile(filePath);
 		PupillometryFile pupillometryFile = new PupillometryFile(file, PupillometryFile.SEPARATOR_TABULATOR, true, decimalSeparator);
 		PupillometryFileColumn timeStamp = pupillometryFile.getHeader().getColumn(timestampColumn);
 		pupillometryFile.collapseEmptyColumns(timeStamp);
-
-		List<Trial> trials = findTrials(pupillometryFile);
-		detectStimulus(pupillometryFile, trials);
-		detectBaseline(timeStamp, trials);
-
-		return trials;
+		return pupillometryFile;
 	}
 
-	private List<Trial> findTrials(PupillometryFile pupillometryFile) throws Exception {
-		List<Trial> trials = new ArrayList<>();
+	private void readConfig() {
+		String trialStart = config.getTrialStart();
+		String trialEnd = null;
+		if (config.isUseTrialStartForTrialEnd()) {
+			trialEnd = trialStart;
+		} else {
+			trialEnd = config.getTrialEnd();
+		}
 
+		trialIdentifier = new StartAndEndPupillometryFileSectionIdentifier(trialStart, trialEnd);
+	}
+
+	/**
+	 * Splits the pupillometry file into trials (does not compute the stimuli and baseline).
+	 *
+	 * @param pupillometryFile
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Trial> splitFileIntoTrials(PupillometryFile pupillometryFile) throws Exception {
+		List<Trial> trials = new ArrayList<>();
 		PupillometryFileColumn studioEventDataColumn = pupillometryFile.getHeader().getColumn(STUDIO_EVENT_DATA);
 
 		List<PupillometryFileLine> lines = pupillometryFile.getContent();
@@ -92,18 +126,7 @@ public class TrialDetector extends AbstractPupillopmetryFileDetector {
 				previousScene = scene;
 			}
 		}
+
 		return trials;
-	}
-
-	private void readConfig() {
-		String trialStart = config.getTrialStart();
-		String trialEnd = null;
-		if (config.isUseTrialStartForTrialEnd()) {
-			trialEnd = trialStart;
-		} else {
-			trialEnd = config.getTrialEnd();
-		}
-
-		trialIdentifier = new StartAndEndPupillometryFileSectionIdentifier(trialStart, trialEnd);
 	}
 }

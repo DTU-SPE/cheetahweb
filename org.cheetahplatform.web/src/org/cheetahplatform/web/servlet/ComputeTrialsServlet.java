@@ -17,7 +17,6 @@ public class ComputeTrialsServlet extends AbstractCheetahServlet {
 	@Override
 	protected void doPostWithDatabaseConnection(Connection connection, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
-
 		ComputeTrialsRequest trialRequest = readJson(request, ComputeTrialsRequest.class);
 		TrialDetector trialDetector = new TrialDetector(trialRequest.getFileId(), trialRequest.getConfig(),
 				trialRequest.getDecimalSeparator(), trialRequest.getTimestampColumn());

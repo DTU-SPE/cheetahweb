@@ -298,10 +298,13 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData']).cont
             var postData = {fileId: $scope.selectedFile.id, timestampColumn: $scope.dataProcessing.timestampColumn};
 
             cheetah.hideModal($scope, 'cheetah-select-pupillometry-file-modal');
-            cheetah.showModal($scope, 'cheetah-prepare-pupillometry-file-modal');
+            cheetah.showModal($rootScope, 'cheetah-progress-modal', {
+                title: 'Preparing File',
+                message: 'CEP-Web is now preparing your file. Please stand by, this could take some seconds.'
+            });
 
             $http.post('../../private/computeScenes', postData).then(function (response) {
-                cheetah.hideModal($scope, "cheetah-prepare-pupillometry-file-modal");
+                cheetah.hideModal($scope, "cheetah-progress-modal");
 
                 var data = {};
                 data.scenes = response.data;
@@ -313,8 +316,13 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData']).cont
             });
         }
     };
-}).controller('DefineTrialController', function ($scope, $rootScope) {
+}).controller('DefineTrialController', function ($scope, $rootScope, $http) {
     $scope.$on('cheetah-define-trial-modal.show', function (event, data) {
+        //might be called from other modals, keep the data in this case
+        if (!data) {
+            return;
+        }
+
         $scope.data = data;
         if (!$scope.data.config.useTrialStartForTrialEnd) {
             $scope.data.config.useTrialStartForTrialEnd = true;
@@ -346,6 +354,25 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData']).cont
 
         cheetah.hideModal($rootScope, "cheetah-define-trial-modal");
         cheetah.showModal($rootScope, "cheetah-define-stimulus-modal", $scope.data);
+    };
+
+    $scope.previewTrialComputation = function () {
+        var request = {};
+        request.config = $scope.data.config;
+        request.fileId = $scope.data.selectedFile;
+        request.timestampColumn = $scope.data.dataProcessing.timestampColumn;
+        request.decimalSeparator = $scope.data.dataProcessing.decimalSeparator;
+
+        cheetah.hideModal($rootScope, "cheetah-define-trial-modal");
+        cheetah.showModal($rootScope, 'cheetah-progress-modal', {
+            title: 'Computing Trial Preview',
+            message: 'CEP-Web is now computing a preview of the trials. Please stand by, this could take some seconds.'
+        });
+
+        $http.post("../../private/previewTrials", request).then(function (response) {
+            cheetah.hideModal($scope, 'cheetah-progress-modal');
+            cheetah.showModal($rootScope, 'cheetah-preview-trial-modal', response.data);
+        });
     };
 }).controller('DefineStimulusController', function ($scope, $rootScope) {
     $scope.$on('cheetah-define-stimulus-modal.show', function (event, data) {
@@ -409,10 +436,8 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData']).cont
         request.timestampColumn = $scope.data.dataProcessing.timestampColumn;
         request.decimalSeparator = $scope.data.dataProcessing.decimalSeparator;
 
-
         $http.post("../../private/computeTrials", request).success(function (data) {
             cheetah.hideModal($rootScope, "cheetah-prepare-pupillometry-file-modal");
-            console.log(data);
             $scope.data.trialOverview = data;
             cheetah.showModal($rootScope, "cheetah-trial-overview-modal", $scope.data)
         });
@@ -431,6 +456,20 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData']).cont
     $scope.saveTrialConfiguration = function () {
 
     }
+}).controller('PreviewTrialController', function ($rootScope, $scope) {
+    $scope.$on('cheetah-preview-trial-modal.show', function (event, data) {
+        $scope.trials = data.trials;
+    });
+
+    $scope.backToTrialDefinition = function () {
+        cheetah.hideModal($scope, 'cheetah-preview-trial-modal');
+        cheetah.showModal($rootScope, 'cheetah-define-trial-modal');
+    };
+}).controller('ProgressController', function ($scope) {
+    $scope.$on('cheetah-progress-modal.show', function (event, data) {
+        $scope.title = data.title;
+        $scope.message = data.message;
+    });
 }).config(function ($routeProvider) {
     $routeProvider.when('/', {
         templateUrl: 'angular/study-management/study-management.htm',
