@@ -516,3 +516,7 @@ ul.dropdown-menu a {
   max-height: 600px;
   overflow-y: auto;
 }
+
+.cheetah-detection-type-description {
+  padding-top: 10px;
+}

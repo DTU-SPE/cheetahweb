@@ -128,4 +128,20 @@ public class DataProcessingDao extends AbstractCheetahDao {
 		statement.setLong(5, dataProcessingId);
 		statement.executeUpdate();
 	}
+
+	/**
+	 * Updates the trial computation configuration of a data processing.
+	 *
+	 * @param connection
+	 * @param dataProcessingId
+	 * @param trialConfiguration
+	 * @throws SQLException
+	 */
+	public void updateTrialConfiguration(Connection connection, long dataProcessingId, String trialConfiguration) throws SQLException {
+		PreparedStatement statement = connection
+				.prepareStatement("update data_processing set trial_computation_configuration = ? where pk_data_processing  = ?");
+		statement.setString(1, trialConfiguration);
+		statement.setLong(2, dataProcessingId);
+		statement.executeUpdate();
+	}
 }

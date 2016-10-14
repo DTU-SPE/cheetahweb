@@ -310,7 +310,16 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData']).cont
                 data.scenes = response.data;
                 data.selectedFile = $scope.selectedFile.id;
                 data.dataProcessing = $scope.dataProcessing;
-                data.config = {};
+                //if there is already a configuration defined, edit it; otherwise create a new one
+                if (data.dataProcessing.trialComputationConfiguration) {
+                    if (typeof data.dataProcessing.trialComputationConfiguration === 'string') {
+                        data.config = JSON.parse(data.dataProcessing.trialComputationConfiguration);
+                    } else {
+                        data.config = data.dataProcessing.trialComputationConfiguration;
+                    }
+                } else {
+                    data.config = {};
+                }
 
                 cheetah.showModal($rootScope, "cheetah-define-trial-modal", data);
             });
@@ -375,6 +384,17 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData']).cont
         });
     };
 }).controller('DefineStimulusController', function ($scope, $rootScope) {
+    $scope.stimulusDetectionTypes = [{
+        name: 'Default detection',
+        type: 'default',
+        description: 'The default detection of a stimulus based on a scene with a predefined name.'
+    }, {
+        name: 'Detection based on a scene that preceeds the stimuli',
+        type: 'triggered_by_scene',
+        description: 'This detection identifies the stimulus based on a predefined scene which preceeds the stimulus.'
+    }];
+    $scope.stimulusDetectionType = $scope.stimulusDetectionTypes[0];
+
     $scope.$on('cheetah-define-stimulus-modal.show', function (event, data) {
         $scope.data = data;
         if (!$scope.data.config.stimulus) {
@@ -391,8 +411,16 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData']).cont
 
     $scope.showBaseline = function () {
         //make sure there is no unnecessary data in the dialog.
-        if ($scope.data.config.stimulus.stimulusEndsWithTrialEnd === true) {
-            delete $scope.data.config.stimulus.stimulusEnd;
+        var stimulus = $scope.data.config.stimulus;
+        if ($scope.stimulusDetectionType.type === 'default') {
+            if (stimulus.stimulusEndsWithTrialEnd === true) {
+                delete stimulus.stimulusEnd;
+            }
+        } else if ($scope.stimulusDetectionType.type === 'triggered_by_scene') {
+            //delete all data that does not belong to this detection type
+            delete stimulus.stimulusStart;
+            delete stimulus.stimulusEndsWithTrialEnd;
+            delete stimulus.stimulusEnd;
         }
 
         cheetah.hideModal($rootScope, "cheetah-define-stimulus-modal");
@@ -428,7 +456,10 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData']).cont
 
     $scope.showLoadCalculations = function () {
         cheetah.hideModal($rootScope, "cheetah-define-baseline-modal");
-        cheetah.showModal($rootScope, "cheetah-prepare-pupillometry-file-modal");
+        cheetah.showModal($rootScope, "cheetah-progress-modal", {
+            title: 'Preparing Overview',
+            message: 'CEP-Web is preparing an overview of your trial configuration. Please stand by, this could take some time.'
+        });
 
         var request = {};
         request.config = $scope.data.config;
@@ -437,7 +468,7 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData']).cont
         request.decimalSeparator = $scope.data.dataProcessing.decimalSeparator;
 
         $http.post("../../private/computeTrials", request).success(function (data) {
-            cheetah.hideModal($rootScope, "cheetah-prepare-pupillometry-file-modal");
+            cheetah.hideModal($rootScope, "cheetah-progress-modal");
             $scope.data.trialOverview = data;
             cheetah.showModal($rootScope, "cheetah-trial-overview-modal", $scope.data)
         });
@@ -454,7 +485,21 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData']).cont
     };
 
     $scope.saveTrialConfiguration = function () {
+        var postData = {
+            dataProcessingId: $scope.data.dataProcessing.id,
+            trialConfiguration: $scope.data.config
+        };
 
+        $http.post('../../private/saveTrialConfiguration', postData).then(function (response) {
+            cheetah.hideModal($scope, 'cheetah-trial-overview-modal');
+            BootstrapDialog.alert({
+                title: 'Configuration Saved',
+                message: 'The trial configuration was saved successfully.'
+            });
+
+            //populate the new configuration back so it will be displayed
+            $scope.data.dataProcessing.trialComputationConfiguration = $scope.data.config;
+        });
     }
 }).controller('PreviewTrialController', function ($rootScope, $scope) {
     $scope.$on('cheetah-preview-trial-modal.show', function (event, data) {

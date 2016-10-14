@@ -55,13 +55,19 @@ public class StimulusDetector extends AbstractPupillopmetryFileDetector {
 	}
 
 	private void readconfig() {
-		StimulusConfiguration stimulus = config.getStimulus();
-		String stimulusStart = stimulus.getStimulusStart();
-		String stimulusEnd = null;
-		if (stimulus.isStimulusEndsWithTrialEnd()) {
-			stimulusIdentifier = new StartPupillometryFileSectionIdentifier(stimulusStart);
+		StimulusConfiguration rawStimulus = config.getStimulus();
+
+		if (rawStimulus instanceof DefaultStimulusConfiguration) {
+			DefaultStimulusConfiguration stimulus = (DefaultStimulusConfiguration) rawStimulus;
+			String stimulusStart = stimulus.getStimulusStart();
+			String stimulusEnd = null;
+			if (stimulus.isStimulusEndsWithTrialEnd()) {
+				stimulusIdentifier = new StartPupillometryFileSectionIdentifier(stimulusStart);
+			} else {
+				stimulusIdentifier = new StartAndEndPupillometryFileSectionIdentifier(stimulusStart, stimulusEnd);
+			}
 		} else {
-			stimulusIdentifier = new StartAndEndPupillometryFileSectionIdentifier(stimulusStart, stimulusEnd);
+			throw new RuntimeException("Unknown stimulus detection: " + rawStimulus.getClass());
 		}
 	}
 }

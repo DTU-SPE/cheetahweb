@@ -327,8 +327,6 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                        aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title">Select File</h4>
             </div>
             <div class="modal-body container-fluid">
@@ -362,8 +360,6 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                        aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title">Define the trials</h4>
             </div>
             <div class="modal-body container-fluid">
@@ -379,7 +375,7 @@
                     </thead>
                     <tbody>
                     <tr ng-repeat="scene in data.scenes track by $index">
-                        <td>{{$index}}</td>
+                        <td>{{$index + 1}}</td>
                         <td>{{scene}}</td>
                     </tr>
                     </tbody>
@@ -434,12 +430,11 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                        aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title">Define the trials</h4>
             </div>
             <div class="modal-body container-fluid">
-                <div class="cheetah-section-description">Please carefully inspect whether the detected trials match the trails you expect (total number of trials: {{trials.length}}):
+                <div class="cheetah-section-description">Please carefully inspect whether the detected trials match the
+                    trails you expect (total number of trials: {{trials.length}}):
                 </div>
                 <div class="cheetah-trial-preview-container">
                     <div ng-repeat="trial in trials">
@@ -462,8 +457,6 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                        aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title">Define the stimulus for the trials</h4>
             </div>
             <div class="modal-body container-fluid">
@@ -480,37 +473,50 @@
                     </thead>
                     <tbody>
                     <tr ng-repeat="scene in data.scenes track by $index">
-                        <td>{{$index}}</td>
+                        <td>{{$index +1}}</td>
                         <td>{{scene}}</td>
                     </tr>
                     </tbody>
                 </table>
 
-                <div class="cheetah-section-description">Please select the stimulus within your trials below.
+                <div class="cheetah-section-description">Please select the way how stimuli should be detected in the
+                    trials. To help you with choosing the proper detection type, a short description of the detection
+                    algorithm is displayed below the selected type.
                 </div>
                 <form>
                     <div class="form-group">
-                        <label for="cheetah-stimulus-start-select">Marker for the stimulus</label>
-                        <select class="js-example-basic-single" id="cheetah-stimulus-start-select" style="width: 100%"
-                                ng-model="data.config.stimulus.stimulusStart">
-                            <option ng-repeat="scene in data.aggregatedScenes" value="{{scene.name}}">{{scene.name}}
-                                ({{scene.count}} occurrences)
-                            </option>
+                        <label for="cheetah-stimulus-type-select">Type of stimulus detection</label>
+                        <select class="form-control" id="cheetah-stimulus-type-select" ng-model="stimulusDetectionType"
+                                ng-options="type.name for type in stimulusDetectionTypes">
                         </select>
+                        <div class="cheetah-detection-type-description">{{stimulusDetectionType.description}}</div>
                     </div>
-                    <div>
-                        <label for="cheetah-stimulus-ends-with-trial-end">Stimulus ends with end of trial</label>
-                        <input type="checkbox" ng-model="data.config.stimulus.stimulusEndsWithTrialEnd"
-                               id="cheetah-stimulus-ends-with-trial-end">
-                    </div>
-                    <div class="form-group" ng-hide="data.config.stimulus.stimulusEndsWithTrialEnd===true">
-                        <label for="cheetah-stimulus-end-select">Marker for the stimulus end</label>
-                        <select class="js-example-basic-single" id="cheetah-stimulus-end-select" style="width: 100%"
-                                ng-model="data.config.stimulus.stimulusEnd">
-                            <option ng-repeat="scene in data.aggregatedScenes" value="{{scene.name}}">{{scene.name}}
-                                ({{scene.count}} occurrences)
-                            </option>
-                        </select>
+
+                    <div ng-show="stimulusDetectionType.type === 'default'">
+                        <div class="form-group">
+                            <label for="cheetah-stimulus-start-select">Marker for the stimulus</label>
+                            <select class="js-example-basic-single" id="cheetah-stimulus-start-select"
+                                    style="width: 100%"
+                                    ng-model="data.config.stimulus.stimulusStart">
+                                <option ng-repeat="scene in data.aggregatedScenes" value="{{scene.name}}">{{scene.name}}
+                                    ({{scene.count}} occurrences)
+                                </option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="cheetah-stimulus-ends-with-trial-end">Stimulus ends with end of trial</label>
+                            <input type="checkbox" ng-model="data.config.stimulus.stimulusEndsWithTrialEnd"
+                                   id="cheetah-stimulus-ends-with-trial-end">
+                        </div>
+                        <div class="form-group" ng-hide="data.config.stimulus.stimulusEndsWithTrialEnd===true">
+                            <label for="cheetah-stimulus-end-select">Marker for the stimulus end</label>
+                            <select class="js-example-basic-single" id="cheetah-stimulus-end-select" style="width: 100%"
+                                    ng-model="data.config.stimulus.stimulusEnd">
+                                <option ng-repeat="scene in data.aggregatedScenes" value="{{scene.name}}">{{scene.name}}
+                                    ({{scene.count}} occurrences)
+                                </option>
+                            </select>
+                        </div>
                     </div>
                     <div class="form-group cheetah-dialog-button-container">
                         <button class="btn" data-dismiss="modal" aria-label="Close">Cancel</button>
@@ -531,8 +537,6 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                        aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title">Define a baseline for the trials</h4>
             </div>
             <div class="modal-body container-fluid">
@@ -594,8 +598,6 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                        aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title">Trial Overview</h4>
             </div>
             <div class="modal-body container-fluid">
