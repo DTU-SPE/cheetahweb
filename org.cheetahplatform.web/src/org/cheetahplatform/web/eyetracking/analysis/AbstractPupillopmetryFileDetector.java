@@ -12,14 +12,15 @@ public abstract class AbstractPupillopmetryFileDetector {
 		super();
 	}
 
+	@SuppressWarnings("unchecked")
 	protected List<PupillometryFileLine> extractLinesToConsider(PupillometryFileLine line) {
 		List<PupillometryFileLine> linesToCheck = new ArrayList<>();
 		linesToCheck.add(line);
-		@SuppressWarnings("unchecked")
 		List<PupillometryFileLine> collapsedLines = (List<PupillometryFileLine>) line.getMarking(PupillometryFile.COLLAPSED_COLUMNS);
 		if (collapsedLines != null) {
 			linesToCheck.addAll(collapsedLines);
 		}
+
 		return linesToCheck;
 	}
 }

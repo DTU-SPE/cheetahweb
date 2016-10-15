@@ -46,11 +46,19 @@ public class TrialDetector extends AbstractPupillopmetryFileDetector {
 	}
 
 	public List<Trial> detectTrials() throws Exception {
+		return detectTrials(true, true);
+	}
+
+	public List<Trial> detectTrials(boolean detectStimulus, boolean detectBaseline) throws Exception {
 		PupillometryFile pupillometryFile = loadPupillometryFile();
 
 		List<Trial> trials = splitFileIntoTrials(pupillometryFile);
-		detectStimulus(pupillometryFile, trials);
-		detectBaseline(pupillometryFile.getHeader().getColumn(timestampColumn), trials);
+		if (detectStimulus) {
+			detectStimulus(pupillometryFile, trials);
+		}
+		if (detectBaseline) {
+			detectBaseline(pupillometryFile.getHeader().getColumn(timestampColumn), trials);
+		}
 
 		return trials;
 	}

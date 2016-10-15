@@ -94,12 +94,14 @@ public class DataProcessingDao extends AbstractCheetahDao {
 			}
 
 			long stepId = resultSet.getLong("pk_data_processing_step");
-			int version = resultSet.getInt("version");
-			String type = resultSet.getString("type");
-			String name = resultSet.getString("data_processing_step.name");
-			String configuration = resultSet.getString("configuration");
+			if (!resultSet.wasNull()) {
+				int version = resultSet.getInt("version");
+				String type = resultSet.getString("type");
+				String name = resultSet.getString("data_processing_step.name");
+				String configuration = resultSet.getString("configuration");
 
-			dataProcessing.addStep(new DataProcessingStep(stepId, name, type, version, configuration));
+				dataProcessing.addStep(new DataProcessingStep(stepId, name, type, version, configuration));
+			}
 		}
 
 		cleanUp(resultSet, statement);

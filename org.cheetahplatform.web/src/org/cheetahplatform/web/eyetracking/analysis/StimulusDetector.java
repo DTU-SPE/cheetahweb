@@ -18,7 +18,8 @@ public class StimulusDetector extends AbstractPupillopmetryFileDetector {
 		this.trial = trial;
 		this.config = config;
 		this.pupillometryFile = pupillometryFile;
-		readconfig();
+
+		readConfiguration();
 	}
 
 	public Stimulus detectStimulus() throws Exception {
@@ -38,7 +39,7 @@ public class StimulusDetector extends AbstractPupillopmetryFileDetector {
 					continue;
 				}
 				if (stimulusIdentifier.isEnd(pupillometryFileLine, studioEventDataColumn)) {
-					break;
+					return stimulus;
 				}
 
 				if (stimulusIdentifier.isStart(pupillometryFileLine, studioEventDataColumn)) {
@@ -51,10 +52,11 @@ public class StimulusDetector extends AbstractPupillopmetryFileDetector {
 				previousScene = scene;
 			}
 		}
+
 		return stimulus;
 	}
 
-	private void readconfig() {
+	private void readConfiguration() {
 		StimulusConfiguration rawStimulus = config.getStimulus();
 
 		if (rawStimulus instanceof DefaultStimulusConfiguration) {
@@ -66,6 +68,9 @@ public class StimulusDetector extends AbstractPupillopmetryFileDetector {
 			} else {
 				stimulusIdentifier = new StartAndEndPupillometryFileSectionIdentifier(stimulusStart, stimulusEnd);
 			}
+		} else if (rawStimulus instanceof StimulusTriggeredByPreviousScene) {
+			StimulusTriggeredByPreviousScene stimulus = (StimulusTriggeredByPreviousScene) rawStimulus;
+			stimulusIdentifier = new TriggeredBySceneFileSectionIdentifier(stimulus.getPrecedesStimulus());
 		} else {
 			throw new RuntimeException("Unknown stimulus detection: " + rawStimulus.getClass());
 		}

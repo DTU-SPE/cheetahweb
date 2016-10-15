@@ -24,9 +24,9 @@ public class AbstractPupillometryFileSection {
 	 * Computes the scenes that are contained in this section.
 	 *
 	 * @param studioEventDataColumn
-	 *            the column describing STUDIO_EVENT_DATA in the lines contained in this section
-	 * @param studioEventDataColumn2
-	 * @param studioEventDataColumn2
+	 *            the column describing StudioEvent in the lines contained in this section
+	 * @param studioEventDataColumn
+	 *            the column describing StudioEventData in the lines contained in this section
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")

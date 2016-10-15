@@ -1,11 +1,9 @@
 package org.cheetahplatform.web.eyetracking.analysis;
 
-import java.util.Set;
-
 import org.cheetahplatform.web.eyetracking.cleaning.IPupillometryFileLine;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileColumn;
 
-public class StartPupillometryFileSectionIdentifier implements IPupillometryFileSectionIdentifier {
+public class StartPupillometryFileSectionIdentifier extends AbstractPupillometryFileSectionIdentifier {
 	protected String start;
 
 	public StartPupillometryFileSectionIdentifier(String start) {
@@ -23,8 +21,4 @@ public class StartPupillometryFileSectionIdentifier implements IPupillometryFile
 		return matches(line, column, start);
 	}
 
-	protected boolean matches(IPupillometryFileLine line, PupillometryFileColumn column, String key) {
-		Set<String> foundKeys = TrialAnalysisUtil.extractKeysConsideringCollapsedColumns(line, column);
-		return (foundKeys != null && foundKeys.contains(key));
-	}
 }

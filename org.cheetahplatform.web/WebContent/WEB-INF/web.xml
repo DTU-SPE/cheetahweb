@@ -666,4 +666,14 @@
     <servlet-name>SaveTrialConfigurationServlet</servlet-name>
     <url-pattern>/private/saveTrialConfiguration</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>PreviewStimulusServlet</display-name>
+    <servlet-name>PreviewStimulusServlet</servlet-name>
+    <servlet-class>org.cheetahplatform.web.servlet.PreviewStimulusServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>PreviewStimulusServlet</servlet-name>
+    <url-pattern>/private/previewStimulus</url-pattern>
+  </servlet-mapping>
 </web-app>

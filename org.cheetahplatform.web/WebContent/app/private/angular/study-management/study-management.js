@@ -338,7 +338,6 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData']).cont
         }
 
         $scope.data.aggregatedScenes = {};
-
         $.each($scope.data.scenes, function (index, scene) {
             if (!$scope.data.aggregatedScenes[scene]) {
                 $scope.data.aggregatedScenes[scene] = {
@@ -383,25 +382,35 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData']).cont
             cheetah.showModal($rootScope, 'cheetah-preview-trial-modal', response.data);
         });
     };
-}).controller('DefineStimulusController', function ($scope, $rootScope) {
+}).controller('DefineStimulusController', function ($scope, $rootScope, $http) {
     $scope.stimulusDetectionTypes = [{
         name: 'Default detection',
         type: 'default',
         description: 'The default detection of a stimulus based on a scene with a predefined name.'
     }, {
-        name: 'Detection based on a scene that preceeds the stimuli',
+        name: 'Detection based on a scene that precedes the stimuli',
         type: 'triggered_by_scene',
-        description: 'This detection identifies the stimulus based on a predefined scene which preceeds the stimulus.'
+        description: 'This detection identifies the stimulus based on a predefined scene which precedes the stimulus.'
     }];
     $scope.stimulusDetectionType = $scope.stimulusDetectionTypes[0];
 
     $scope.$on('cheetah-define-stimulus-modal.show', function (event, data) {
+        if (!data) {
+            return;
+        }
+
         $scope.data = data;
         if (!$scope.data.config.stimulus) {
             $scope.data.config.stimulus = {
                 stimulusEndsWithTrialEnd: true
             };
         }
+
+        $.each($scope.stimulusDetectionTypes, function (index, type) {
+            if ($scope.data.config.stimulus && $scope.data.config.stimulus.type === type.type) {
+                $scope.stimulusDetectionType = type;
+            }
+        });
     });
 
     $scope.showTrials = function () {
@@ -410,14 +419,17 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData']).cont
     };
 
     $scope.showBaseline = function () {
-        //make sure there is no unnecessary data in the dialog.
         var stimulus = $scope.data.config.stimulus;
+        stimulus.type = $scope.stimulusDetectionType.type;
+
+        //delete all data that does not belong to this detection type
         if ($scope.stimulusDetectionType.type === 'default') {
             if (stimulus.stimulusEndsWithTrialEnd === true) {
                 delete stimulus.stimulusEnd;
             }
+
+            delete $scope.data.config.stimulus.precedesStimulus;
         } else if ($scope.stimulusDetectionType.type === 'triggered_by_scene') {
-            //delete all data that does not belong to this detection type
             delete stimulus.stimulusStart;
             delete stimulus.stimulusEndsWithTrialEnd;
             delete stimulus.stimulusEnd;
@@ -425,6 +437,47 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData']).cont
 
         cheetah.hideModal($rootScope, "cheetah-define-stimulus-modal");
         cheetah.showModal($rootScope, "cheetah-define-baseline-modal", $scope.data);
+    };
+
+    $scope.validateInput = function () {
+        if (!$scope.data) {
+            return false;
+        }
+
+        if ($scope.stimulusDetectionType.type === 'default') {
+            if (!$scope.data.config.stimulus.stimulusStart) {
+                return false;
+            }
+            if ($scope.data.config.stimulus.stimulusEndsWithTrialEnd === false && !$scope.data.config.stimulus.stimulusEnd) {
+                return false;
+            }
+        } else if ($scope.stimulusDetectionType.type === 'triggered_by_scene') {
+            if (!$scope.data.config.stimulus.precedesStimulus) {
+                return false;
+            }
+        } else {
+            throw 'Unknown stimulus detection type: ' + $scope.stimulusDetectionType;
+        }
+
+        return true;
+    };
+
+    $scope.previewStimulus = function () {
+        cheetah.hideModal($scope, 'cheetah-define-stimulus-modal');
+        cheetah.showModal($rootScope, 'cheetah-progress-modal', {
+            title: 'Computing the Stimulus Preview',
+            message: 'CEP-Web is computing the stimulus preview. Please stand by, this may take some time.'
+        });
+
+        var postData = {};
+        postData.config = $scope.data.config;
+        postData.fileId = $scope.data.selectedFile;
+        postData.timestampColumn = $scope.data.dataProcessing.timestampColumn;
+        postData.decimalSeparator = $scope.data.dataProcessing.decimalSeparator;
+        $http.post('../../private/previewStimulus', postData).then(function (response) {
+            cheetah.hideModal($scope, 'cheetah-progress-modal');
+            cheetah.showModal($rootScope, 'cheetah-preview-stimulus-modal', response.data);
+        });
     };
 }).controller('DefineBaselineController', function ($scope, $rootScope, $http) {
     $scope.baseLineCalcuationsTypes = [{
@@ -436,6 +489,10 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData']).cont
         $scope.data = data;
         if (!$scope.data.config.baseline) {
             $scope.data.config.baseline = {}
+        }
+
+        if (!$scope.data.config.baseline.baselineCalculation) {
+            $scope.data.config.baseline.baselineCalculation = $scope.baseLineCalcuationsTypes[0];
         }
     });
 
@@ -515,6 +572,26 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData']).cont
         $scope.title = data.title;
         $scope.message = data.message;
     });
+}).controller('PreviewStimulusController', function ($rootScope, $scope, $sce) {
+    $scope.$on('cheetah-preview-stimulus-modal.show', function (event, data) {
+        $scope.trials = data.trials;
+    });
+
+    $scope.backToStimulusDefinition = function () {
+        cheetah.hideModal($scope, 'cheetah-preview-stimulus-modal');
+        cheetah.showModal($rootScope, 'cheetah-define-stimulus-modal');
+    };
+
+    $scope.render = function (element) {
+        if (element.type === 'scene') {
+            return $sce.trustAsHtml(element.name);
+        }
+        if (element.type === 'marker') {
+            return $sce.trustAsHtml('<i>---' + element.name + '---</i>');
+        }
+
+        return $sce.trustAsHtml('<strong>' + element.name + '</strong>');
+    };
 }).config(function ($routeProvider) {
     $routeProvider.when('/', {
         templateUrl: 'angular/study-management/study-management.htm',

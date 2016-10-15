@@ -11,19 +11,21 @@ import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileLine;
 
 public class TrialAnalysisUtil {
 
+	@SuppressWarnings("unchecked")
 	public static Set<String> extractKeysConsideringCollapsedColumns(IPupillometryFileLine line, PupillometryFileColumn column) {
 		Set<String> foundKeys = null;
 		String string = line.get(column);
 		foundKeys = TrialAnalysisUtil.testKey(string, foundKeys);
 		PupillometryFileLine casted = (PupillometryFileLine) line;
-		@SuppressWarnings("unchecked")
 		List<PupillometryFileLine> collapsedLines = (List<PupillometryFileLine>) casted.getMarking(PupillometryFile.COLLAPSED_COLUMNS);
+
 		if (collapsedLines != null) {
 			for (IPupillometryFileLine collapsedLine : collapsedLines) {
 				String currentScene = collapsedLine.get(column);
 				foundKeys = TrialAnalysisUtil.testKey(currentScene, foundKeys);
 			}
 		}
+
 		return foundKeys;
 	}
 

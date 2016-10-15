@@ -430,7 +430,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Define the trials</h4>
+                <h4 class="modal-title">Trial Detection Preview</h4>
             </div>
             <div class="modal-body container-fluid">
                 <div class="cheetah-section-description">Please carefully inspect whether the detected trials match the
@@ -451,7 +451,6 @@
         </div>
     </div>
 </div>
-
 
 <div class="modal" id="cheetah-define-stimulus-modal" data-backdrop="static" ng-controller="DefineStimulusController">
     <div class="modal-dialog">
@@ -518,11 +517,26 @@
                             </select>
                         </div>
                     </div>
+
+                    <div ng-show="stimulusDetectionType.type === 'triggered_by_scene'">
+                        <div class="form-group">
+                            <label for="cheetah-precedes-stimulus-select">Marker for the scene that precedes the stimulus</label>
+                            <select class="js-example-basic-single" id="cheetah-precedes-stimulus-select"
+                                    style="width: 100%"
+                                    ng-model="data.config.stimulus.precedesStimulus">
+                                <option ng-repeat="scene in data.aggregatedScenes" value="{{scene.name}}">{{scene.name}}
+                                    ({{scene.count}} occurrences)
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
                     <div class="form-group cheetah-dialog-button-container">
                         <button class="btn" data-dismiss="modal" aria-label="Close">Cancel</button>
+                        <button class="btn" ng-click="previewStimulus()">Preview Stimulus</button>
                         <button class="btn" ng-click="showTrials()">Previous</button>
                         <button class="btn btn-primary" ng-click="showBaseline()"
-                                ng-disabled="!data.config.stimulus.stimulusStart || (data.config.stimulus.stimulusEndsWithTrialEnd===false && !data.config.stimulus.stimulusEnd)">
+                                ng-disabled="!validateInput()">
                             Next
                         </button>
                     </div>
@@ -593,7 +607,6 @@
     </div>
 </div>
 
-
 <div class="modal" id="cheetah-trial-overview-modal" data-backdrop="static" ng-controller="TrialOverviewController">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -621,6 +634,32 @@
                         </button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="cheetah-preview-stimulus-modal" data-backdrop="static" ng-controller="PreviewStimulusController">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Stimulus Detection Preview</h4>
+            </div>
+            <div class="modal-body container-fluid">
+                <div class="cheetah-section-description">Please carefully inspect whether the detected trials and stimuli match the
+                    trails and stimuli you expect (total number of trials: {{trials.length}}):
+                </div>
+                <div class="cheetah-trial-preview-container">
+                    <div ng-repeat="trial in trials">
+                        <div><strong>{{trial.name}}</strong></div>
+                        <ul>
+                            <li ng-repeat="scene in trial.scenes track by $index" ng-bind-html="render(scene)"></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="form-group cheetah-dialog-button-container">
+                    <button class="btn" ng-click="backToStimulusDefinition()">Back</button>
+                </div>
             </div>
         </div>
     </div>
