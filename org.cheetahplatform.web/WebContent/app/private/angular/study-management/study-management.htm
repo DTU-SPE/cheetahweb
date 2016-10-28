@@ -394,7 +394,7 @@
                                    title="Select the start trial marker">
                             <ui-select-match placeholder="Select the start trial marker">{{$select.selected.name}}
                             </ui-select-match>
-                            <ui-select-choices repeat="scene in data.aggregatedScenes | filter: {name: $select.search}">
+                            <ui-select-choices repeat="scene.name as scene in data.aggregatedScenes | filter: {name: $select.search}">
                                 <div ng-bind="scene.name"></div>
                                 <small>
                                     {{scene.count}} occurrence(s)
@@ -416,7 +416,7 @@
                                    title="Select the end trial marker">
                             <ui-select-match placeholder="Select the end trial marker">{{$select.selected.name}}
                             </ui-select-match>
-                            <ui-select-choices repeat="scene in data.aggregatedScenes | filter: {name: $select.search}">
+                            <ui-select-choices repeat="scene.name as scene in data.aggregatedScenes | filter: {name: $select.search}">
                                 <div ng-bind="scene.name"></div>
                                 <small>
                                     {{scene.count}} occurrence(s)
@@ -514,7 +514,7 @@
                                     {{$select.selected.name}}
                                 </ui-select-match>
                                 <ui-select-choices
-                                        repeat="scene in data.aggregatedScenes | filter: {name: $select.search}">
+                                        repeat="scene.name as scene in data.aggregatedScenes | filter: {name: $select.search}">
                                     <div ng-bind="scene.name"></div>
                                     <small>
                                         {{scene.count}} occurrence(s)
@@ -536,7 +536,7 @@
                                 <ui-select-match placeholder="Select the end stimulus marker">{{$select.selected.name}}
                                 </ui-select-match>
                                 <ui-select-choices
-                                        repeat="scene in data.aggregatedScenes | filter: {name: $select.search}">
+                                        repeat="scene.name as scene in data.aggregatedScenes | filter: {name: $select.search}">
                                     <div ng-bind="scene.name"></div>
                                     <small>
                                         {{scene.count}} occurrence(s)
@@ -558,7 +558,7 @@
                                 <ui-select-match placeholder="Select the stimulus marker">{{$select.selected.name}}
                                 </ui-select-match>
                                 <ui-select-choices
-                                        repeat="scene in data.aggregatedScenes | filter: {name: $select.search}">
+                                        repeat="scene.name as scene in data.aggregatedScenes | filter: {name: $select.search}">
                                     <div ng-bind="scene.name"></div>
                                     <small>
                                         {{scene.count}} occurrence(s)
