@@ -1,4 +1,4 @@
-angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData']).controller('StudyOverviewController', function ($scope, $http) {
+angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData', 'ui.select']).controller('StudyOverviewController', function ($scope, $http) {
 }).controller('StudyController', function ($rootScope, $scope, $http, $timeout) {
     $scope.studies = [];
     $scope.newStudyName = "";
@@ -65,11 +65,6 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData']).cont
             $scope.newStudyComment = "";
         });
     };
-
-    //there is a bug with select2 - see http://stackoverflow.com/questions/27572255/angularjs-and-select2-model-state-not-rendering-after-select-box
-    $timeout(function () {
-        $(".js-example-basic-single").select2();
-    });
 }).controller('DataProcessingController', function ($rootScope, $scope, $http) {
     $scope.$on('cheetah-show-data-processing', function (event, study) {
         $scope.study = study;
@@ -337,20 +332,25 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData']).cont
             $scope.data.config.useTrialStartForTrialEnd = true;
         }
 
-        $scope.data.aggregatedScenes = {};
+
+        var aggregatedScenes = [];
         $.each($scope.data.scenes, function (index, scene) {
-            if (!$scope.data.aggregatedScenes[scene]) {
-                $scope.data.aggregatedScenes[scene] = {
+            if (!aggregatedScenes[scene]) {
+                aggregatedScenes[scene] = {
                     name: scene,
                     count: 1
                 };
             } else {
-                var temp = $scope.data.aggregatedScenes[scene];
-                $scope.data.aggregatedScenes[scene] = {
+                var temp = aggregatedScenes[scene];
+                aggregatedScenes[scene] = {
                     name: scene,
                     count: temp.count + 1
                 };
             }
+        });
+
+        $scope.data.aggregatedScenes = Object.keys(aggregatedScenes).map(function(key) {
+            return {name: key, count: aggregatedScenes[key].count};
         });
     });
 

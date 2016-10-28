@@ -7,7 +7,8 @@
                 file to one of subjects as defined in
                 the <a href="subject-management.htm">My Subjects</a> section. <br/><br/>
 
-                Pro Tip: We will try to detect the subject automatically. For this, the file name must start with the subject id
+                Pro Tip: We will try to detect the subject automatically. For this, the file name must start with the
+                subject id
                 followed by a @ sign: {subject-id}@{Your-file-name}.tsv. For example the filename P003@my-experiment.tsv
                 would indicate that the file belongs to subject P003.
             </div>
@@ -84,10 +85,19 @@
                     <tr ng-repeat="file in unmappedFiles | orderBy : 'filename'">
                         <td>{{file.filename}}</td>
                         <td>{{file.type}}</td>
-                        <td><select class="js-example-basic-single" id="cheetah-file-id-{{file.id}}">
-                            <option ng-repeat="subject in subjects" value="{{subject.id}}">{{subject.subjectId}}
-                            </option>
-                        </select></td>
+                        <td>
+                            <ui-select ng-model="file.subject" id="cheetah-file-id-{{file.id}}"
+                                       theme="select2"
+                                       style="width: 100%; min-width: 150px"
+                                       title="Select the subject">
+                                <ui-select-match placeholder="Select the subject">{{$select.selected.subjectId}}
+                                </ui-select-match>
+                                <ui-select-choices
+                                        repeat="subject in subjects | filter: {subjectId: $select.search}">
+                                    <div ng-bind="subject.subjectId"></div>
+                                </ui-select-choices>
+                            </ui-select>
+                        </td>
                     </tr>
                     </tbody>
                 </table>

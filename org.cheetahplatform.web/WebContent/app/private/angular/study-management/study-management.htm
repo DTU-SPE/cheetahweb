@@ -389,12 +389,18 @@
                 <form>
                     <div class="form-group">
                         <label for="cheetah-start-trial-select">Start marker for a trial</label>
-                        <select class="js-example-basic-single" id="cheetah-start-trial-select" style="width: 100%"
-                                ng-model="data.config.trialStart">
-                            <option ng-repeat="scene in data.aggregatedScenes" value="{{scene.name}}">{{scene.name}}
-                                ({{scene.count}} occurrences)
-                            </option>
-                        </select>
+                        <ui-select ng-model="data.config.trialStart" id="cheetah-start-trial-select" theme="select2"
+                                   style="width: 100%"
+                                   title="Select the start trial marker">
+                            <ui-select-match placeholder="Select the start trial marker">{{$select.selected.name}}
+                            </ui-select-match>
+                            <ui-select-choices repeat="scene in data.aggregatedScenes | filter: {name: $select.search}">
+                                <div ng-bind="scene.name"></div>
+                                <small>
+                                    {{scene.count}} occurrence(s)
+                                </small>
+                            </ui-select-choices>
+                        </ui-select>
                     </div>
                     <div class="form-group">
                         <label for="cheetah-use-trial-start-for-trial-end">The end of a trial is the start of the next
@@ -405,12 +411,18 @@
                     <div class="form-group" ng-hide="data.config.useTrialStartForTrialEnd">
                         <label for="cheetah-end-trial-select">End marker for a
                             trial</label>
-                        <select class="js-example-basic-single" id="cheetah-end-trial-select" style="width: 100%"
-                                ng-model="data.config.trialEnd">
-                            <option ng-repeat="scene in data.aggregatedScenes" value="{{scene.name}}">{{scene.name}}
-                                ({{scene.count}} occurrences)
-                            </option>
-                        </select>
+                        <ui-select ng-model="data.config.trialEnd" id="cheetah-end-trial-select" theme="select2"
+                                   style="width: 100%"
+                                   title="Select the end trial marker">
+                            <ui-select-match placeholder="Select the end trial marker">{{$select.selected.name}}
+                            </ui-select-match>
+                            <ui-select-choices repeat="scene in data.aggregatedScenes | filter: {name: $select.search}">
+                                <div ng-bind="scene.name"></div>
+                                <small>
+                                    {{scene.count}} occurrence(s)
+                                </small>
+                            </ui-select-choices>
+                        </ui-select>
                     </div>
                     <div class="form-group cheetah-dialog-button-container">
                         <button class="btn" data-dismiss="modal" aria-label="Close">Cancel</button>
@@ -494,13 +506,21 @@
                     <div ng-show="stimulusDetectionType.type === 'default'">
                         <div class="form-group">
                             <label for="cheetah-stimulus-start-select">Marker for the stimulus</label>
-                            <select class="js-example-basic-single" id="cheetah-stimulus-start-select"
-                                    style="width: 100%"
-                                    ng-model="data.config.stimulus.stimulusStart">
-                                <option ng-repeat="scene in data.aggregatedScenes" value="{{scene.name}}">{{scene.name}}
-                                    ({{scene.count}} occurrences)
-                                </option>
-                            </select>
+                            <ui-select ng-model="data.config.stimulus.stimulusStart" id="cheetah-stimulus-start-select"
+                                       theme="select2"
+                                       style="width: 100%"
+                                       title="Select the start stimulus marker">
+                                <ui-select-match placeholder="Select the start stimulus marker">
+                                    {{$select.selected.name}}
+                                </ui-select-match>
+                                <ui-select-choices
+                                        repeat="scene in data.aggregatedScenes | filter: {name: $select.search}">
+                                    <div ng-bind="scene.name"></div>
+                                    <small>
+                                        {{scene.count}} occurrence(s)
+                                    </small>
+                                </ui-select-choices>
+                            </ui-select>
                         </div>
                         <div>
                             <label for="cheetah-stimulus-ends-with-trial-end">Stimulus ends with end of trial</label>
@@ -509,25 +529,42 @@
                         </div>
                         <div class="form-group" ng-hide="data.config.stimulus.stimulusEndsWithTrialEnd===true">
                             <label for="cheetah-stimulus-end-select">Marker for the stimulus end</label>
-                            <select class="js-example-basic-single" id="cheetah-stimulus-end-select" style="width: 100%"
-                                    ng-model="data.config.stimulus.stimulusEnd">
-                                <option ng-repeat="scene in data.aggregatedScenes" value="{{scene.name}}">{{scene.name}}
-                                    ({{scene.count}} occurrences)
-                                </option>
-                            </select>
+                            <ui-select ng-model="data.config.stimulus.stimulusEnd" id="cheetah-stimulus-end-select"
+                                       theme="select2"
+                                       style="width: 100%"
+                                       title="Select the end stimulus marker">
+                                <ui-select-match placeholder="Select the end stimulus marker">{{$select.selected.name}}
+                                </ui-select-match>
+                                <ui-select-choices
+                                        repeat="scene in data.aggregatedScenes | filter: {name: $select.search}">
+                                    <div ng-bind="scene.name"></div>
+                                    <small>
+                                        {{scene.count}} occurrence(s)
+                                    </small>
+                                </ui-select-choices>
+                            </ui-select>
                         </div>
                     </div>
 
                     <div ng-show="stimulusDetectionType.type === 'triggered_by_scene'">
                         <div class="form-group">
-                            <label for="cheetah-precedes-stimulus-select">Marker for the scene that precedes the stimulus</label>
-                            <select class="js-example-basic-single" id="cheetah-precedes-stimulus-select"
-                                    style="width: 100%"
-                                    ng-model="data.config.stimulus.precedesStimulus">
-                                <option ng-repeat="scene in data.aggregatedScenes" value="{{scene.name}}">{{scene.name}}
-                                    ({{scene.count}} occurrences)
-                                </option>
-                            </select>
+                            <label for="cheetah-precedes-stimulus-select">Marker for the scene that precedes the
+                                stimulus</label>
+                            <ui-select ng-model="data.config.stimulus.precedesStimulus"
+                                       id="cheetah-precedes-stimulus-select"
+                                       theme="select2"
+                                       style="width: 100%"
+                                       title="Select the stimulus marker">
+                                <ui-select-match placeholder="Select the stimulus marker">{{$select.selected.name}}
+                                </ui-select-match>
+                                <ui-select-choices
+                                        repeat="scene in data.aggregatedScenes | filter: {name: $select.search}">
+                                    <div ng-bind="scene.name"></div>
+                                    <small>
+                                        {{scene.count}} occurrence(s)
+                                    </small>
+                                </ui-select-choices>
+                            </ui-select>
                         </div>
                     </div>
 
@@ -561,7 +598,7 @@
                 <form>
                     <div class="form-group">
                         <label for="cheetah-select-baseline-calculation-type">Computation of Baseline</label>
-                        <select class="js-example-basic-single" id="cheetah-select-baseline-calculation-type"
+                        <select class="form-control" id="cheetah-select-baseline-calculation-type"
                                 ng-model="data.config.baseline.baselineCalculation" style="width: 100%">
                             <option ng-repeat="calculation in baseLineCalcuationsTypes" value="{{calculation.id}}">
                                 {{calculation.label}}
@@ -646,7 +683,8 @@
                 <h4 class="modal-title">Stimulus Detection Preview</h4>
             </div>
             <div class="modal-body container-fluid">
-                <div class="cheetah-section-description">Please carefully inspect whether the detected trials and stimuli match the
+                <div class="cheetah-section-description">Please carefully inspect whether the detected trials and
+                    stimuli match the
                     trails and stimuli you expect (total number of trials: {{trials.length}}):
                 </div>
                 <div class="cheetah-trial-preview-container">
