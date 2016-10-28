@@ -349,7 +349,7 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData', 'ui.s
             }
         });
 
-        $scope.data.aggregatedScenes = Object.keys(aggregatedScenes).map(function(key) {
+        $scope.data.aggregatedScenes = Object.keys(aggregatedScenes).map(function (key) {
             return {name: key, count: aggregatedScenes[key].count};
         });
     });
@@ -418,7 +418,7 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData', 'ui.s
         cheetah.showModal($rootScope, "cheetah-define-trial-modal", $scope.data);
     };
 
-    $scope.showBaseline = function () {
+    function cleanUpConfiguration() {
         var stimulus = $scope.data.config.stimulus;
         stimulus.type = $scope.stimulusDetectionType.type;
 
@@ -434,6 +434,10 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData', 'ui.s
             delete stimulus.stimulusEndsWithTrialEnd;
             delete stimulus.stimulusEnd;
         }
+    }
+
+    $scope.showBaseline = function () {
+        cleanUpConfiguration();
 
         cheetah.hideModal($rootScope, "cheetah-define-stimulus-modal");
         cheetah.showModal($rootScope, "cheetah-define-baseline-modal", $scope.data);
@@ -468,6 +472,8 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData', 'ui.s
             title: 'Computing the Stimulus Preview',
             message: 'CEP-Web is computing the stimulus preview. Please stand by, this may take some time.'
         });
+
+        cleanUpConfiguration();
 
         var postData = {};
         postData.config = $scope.data.config;
@@ -524,7 +530,7 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData', 'ui.s
         request.timestampColumn = $scope.data.dataProcessing.timestampColumn;
         request.decimalSeparator = $scope.data.dataProcessing.decimalSeparator;
 
-        $http.post("../../private/computeTrials", request).success(function (data) {
+        $http.post("../../private/previewBaseline", request).success(function (data) {
             cheetah.hideModal($rootScope, "cheetah-progress-modal");
             $scope.data.trialOverview = data;
             cheetah.showModal($rootScope, "cheetah-trial-overview-modal", $scope.data)

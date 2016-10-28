@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.cheetahplatform.web.dao.UserFileDao;
@@ -18,11 +19,11 @@ public class TrialDetector extends AbstractPupillopmetryFileDetector {
 	private long fileId;
 	private TrialConfiguration config;
 	private String decimalSeparator;
-
 	private IPupillometryFileSectionIdentifier trialIdentifier;
 	private String timestampColumn;
 
 	public TrialDetector(long fileId, TrialConfiguration config, String decimalSeparator, String timestampColumn) {
+		super();
 		this.fileId = fileId;
 		this.config = config;
 		this.decimalSeparator = decimalSeparator;
@@ -45,14 +46,18 @@ public class TrialDetector extends AbstractPupillopmetryFileDetector {
 		}
 	}
 
-	public List<Trial> detectTrials() throws Exception {
+	public TrialEvaluation detectTrials() throws Exception {
 		return detectTrials(true, true);
 	}
 
-	public List<Trial> detectTrials(boolean detectStimulus, boolean detectBaseline) throws Exception {
+	public TrialEvaluation detectTrials(boolean detectStimulus, boolean detectBaseline) throws Exception {
 		PupillometryFile pupillometryFile = loadPupillometryFile();
 
 		List<Trial> trials = splitFileIntoTrials(pupillometryFile);
+		if (trials.isEmpty()) {
+			return new TrialEvaluation(getNotifications());
+		}
+
 		if (detectStimulus) {
 			detectStimulus(pupillometryFile, trials);
 		}
@@ -60,7 +65,7 @@ public class TrialDetector extends AbstractPupillopmetryFileDetector {
 			detectBaseline(pupillometryFile.getHeader().getColumn(timestampColumn), trials);
 		}
 
-		return trials;
+		return new TrialEvaluation(trials, getNotifications());
 	}
 
 	/**
@@ -107,6 +112,7 @@ public class TrialDetector extends AbstractPupillopmetryFileDetector {
 		List<PupillometryFileLine> lines = pupillometryFile.getContent();
 		Trial currentTrial = null;
 		String previousScene = "";
+		int trialNumber = 1;
 		for (PupillometryFileLine line : lines) {
 			if (currentTrial != null) {
 				currentTrial.addLine(line);
@@ -125,9 +131,10 @@ public class TrialDetector extends AbstractPupillopmetryFileDetector {
 
 				if (trialIdentifier.isStart(pupillometryFileLine, studioEventDataColumn)) {
 					if (currentTrial != null) {
-						throw new IllegalStateException("A trial can only start after the previous trial has ended.");
+						logErrorNotifcation("Multiple start events within a single trial were detected.");
+						return Collections.emptyList();
 					}
-					currentTrial = new Trial();
+					currentTrial = new Trial(trialNumber++);
 					trials.add(currentTrial);
 				}
 

@@ -4,17 +4,18 @@ import static org.cheetahplatform.web.eyetracking.cleaning.CleanPupillometryData
 
 import java.util.List;
 
+import org.cheetahplatform.web.eyetracking.cleaning.CleanPupillometryDataWorkItem;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFile;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileColumn;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileLine;
 
 public class StimulusDetector extends AbstractPupillopmetryFileDetector {
-	private AbstractPupillometryFileSection trial;
+	private Trial trial;
 	private TrialConfiguration config;
 	private PupillometryFile pupillometryFile;
 	private IPupillometryFileSectionIdentifier stimulusIdentifier;
 
-	public StimulusDetector(AbstractPupillometryFileSection trial, TrialConfiguration config, PupillometryFile pupillometryFile) {
+	public StimulusDetector(Trial trial, TrialConfiguration config, PupillometryFile pupillometryFile) {
 		this.trial = trial;
 		this.config = config;
 		this.pupillometryFile = pupillometryFile;
@@ -24,6 +25,7 @@ public class StimulusDetector extends AbstractPupillopmetryFileDetector {
 
 	public Stimulus detectStimulus() throws Exception {
 		PupillometryFileColumn studioEventDataColumn = pupillometryFile.getHeader().getColumn(STUDIO_EVENT_DATA);
+		PupillometryFileColumn studioEventColumn = pupillometryFile.getHeader().getColumn(CleanPupillometryDataWorkItem.STUDIO_EVENT);
 
 		String previousScene = "";
 		Stimulus stimulus = null;
@@ -44,7 +46,8 @@ public class StimulusDetector extends AbstractPupillopmetryFileDetector {
 
 				if (stimulusIdentifier.isStart(pupillometryFileLine, studioEventDataColumn)) {
 					if (stimulus != null) {
-						throw new IllegalStateException("Found multiple stimulus start events in one trial.");
+						logErrorNotifcation("Found multiple stimulus start events in one trial.");
+						return null;
 					}
 					stimulus = new Stimulus();
 				}
@@ -53,6 +56,17 @@ public class StimulusDetector extends AbstractPupillopmetryFileDetector {
 			}
 		}
 
+		if (stimulus == null) {
+			logWarningNotifcation("We failed to identify a stimulus in trial " + trial.getTrialNumber() + ".");
+		} else {
+			List<String> stimulusScenes = stimulus.computeScenes(studioEventColumn, studioEventDataColumn);
+			if (stimulusScenes.size() > 1) {
+				logWarningNotifcation("The stimulus in trial " + trial.getTrialNumber()
+						+ " contains more than one scene. Are you sure the configuration is correct?");
+			}
+		}
+
+		trial.addAllNotifications(getNotifications());
 		return stimulus;
 	}
 

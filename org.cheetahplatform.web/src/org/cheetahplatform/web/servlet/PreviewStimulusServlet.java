@@ -5,6 +5,7 @@ import static org.cheetahplatform.web.eyetracking.cleaning.CleanPupillometryData
 
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,37 +14,38 @@ import javax.servlet.http.HttpServletResponse;
 import org.cheetahplatform.web.dto.ComputeTrialsRequest;
 import org.cheetahplatform.web.eyetracking.analysis.Stimulus;
 import org.cheetahplatform.web.eyetracking.analysis.Trial;
+import org.cheetahplatform.web.eyetracking.analysis.TrialDetectionNotification;
 import org.cheetahplatform.web.eyetracking.analysis.TrialDetector;
+import org.cheetahplatform.web.eyetracking.analysis.TrialEvaluation;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFile;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileColumn;
 
-/**
- * Servlet implementation class PreviewStimulusServlet
- */
 public class PreviewStimulusServlet extends AbstractCheetahServlet {
 	class PreviewStimulus {
 		private String name;
 		private List<SceneOrStimulus> scenes;
+		private List<TrialDetectionNotification> notifications;
 
-		public PreviewStimulus(String name, List<String> scenes, Stimulus stimulus) {
-			this.name = name;
+		public PreviewStimulus(Trial trial, List<String> scenes, Stimulus stimulus) {
+			this.name = "Trial " + trial.getTrialNumber();
 			this.scenes = new ArrayList<>();
+			this.notifications = trial.getNotifications();
 
-			String stimulusScene = null;
+			List<String> stimulusScenes = Collections.emptyList();
 			if (stimulus != null) {
-				List<String> stimulusScenes = stimulus.computeScenes(studioEventColumn, studioEventDataColumn);
-				if (stimulusScenes.size() > 1) {
-					throw new RuntimeException("Expected only one scene for the stimulus");
-				}
-				stimulusScene = stimulusScenes.get(0);
+				stimulusScenes = stimulus.computeScenes(studioEventColumn, studioEventDataColumn);
 			}
 
 			for (String scene : scenes) {
-				boolean isStimulusScene = scene.equals(stimulusScene);
+				boolean isStimulusScene = stimulusScenes.contains(scene);
 				if (isStimulusScene) {
-					this.scenes.add(new SceneOrStimulus("marker", "Start of stimulus"));
+					if (stimulusScenes.indexOf(scene) == 0) {
+						this.scenes.add(new SceneOrStimulus("marker", "Start of stimulus"));
+					}
 					this.scenes.add(new SceneOrStimulus("stimulus", scene));
-					this.scenes.add(new SceneOrStimulus("marker", "End of stimulus"));
+					if (stimulusScenes.indexOf(scene) == stimulusScenes.size() - 1) {
+						this.scenes.add(new SceneOrStimulus("marker", "End of stimulus"));
+					}
 				} else {
 					this.scenes.add(new SceneOrStimulus("scene", scene));
 				}
@@ -54,6 +56,10 @@ public class PreviewStimulusServlet extends AbstractCheetahServlet {
 			return name;
 		}
 
+		public List<TrialDetectionNotification> getNotifications() {
+			return notifications;
+		}
+
 		public List<SceneOrStimulus> getScenes() {
 			return scenes;
 		}
@@ -61,17 +67,27 @@ public class PreviewStimulusServlet extends AbstractCheetahServlet {
 
 	class PreviewStimulusResponse {
 		private List<PreviewStimulus> trials;
+		private List<TrialDetectionNotification> notifications;
 
 		public PreviewStimulusResponse() {
 			this.trials = new ArrayList<>();
+			this.notifications = new ArrayList<>();
 		}
 
-		public void addTrial(int number, List<String> scenes, Stimulus stimulus) {
-			trials.add(new PreviewStimulus("Trial " + number, scenes, stimulus));
+		public void addTrial(Trial trial, List<String> scenes, Stimulus stimulus) {
+			trials.add(new PreviewStimulus(trial, scenes, stimulus));
+		}
+
+		public List<TrialDetectionNotification> getNotifications() {
+			return notifications;
 		}
 
 		public List<PreviewStimulus> getTrials() {
 			return trials;
+		}
+
+		public void setNotifications(List<TrialDetectionNotification> notifications) {
+			this.notifications = notifications;
 		}
 	}
 
@@ -108,14 +124,17 @@ public class PreviewStimulusServlet extends AbstractCheetahServlet {
 		studioEventDataColumn = pupillometryFile.getHeader().getColumn(STUDIO_EVENT_DATA);
 		studioEventColumn = pupillometryFile.getHeader().getColumn(STUDIO_EVENT);
 
-		List<Trial> trials = trialDetector.detectTrials(true, false);
+		TrialEvaluation trialEvaluation = trialDetector.detectTrials(true, false);
+		List<Trial> trials = trialEvaluation.getTrials();
 		PreviewStimulusResponse stimulusResponse = new PreviewStimulusResponse();
-		for (int i = 0; i < trials.size(); i++) {
-			Trial trial = trials.get(i);
+
+		for (Trial trial : trials) {
 			List<String> scenes = trial.computeScenes(studioEventColumn, studioEventDataColumn);
 			Stimulus stimulus = trial.getStimulus();
-			stimulusResponse.addTrial(i + 1, scenes, stimulus);
+			stimulusResponse.addTrial(trial, scenes, stimulus);
 		}
+
+		stimulusResponse.setNotifications(trialEvaluation.getNotifications());
 
 		writeJson(response, stimulusResponse);
 	}

@@ -1,15 +1,15 @@
 package org.cheetahplatform.web.dto;
 
-public class ComputTrialsResponse {
+public class ComputeTrialsResponse {
 	private int numberOfTrials;
 	private int numberOfTrialsWithStimulus;
 	private int numberOfTrialsWithBaseline;
 
-	public ComputTrialsResponse() {
+	public ComputeTrialsResponse() {
 		// Json
 	}
 
-	public ComputTrialsResponse(int numberOfTrials, int numberOfTrialsWithStimulus, int numberOfTrialsWithBaseline) {
+	public ComputeTrialsResponse(int numberOfTrials, int numberOfTrialsWithStimulus, int numberOfTrialsWithBaseline) {
 		super();
 		this.numberOfTrials = numberOfTrials;
 		this.numberOfTrialsWithStimulus = numberOfTrialsWithStimulus;

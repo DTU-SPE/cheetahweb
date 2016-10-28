@@ -520,3 +520,9 @@ ul.dropdown-menu a {
 .cheetah-detection-type-description {
   padding-top: 10px;
 }
+
+.cheetah-trial-preview-alert {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-bottom: 5px;
+}

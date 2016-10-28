@@ -394,7 +394,8 @@
                                    title="Select the start trial marker">
                             <ui-select-match placeholder="Select the start trial marker">{{$select.selected.name}}
                             </ui-select-match>
-                            <ui-select-choices repeat="scene.name as scene in data.aggregatedScenes | filter: {name: $select.search}">
+                            <ui-select-choices
+                                    repeat="scene.name as scene in data.aggregatedScenes | filter: {name: $select.search}">
                                 <div ng-bind="scene.name"></div>
                                 <small>
                                     {{scene.count}} occurrence(s)
@@ -416,7 +417,8 @@
                                    title="Select the end trial marker">
                             <ui-select-match placeholder="Select the end trial marker">{{$select.selected.name}}
                             </ui-select-match>
-                            <ui-select-choices repeat="scene.name as scene in data.aggregatedScenes | filter: {name: $select.search}">
+                            <ui-select-choices
+                                    repeat="scene.name as scene in data.aggregatedScenes | filter: {name: $select.search}">
                                 <div ng-bind="scene.name"></div>
                                 <small>
                                     {{scene.count}} occurrence(s)
@@ -690,6 +692,12 @@
                 <div class="cheetah-trial-preview-container">
                     <div ng-repeat="trial in trials">
                         <div><strong>{{trial.name}}</strong></div>
+                        <div ng-hide="trial.notifications.length<1">
+                            <div ng-repeat="notification in trial.notifications"
+                                 class="alert alert-{{notification.type}} cheetah-trial-preview-alert">
+                                {{notification.message}}
+                            </div>
+                        </div>
                         <ul>
                             <li ng-repeat="scene in trial.scenes track by $index" ng-bind-html="render(scene)"></li>
                         </ul>

@@ -638,13 +638,13 @@
   </servlet-mapping>
   <servlet>
     <description></description>
-    <display-name>ComputeTrialsServlet</display-name>
-    <servlet-name>ComputeTrialsServlet</servlet-name>
-    <servlet-class>org.cheetahplatform.web.servlet.ComputeTrialsServlet</servlet-class>
+    <display-name>PreviewBaselineServlet</display-name>
+    <servlet-name>PreviewBaselineServlet</servlet-name>
+    <servlet-class>org.cheetahplatform.web.servlet.PreviewBaselineServlet</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>ComputeTrialsServlet</servlet-name>
-    <url-pattern>/private/computeTrials</url-pattern>
+    <servlet-name>PreviewBaselineServlet</servlet-name>
+    <url-pattern>/private/previewBaseline</url-pattern>
   </servlet-mapping>
   <servlet>
     <description></description>

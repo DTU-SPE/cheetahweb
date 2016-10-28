@@ -4,7 +4,7 @@ import org.cheetahplatform.web.eyetracking.cleaning.IPupillometryFileLine;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileColumn;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileLine;
 
-public class BaselineDetector {
+public class BaselineDetector extends AbstractPupillopmetryFileDetector {
 
 	private Trial trial;
 	private TrialConfiguration config;
@@ -37,6 +37,14 @@ public class BaselineDetector {
 		if (baseline != null) {
 			trial.setBaseline(baseline);
 		}
+
+		if (baseline == null) {
+			logWarningNotifcation("Could not identify a baseline for trial " + trial.getTrialNumber() + ".");
+		} else {
+			trial.addAllNotifications(baselineIdentifier.isValidBaseline(trial, baseline, timestampColumn));
+		}
+
+		trial.addAllNotifications(getNotifications());
 	}
 
 	private void readConfig() {
@@ -53,5 +61,4 @@ public class BaselineDetector {
 					durationBeforeStimulus, timestampColumn);
 		}
 	}
-
 }

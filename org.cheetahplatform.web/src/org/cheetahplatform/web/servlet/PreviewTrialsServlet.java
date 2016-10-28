@@ -12,7 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.cheetahplatform.web.dto.ComputeTrialsRequest;
 import org.cheetahplatform.web.eyetracking.analysis.Trial;
+import org.cheetahplatform.web.eyetracking.analysis.TrialDetectionNotification;
 import org.cheetahplatform.web.eyetracking.analysis.TrialDetector;
+import org.cheetahplatform.web.eyetracking.analysis.TrialEvaluation;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFile;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileColumn;
 
@@ -40,17 +42,27 @@ public class PreviewTrialsServlet extends AbstractCheetahServlet {
 
 	static class PreviewTrialResponse {
 		private List<PreviewTrial> trials;
+		private List<TrialDetectionNotification> notifications;
 
 		public PreviewTrialResponse() {
 			this.trials = new ArrayList<>();
+			this.notifications = new ArrayList<>();
 		}
 
 		public void addTrial(int number, List<String> scenes) {
 			trials.add(new PreviewTrial("Trial " + number, scenes));
 		}
 
+		public List<TrialDetectionNotification> getNotifications() {
+			return notifications;
+		}
+
 		public List<PreviewTrial> getTrials() {
 			return trials;
+		}
+
+		public void setNotifications(List<TrialDetectionNotification> notifications) {
+			this.notifications = notifications;
 		}
 	}
 
@@ -66,15 +78,16 @@ public class PreviewTrialsServlet extends AbstractCheetahServlet {
 		PupillometryFileColumn studioEventDataColumn = pupillometryFile.getHeader().getColumn(STUDIO_EVENT_DATA);
 		PupillometryFileColumn studioEventColumn = pupillometryFile.getHeader().getColumn(STUDIO_EVENT);
 
-		List<Trial> trials = trialDetector.splitFileIntoTrials(pupillometryFile);
+		TrialEvaluation trialEvaluation = trialDetector.detectTrials(false, false);
+		List<Trial> trials = trialEvaluation.getTrials();
+
 		PreviewTrialResponse trialResponse = new PreviewTrialResponse();
-		for (int i = 0; i < trials.size(); i++) {
-			Trial trial = trials.get(i);
+		for (Trial trial : trials) {
 			List<String> scenes = trial.computeScenes(studioEventColumn, studioEventDataColumn);
-			trialResponse.addTrial(i + 1, scenes);
+			trialResponse.addTrial(trial.getTrialNumber(), scenes);
 		}
+		trialResponse.setNotifications(trialEvaluation.getNotifications());
 
 		writeJson(response, trialResponse);
 	}
-
 }
