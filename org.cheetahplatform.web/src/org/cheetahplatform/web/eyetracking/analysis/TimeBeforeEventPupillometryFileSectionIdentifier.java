@@ -10,6 +10,7 @@ import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileLine;
 
 public class TimeBeforeEventPupillometryFileSectionIdentifier implements IPupillometryFileBaselineIdentifier {
 
+	public static final String BASELINE_TYPE = "baseline-duration-before-stimulus";
 	private long startTimeStamp;
 	private long endTimeStamp;
 	private PupillometryFileColumn timeStampColumn;
@@ -29,29 +30,27 @@ public class TimeBeforeEventPupillometryFileSectionIdentifier implements IPupill
 		startTimeStamp = endTimeStamp - durationBeforeStimulus;
 	}
 
-	private long getDuration(Baseline baseline, PupillometryFileColumn timestampColumn) {
-		List<PupillometryFileLine> lines2 = baseline.getLines();
-		if (lines2 == null || lines2.isEmpty()) {
-			return 0;
-		}
-
-		PupillometryFileLine firstLine = lines2.get(0);
-		PupillometryFileLine lastLine = lines2.get(lines2.size() - 1);
-
-		long startTimeStamp = firstLine.getLong(timestampColumn);
-		long endTimeStamp = lastLine.getLong(timestampColumn);
-		return endTimeStamp - startTimeStamp;
+	@Override
+	public String getBaselineType() {
+		return BASELINE_TYPE;
 	}
 
 	@Override
 	public List<TrialDetectionNotification> isValidBaseline(Trial trial, Baseline baseline, PupillometryFileColumn timestampColumn) {
 		List<TrialDetectionNotification> notifications = new ArrayList<>();
-		long duration = getDuration(baseline, timestampColumn);
-		if (duration < durationBeforeStimulus) {
+		long duration = baseline.getDuration(timestampColumn);
+		double average = duration / baseline.getLines().size();
+
+		if (duration < durationBeforeStimulus - (4 * average)) {
+			notifications.add(new TrialDetectionNotification("The duration of the baseline in trial " + trial.getTrialNumber() + " is "
+					+ (duration / 1000) + " ms which is considerably shorter than the specified baseline duration of "
+					+ (durationBeforeStimulus / 1000) + " ms.", TrialDetectionNotification.TYPE_WARNING));
+		} else if (duration < durationBeforeStimulus - (3 * average)) {
 			notifications.add(new TrialDetectionNotification(
-					"The baseline in trial " + trial.getTrialNumber()
-							+ " is shorter than the specified duration since the baseline would need to start prior to the start of the trial.",
-					TrialDetectionNotification.TYPE_WARNING));
+					"The duration of the baseline in trial " + trial.getTrialNumber() + " is " + (duration / 1000)
+							+ " ms which is slightly shorter than the specified baseline duration of " + (durationBeforeStimulus / 1000)
+							+ " ms. If this happens often you might want to check the logging of your eyetracker as it indicates unsteady logging.",
+					TrialDetectionNotification.TYPE_INFO));
 		}
 		return notifications;
 	}

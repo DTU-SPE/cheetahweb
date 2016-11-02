@@ -43,6 +43,7 @@ public class TrialDetector extends AbstractPupillopmetryFileDetector {
 			StimulusDetector stimulusDetector = new StimulusDetector(trial, config, pupillometryFile);
 			Stimulus stimulus = stimulusDetector.detectStimulus();
 			trial.setStimulus(stimulus);
+			trial.addAllNotifications(stimulusDetector.getNotifications());
 		}
 	}
 
@@ -107,6 +108,7 @@ public class TrialDetector extends AbstractPupillopmetryFileDetector {
 	 */
 	public List<Trial> splitFileIntoTrials(PupillometryFile pupillometryFile) throws Exception {
 		List<Trial> trials = new ArrayList<>();
+
 		PupillometryFileColumn studioEventDataColumn = pupillometryFile.getHeader().getColumn(STUDIO_EVENT_DATA);
 
 		List<PupillometryFileLine> lines = pupillometryFile.getContent();
@@ -114,10 +116,6 @@ public class TrialDetector extends AbstractPupillopmetryFileDetector {
 		String previousScene = "";
 		int trialNumber = 1;
 		for (PupillometryFileLine line : lines) {
-			if (currentTrial != null) {
-				currentTrial.addLine(line);
-			}
-
 			List<PupillometryFileLine> linesToCheck = extractLinesToConsider(line);
 			for (PupillometryFileLine pupillometryFileLine : linesToCheck) {
 				String scene = pupillometryFileLine.get(studioEventDataColumn);
@@ -139,6 +137,10 @@ public class TrialDetector extends AbstractPupillopmetryFileDetector {
 				}
 
 				previousScene = scene;
+			}
+
+			if (currentTrial != null) {
+				currentTrial.addLine(line);
 			}
 		}
 

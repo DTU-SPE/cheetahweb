@@ -65,7 +65,7 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData', 'ui.s
             $scope.newStudyComment = "";
         });
     };
-}).controller('DataProcessingController', function ($rootScope, $scope, $http) {
+}).controller('DataProcessingController', function ($rootScope, $scope, $http, $sce) {
     $scope.$on('cheetah-show-data-processing', function (event, study) {
         $scope.study = study;
     });
@@ -181,6 +181,17 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData', 'ui.s
                 });
             }
         });
+    };
+
+    $rootScope.renderTrialScene = function (element) {
+        if (element.type === 'scene') {
+            return $sce.trustAsHtml(element.name);
+        }
+        if (element.type === 'marker') {
+            return $sce.trustAsHtml('<i>---' + element.name + '---</i>');
+        }
+
+        return $sce.trustAsHtml('<strong>' + element.name + '</strong>');
     };
 }).controller('AddDataProcessingModalController', function ($scope, $http) {
     $scope.$on('cheetah-add-data-processing-modal.show', function (event, study) {
@@ -563,10 +574,11 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData', 'ui.s
             //populate the new configuration back so it will be displayed
             $scope.data.dataProcessing.trialComputationConfiguration = $scope.data.config;
         });
-    }
+    };
 }).controller('PreviewTrialController', function ($rootScope, $scope) {
     $scope.$on('cheetah-preview-trial-modal.show', function (event, data) {
         $scope.trials = data.trials;
+        $scope.notifications = data.notifications;
     });
 
     $scope.backToTrialDefinition = function () {
@@ -581,22 +593,12 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData', 'ui.s
 }).controller('PreviewStimulusController', function ($rootScope, $scope, $sce) {
     $scope.$on('cheetah-preview-stimulus-modal.show', function (event, data) {
         $scope.trials = data.trials;
+        $scope.notifications = data.notifications;
     });
 
     $scope.backToStimulusDefinition = function () {
         cheetah.hideModal($scope, 'cheetah-preview-stimulus-modal');
         cheetah.showModal($rootScope, 'cheetah-define-stimulus-modal');
-    };
-
-    $scope.render = function (element) {
-        if (element.type === 'scene') {
-            return $sce.trustAsHtml(element.name);
-        }
-        if (element.type === 'marker') {
-            return $sce.trustAsHtml('<i>---' + element.name + '---</i>');
-        }
-
-        return $sce.trustAsHtml('<strong>' + element.name + '</strong>');
     };
 }).config(function ($routeProvider) {
     $routeProvider.when('/', {

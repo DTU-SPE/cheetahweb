@@ -450,11 +450,17 @@
                 <div class="cheetah-section-description">Please carefully inspect whether the detected trials match the
                     trails you expect (total number of trials: {{trials.length}}):
                 </div>
+                <div ng-hide="notifications.length<1">
+                    <div ng-repeat="notification in notifications"
+                         class="alert alert-{{notification.type}} cheetah-trial-preview-alert">
+                        {{notification.message}}
+                    </div>
+                </div>
                 <div class="cheetah-trial-preview-container">
                     <div ng-repeat="trial in trials">
                         <div><strong>{{trial.name}}</strong></div>
                         <ul>
-                            <li ng-repeat="scene in trial.scenes track by $index">{{scene}}</li>
+                            <li ng-repeat="scene in trial.scenes track by $index">{{scene.name}}</li>
                         </ul>
                     </div>
                 </div>
@@ -665,6 +671,26 @@
                         <div><label>Number of trials with stimulus and baseline: </label><label
                                 ng-bind="data.trialOverview.numberOfTrialsWithBaseline"></label></div>
                     </div>
+                    <div ng-hide="notifications.length<1">
+                        <div ng-repeat="notification in data.trialOverview.notifications"
+                             class="alert alert-{{notification.type}} cheetah-trial-preview-alert">
+                            {{notification.message}}
+                        </div>
+                    </div>
+                    <div class="cheetah-trial-preview-container">
+                        <div ng-repeat="trial in data.trialOverview.preview">
+                            <div><strong>{{trial.name}}</strong></div>
+                            <div ng-hide="trial.notifications.length<1">
+                                <div ng-repeat="notification in trial.notifications"
+                                     class="alert alert-{{notification.type}} cheetah-trial-preview-alert">
+                                    {{notification.message}}
+                                </div>
+                            </div>
+                            <ul>
+                                <li ng-repeat="scene in trial.scenes track by $index" ng-bind-html="renderTrialScene(scene)"></li>
+                            </ul>
+                        </div>
+                    </div>
                     <div class="form-group cheetah-dialog-button-container">
                         <button class="btn" data-dismiss="modal" aria-label="Close">Cancel</button>
                         <button class="btn" ng-click="showBaseline()">Previous</button>
@@ -689,6 +715,12 @@
                     stimuli match the
                     trails and stimuli you expect (total number of trials: {{trials.length}}):
                 </div>
+                <div ng-hide="notifications.length<1">
+                    <div ng-repeat="notification in notifications"
+                         class="alert alert-{{notification.type}} cheetah-trial-preview-alert">
+                        {{notification.message}}
+                    </div>
+                </div>
                 <div class="cheetah-trial-preview-container">
                     <div ng-repeat="trial in trials">
                         <div><strong>{{trial.name}}</strong></div>
@@ -699,7 +731,7 @@
                             </div>
                         </div>
                         <ul>
-                            <li ng-repeat="scene in trial.scenes track by $index" ng-bind-html="render(scene)"></li>
+                            <li ng-repeat="scene in trial.scenes track by $index" ng-bind-html="renderTrialScene(scene)"></li>
                         </ul>
                     </div>
                 </div>

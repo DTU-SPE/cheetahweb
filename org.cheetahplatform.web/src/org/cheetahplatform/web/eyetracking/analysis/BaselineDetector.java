@@ -27,7 +27,7 @@ public class BaselineDetector extends AbstractPupillopmetryFileDetector {
 		for (PupillometryFileLine line : trial.getLines()) {
 			if (baselineIdentifier.isWithinRange(line)) {
 				if (baseline == null) {
-					baseline = new Baseline();
+					baseline = new Baseline(baselineIdentifier.getBaselineType());
 				}
 
 				baseline.addLine(line);
@@ -50,7 +50,7 @@ public class BaselineDetector extends AbstractPupillopmetryFileDetector {
 	private void readConfig() {
 		BaselineConfiguration baselineConfiguration = config.getBaseline();
 		String calculationMethod = baselineConfiguration.getBaselineCalculation();
-		if (calculationMethod.equals("baseline-duration-before-stimulus")) {
+		if (calculationMethod.equals(TimeBeforeEventPupillometryFileSectionIdentifier.BASELINE_TYPE)) {
 			if (!trial.hasStimulus()) {
 				return;
 			}

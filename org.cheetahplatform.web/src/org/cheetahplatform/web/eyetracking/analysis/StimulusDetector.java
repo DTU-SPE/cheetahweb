@@ -29,11 +29,8 @@ public class StimulusDetector extends AbstractPupillopmetryFileDetector {
 
 		String previousScene = "";
 		Stimulus stimulus = null;
+		boolean stimulusComplete = false;
 		for (PupillometryFileLine line : trial.getLines()) {
-			if (stimulus != null) {
-				stimulus.addLine(line);
-			}
-
 			List<PupillometryFileLine> extractLinesToConsider = extractLinesToConsider(line);
 			for (PupillometryFileLine pupillometryFileLine : extractLinesToConsider) {
 				String scene = pupillometryFileLine.get(studioEventDataColumn);
@@ -41,7 +38,8 @@ public class StimulusDetector extends AbstractPupillopmetryFileDetector {
 					continue;
 				}
 				if (stimulusIdentifier.isEnd(pupillometryFileLine, studioEventDataColumn)) {
-					return stimulus;
+					stimulusComplete = true;
+					break;
 				}
 
 				if (stimulusIdentifier.isStart(pupillometryFileLine, studioEventDataColumn)) {
@@ -54,6 +52,14 @@ public class StimulusDetector extends AbstractPupillopmetryFileDetector {
 
 				previousScene = scene;
 			}
+
+			if (stimulus != null) {
+				stimulus.addLine(line);
+			}
+
+			if (stimulusComplete) {
+				break;
+			}
 		}
 
 		if (stimulus == null) {
@@ -61,12 +67,10 @@ public class StimulusDetector extends AbstractPupillopmetryFileDetector {
 		} else {
 			List<String> stimulusScenes = stimulus.computeScenes(studioEventColumn, studioEventDataColumn);
 			if (stimulusScenes.size() > 1) {
-				logWarningNotifcation("The stimulus in trial " + trial.getTrialNumber()
+				logInfoNotifcation("The stimulus in trial " + trial.getTrialNumber()
 						+ " contains more than one scene. Are you sure the configuration is correct?");
 			}
 		}
-
-		trial.addAllNotifications(getNotifications());
 		return stimulus;
 	}
 
@@ -74,13 +78,12 @@ public class StimulusDetector extends AbstractPupillopmetryFileDetector {
 		StimulusConfiguration rawStimulus = config.getStimulus();
 
 		if (rawStimulus instanceof DefaultStimulusConfiguration) {
-			DefaultStimulusConfiguration stimulus = (DefaultStimulusConfiguration) rawStimulus;
-			String stimulusStart = stimulus.getStimulusStart();
-			String stimulusEnd = null;
-			if (stimulus.isStimulusEndsWithTrialEnd()) {
+			DefaultStimulusConfiguration defaultConfiguration = (DefaultStimulusConfiguration) rawStimulus;
+			String stimulusStart = defaultConfiguration.getStimulusStart();
+			if (defaultConfiguration.isStimulusEndsWithTrialEnd()) {
 				stimulusIdentifier = new StartPupillometryFileSectionIdentifier(stimulusStart);
 			} else {
-				stimulusIdentifier = new StartAndEndPupillometryFileSectionIdentifier(stimulusStart, stimulusEnd);
+				stimulusIdentifier = new StartAndEndPupillometryFileSectionIdentifier(stimulusStart, defaultConfiguration.getStimulusEnd());
 			}
 		} else if (rawStimulus instanceof StimulusTriggeredByPreviousScene) {
 			StimulusTriggeredByPreviousScene stimulus = (StimulusTriggeredByPreviousScene) rawStimulus;

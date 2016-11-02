@@ -1,6 +1,7 @@
 package org.cheetahplatform.web.eyetracking.analysis;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -14,6 +15,10 @@ public abstract class AbstractPupillopmetryFileDetector {
 	public AbstractPupillopmetryFileDetector() {
 		super();
 		notifications = new ArrayList<>();
+	}
+
+	protected void addAllNotification(Collection<TrialDetectionNotification> toAdd) {
+		notifications.addAll(toAdd);
 	}
 
 	@SuppressWarnings("unchecked")

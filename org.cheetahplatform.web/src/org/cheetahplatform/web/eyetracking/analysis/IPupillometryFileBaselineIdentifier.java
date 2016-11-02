@@ -7,8 +7,9 @@ import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileColumn;
 
 public interface IPupillometryFileBaselineIdentifier {
 
+	String getBaselineType();
+
 	List<TrialDetectionNotification> isValidBaseline(Trial trial, Baseline baseline, PupillometryFileColumn timestampColumn);
 
 	boolean isWithinRange(IPupillometryFileLine line);
-
 }
