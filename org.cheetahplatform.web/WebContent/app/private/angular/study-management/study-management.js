@@ -193,6 +193,12 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData', 'ui.s
 
         return $sce.trustAsHtml('<strong>' + element.name + '</strong>');
     };
+
+    $scope.getStepsForType = function (dataProcessing, type) {
+        return dataProcessing.steps.filter(function (step) {
+            return step.type === type;
+        });
+    };
 }).controller('AddDataProcessingModalController', function ($scope, $http) {
     $scope.$on('cheetah-add-data-processing-modal.show', function (event, study) {
         $scope.study = study;
@@ -258,9 +264,42 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData', 'ui.s
         if ($scope.type === 'clean') {
             cheetah.hideModal($scope, 'cheetah-add-data-processing-step-modal');
             cheetah.showModal($rootScope, 'cheetah-clean-data-modal');
+        } else if ($scope.type === 'analyze') {
+            $http.get('../../private/listAnalyzeTypes').then(function (response) {
+                var analyzeTypes = response.data;
+                cheetah.hideModal($scope, 'cheetah-add-data-processing-step-modal');
+                cheetah.showModal($rootScope, 'cheetah-add-analyze-step-modal', {
+                    analyzeTypes: analyzeTypes,
+                    name: $scope.name,
+                    dataProcessing: $scope.dataProcessing
+                });
+            });
         } else {
             throw "The following step is not supported yet: " + $scope.type;
         }
+    };
+}).controller('AddAnalyzeStepModalController', function ($scope, $http) {
+    $scope.$on('cheetah-add-analyze-step-modal.show', function (event, data) {
+        $scope.analyzeTypes = data.analyzeTypes;
+        $scope.dataProcessing = data.dataProcessing;
+        $scope.analyzeType = $scope.analyzeTypes[0];
+        $scope.name = data.name;
+    });
+
+    $scope.addAnalyzeStep = function () {
+        var configuration = {type: $scope.analyzeType.id};
+        var step = {
+            dataProcessingId: $scope.dataProcessing.id,
+            name: $scope.name,
+            type: 'analyze',
+            configuration: angular.toJson(configuration)
+        };
+
+        cheetah.hideModal($scope, 'cheetah-add-analyze-step-modal');
+        $http.post('../../private/addDataProcessingStep', step).then(function (id) {
+            step.id = id;
+            $scope.dataProcessing.steps.push(step);
+        });
     };
 }).controller('EditDataProcessingModalController', function ($scope, $http) {
     $scope.$on('cheetah-edit-data-processing-modal.show', function (event, dataProcessing) {

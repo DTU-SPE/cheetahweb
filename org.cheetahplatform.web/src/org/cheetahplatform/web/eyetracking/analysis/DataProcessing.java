@@ -10,8 +10,6 @@ import java.util.List;
  *
  */
 public class DataProcessing {
-	public static final String DATA_PROCESSING_TYPE_CLEAN = "clean";
-
 	private long id;
 	private String name;
 	private String comment;

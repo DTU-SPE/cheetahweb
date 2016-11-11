@@ -676,4 +676,14 @@
     <servlet-name>PreviewStimulusServlet</servlet-name>
     <url-pattern>/private/previewStimulus</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>ListAnalyzeTypesServlet</display-name>
+    <servlet-name>ListAnalyzeTypesServlet</servlet-name>
+    <servlet-class>org.cheetahplatform.web.servlet.ListAnalyzeTypesServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ListAnalyzeTypesServlet</servlet-name>
+    <url-pattern>/private/listAnalyzeTypes</url-pattern>
+  </servlet-mapping>
 </web-app>

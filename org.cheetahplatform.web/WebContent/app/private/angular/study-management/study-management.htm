@@ -96,20 +96,33 @@
                                                     ng-click="showEditTrialComputationModal(dataProcessing)"> </span><br></span>
                                         </div>
 
-                                        <ul class="list-group" ng-show="dataProcessing.steps.length > 0">
-                                            <li class="list-group-item" ng-repeat="step in dataProcessing.steps">Step
-                                                {{$index + 1}} ({{step.type}}): {{step.name}}<span
-                                                        class="icon-cheetah-close cheetah-delete-dataprocessing-step"
-                                                        ng-click="deleteDataProcessingStep(dataProcessing, step)"> </span>
-                                                <!--       <span
-                                                               class="icon-cheetah-edit cheetah-delete-dataprocessing-step"
-                                                               ng-click="showEditDataProcessingStepModal(step)"> </span>-->
-                                            </li>
-                                        </ul>
                                         <p ng-show="dataProcessing.steps.length === 0">
                                             For this data processing, no steps have been defined yet. Please use the
                                             button below for adding new steps.
                                         </p>
+                                        <div ng-show="getStepsForType(dataProcessing,'clean').length > 0">
+                                            <p><strong>Cleaning Steps:</strong></p>
+                                            <ul class="list-group">
+                                                <li class="list-group-item"
+                                                    ng-repeat="step in getStepsForType(dataProcessing,'clean')">Step
+                                                    {{$index + 1}}: {{step.name}}<span
+                                                            class="icon-cheetah-close cheetah-delete-dataprocessing-step"
+                                                            ng-click="deleteDataProcessingStep(dataProcessing, step)"> </span>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                        <div ng-show="getStepsForType(dataProcessing,'analyze').length > 0">
+                                            <p><strong>Analyze Steps:</strong></p>
+                                            <ul class="list-group">
+                                                <li class="list-group-item"
+                                                    ng-repeat="step in getStepsForType(dataProcessing,'analyze')">Step
+                                                    {{$index + 1}}: {{step.name}}<span
+                                                            class="icon-cheetah-close cheetah-delete-dataprocessing-step"
+                                                            ng-click="deleteDataProcessingStep(dataProcessing, step)"> </span>
+                                                </li>
+                                            </ul>
+                                        </div>
 
                                         <div>
                                             <button class="btn btn-default"
@@ -130,6 +143,42 @@
     </div>
 </div>
 
+<div class="modal" id="cheetah-add-analyze-step-modal" ng-controller="AddAnalyzeStepModalController">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Add Analyze Step</h4>
+            </div>
+            <div class="modal-body container-fluid">
+                <div class="container-fluid">
+                    <form data-toggle="validator" role="form">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Please define the analysis below.</h3>
+                            </div>
+                            <div class="panel-body">
+                                <div class="form-group">
+                                    <div><label>Name</label></div>
+                                    <select class="form-control" ng-model="analyzeType"
+                                            ng-options="type.name for type in analyzeTypes">
+                                    </select>
+                                    <p class="cheetah-analyze-step-description">{{analyzeType.description}}</p>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn" data-dismiss="modal" aria-label="Close">Cancel</button>
+                            <button type="submit" class="btn btn-primary" ng-click="addAnalyzeStep()">Add Step</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="modal" id="addStudyDialog">
     <div class="modal-dialog">
@@ -161,11 +210,10 @@
                                                 ng-model="newStudyComment">
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="form-group">
-                                    <button type="submit" id="submitNewStudy" class="btn btn-primary">Add Study
-                                    </button>
-                                </div>
+                            <div class="form-group">
+                                <button type="submit" id="submitNewStudy" class="btn btn-primary">Add Study</button>
                             </div>
                         </div>
                     </form>
@@ -687,7 +735,8 @@
                                 </div>
                             </div>
                             <ul>
-                                <li ng-repeat="scene in trial.scenes track by $index" ng-bind-html="renderTrialScene(scene)"></li>
+                                <li ng-repeat="scene in trial.scenes track by $index"
+                                    ng-bind-html="renderTrialScene(scene)"></li>
                             </ul>
                         </div>
                     </div>
@@ -731,7 +780,8 @@
                             </div>
                         </div>
                         <ul>
-                            <li ng-repeat="scene in trial.scenes track by $index" ng-bind-html="renderTrialScene(scene)"></li>
+                            <li ng-repeat="scene in trial.scenes track by $index"
+                                ng-bind-html="renderTrialScene(scene)"></li>
                         </ul>
                     </div>
                 </div>

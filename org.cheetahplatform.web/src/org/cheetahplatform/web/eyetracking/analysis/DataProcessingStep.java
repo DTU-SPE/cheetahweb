@@ -7,6 +7,9 @@ package org.cheetahplatform.web.eyetracking.analysis;
  *
  */
 public class DataProcessingStep {
+	public static final String DATA_PROCESSING_TYPE_ANALYZE = "analyze";
+	public static final String DATA_PROCESSING_TYPE_CLEAN = "clean";
+
 	private long id;
 	private String name;
 	private String type;
