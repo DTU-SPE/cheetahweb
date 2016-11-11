@@ -5,13 +5,15 @@ import static org.cheetahplatform.web.eyetracking.DatabaseEyeTrackingSource.spli
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.FileWriter;
+import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.io.input.BOMInputStream;
 import org.cheetahplatform.common.eyetracking.EyeTrackerDateCorrection;
 import org.cheetahplatform.web.dao.PpmInstanceDao;
 import org.cheetahplatform.web.dao.SubjectDao;
@@ -46,7 +48,7 @@ public class ConnectPupillometricDataWorkItem extends AbstractConnectWorkItem {
 		UserFileDto file = userFileDao.getFile(fileId);
 		File inputFile = userFileDao.getUserFile(userFileDao.getPath(fileId));
 
-		try (BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new BOMInputStream(new FileInputStream(inputFile))));
 				Connection connection = AbstractCheetahServlet.getDatabaseConnection()) {
 			String header = reader.readLine();
 			List<String> headerColumns = split(header, '\t');
@@ -85,12 +87,6 @@ public class ConnectPupillometricDataWorkItem extends AbstractConnectWorkItem {
 				return;
 			}
 
-			if (localTimestampColumnIndex < 0) {
-				logErrorNotification("Could not find local timestamp column '" + LOCAL_TIMESTAMP_COLUMN_HEADER + "' in file '"
-						+ file.getFilename() + "'. This column is required to perform the date correction of the eye tracker. ");
-				return;
-			}
-
 			String[] splitted = splitFileName(file.getFilename());
 			if (splitted == null) {
 				return;
@@ -116,18 +112,21 @@ public class ConnectPupillometricDataWorkItem extends AbstractConnectWorkItem {
 
 					String timestamp = token.get(timestampIndex);
 					if (timestamp != null && !timestamp.trim().isEmpty()) {
-						// remove nano seconds for conversion
-						long parsedTimestamp = Long.parseLong(timestamp) / 1000;
+						// convert only if the timestamp is available
+						if (localTimestampColumnIndex > -1) {
+							// remove nano seconds for conversion
+							long parsedTimestamp = Long.parseLong(timestamp) / 1000;
 
-						String localTimestamp = token.get(localTimestampColumnIndex);
-						try {
-							Date correctDate = EyeTrackerDateCorrection.correctDate(localTimestamp, parsedTimestamp);
-							long correctedTime = correctDate.getTime();
-							correctedTime *= 1000;
-							timestamp = String.valueOf(correctedTime);
-						} catch (ParseException e) {
-							logErrorNotification("Unable to parse local timestamp: " + localTimestamp);
-							return;
+							String localTimestamp = token.get(localTimestampColumnIndex);
+							try {
+								Date correctDate = EyeTrackerDateCorrection.correctDate(localTimestamp, parsedTimestamp);
+								long correctedTime = correctDate.getTime();
+								correctedTime *= 1000;
+								timestamp = String.valueOf(correctedTime);
+							} catch (ParseException e) {
+								logErrorNotification("Unable to parse local timestamp: " + localTimestamp);
+								return;
+							}
 						}
 					}
 
