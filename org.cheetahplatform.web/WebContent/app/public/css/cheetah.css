@@ -123,7 +123,6 @@ path.sliding-window {
 }
 
 .modal-dialog {
-  top: 200px;
   z-index: 1000;
 }
 
@@ -477,7 +476,7 @@ ul.dropdown-menu a {
   margin-top: 10px;
 }
 
-.cheetah-edit-data-processing-columns-button{
+.cheetah-edit-data-processing-columns-button {
   cursor: pointer;
   padding-left: 10px;
 }
@@ -488,6 +487,46 @@ ul.dropdown-menu a {
   padding-left: 5px;
 }
 
-.cheetah-data-processing-trial-computation-container{
+.cheetah-data-processing-trial-computation-container {
   padding-bottom: 10px;
+}
+
+.cheetah-scene-preview-table {
+  width: 100%;
+  max-height: 250px;
+  overflow-y: scroll;
+  display: block;
+  border: 1px;
+  border-style: solid;
+  border-color: lightgrey;
+  margin-bottom: 15px;
+}
+
+.cheetah-scene-preview-table td:first-child, .cheetah-scene-preview-table th:first-child {
+  padding-right: 15px;
+  padding-left: 10px;
+}
+
+.cheetah-scene-preview-table td:last-child, .cheetah-scene-preview-table th:last-child {
+  width: 100%;
+  padding-right: 10px;
+}
+
+.cheetah-trial-preview-container {
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.cheetah-detection-type-description {
+  padding-top: 10px;
+}
+
+.cheetah-trial-preview-alert {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-bottom: 5px;
+}
+
+.cheetah-analyze-step-description {
+  padding-top: 7px;
 }

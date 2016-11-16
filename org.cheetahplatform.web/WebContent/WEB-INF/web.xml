@@ -636,4 +636,54 @@
     <servlet-name>ListAvailablePupillometryFilesServlet</servlet-name>
     <url-pattern>/private/listAvailablePupillometryFiles</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>PreviewBaselineServlet</display-name>
+    <servlet-name>PreviewBaselineServlet</servlet-name>
+    <servlet-class>org.cheetahplatform.web.servlet.PreviewBaselineServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>PreviewBaselineServlet</servlet-name>
+    <url-pattern>/private/previewBaseline</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>PreviewTrialsServlet</display-name>
+    <servlet-name>PreviewTrialsServlet</servlet-name>
+    <servlet-class>org.cheetahplatform.web.servlet.PreviewTrialsServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>PreviewTrialsServlet</servlet-name>
+    <url-pattern>/private/previewTrials</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>SaveTrialConfigurationServlet</display-name>
+    <servlet-name>SaveTrialConfigurationServlet</servlet-name>
+    <servlet-class>org.cheetahplatform.web.servlet.SaveTrialConfigurationServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SaveTrialConfigurationServlet</servlet-name>
+    <url-pattern>/private/saveTrialConfiguration</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>PreviewStimulusServlet</display-name>
+    <servlet-name>PreviewStimulusServlet</servlet-name>
+    <servlet-class>org.cheetahplatform.web.servlet.PreviewStimulusServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>PreviewStimulusServlet</servlet-name>
+    <url-pattern>/private/previewStimulus</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>ListAnalyzeTypesServlet</display-name>
+    <servlet-name>ListAnalyzeTypesServlet</servlet-name>
+    <servlet-class>org.cheetahplatform.web.servlet.ListAnalyzeTypesServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ListAnalyzeTypesServlet</servlet-name>
+    <url-pattern>/private/listAnalyzeTypes</url-pattern>
+  </servlet-mapping>
 </web-app>
