@@ -94,12 +94,14 @@ public class DataProcessingDao extends AbstractCheetahDao {
 			}
 
 			long stepId = resultSet.getLong("pk_data_processing_step");
-			int version = resultSet.getInt("version");
-			String type = resultSet.getString("type");
-			String name = resultSet.getString("data_processing_step.name");
-			String configuration = resultSet.getString("configuration");
+			if (!resultSet.wasNull()) {
+				int version = resultSet.getInt("version");
+				String type = resultSet.getString("type");
+				String name = resultSet.getString("data_processing_step.name");
+				String configuration = resultSet.getString("configuration");
 
-			dataProcessing.addStep(new DataProcessingStep(stepId, name, type, version, configuration));
+				dataProcessing.addStep(new DataProcessingStep(stepId, name, type, version, configuration));
+			}
 		}
 
 		cleanUp(resultSet, statement);
@@ -126,6 +128,22 @@ public class DataProcessingDao extends AbstractCheetahDao {
 		statement.setString(3, rightPupilColumn);
 		statement.setString(4, decimalSeparator);
 		statement.setLong(5, dataProcessingId);
+		statement.executeUpdate();
+	}
+
+	/**
+	 * Updates the trial computation configuration of a data processing.
+	 *
+	 * @param connection
+	 * @param dataProcessingId
+	 * @param trialConfiguration
+	 * @throws SQLException
+	 */
+	public void updateTrialConfiguration(Connection connection, long dataProcessingId, String trialConfiguration) throws SQLException {
+		PreparedStatement statement = connection
+				.prepareStatement("update data_processing set trial_computation_configuration = ? where pk_data_processing  = ?");
+		statement.setString(1, trialConfiguration);
+		statement.setLong(2, dataProcessingId);
 		statement.executeUpdate();
 	}
 }

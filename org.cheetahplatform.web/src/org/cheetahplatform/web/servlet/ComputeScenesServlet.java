@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.cheetahplatform.web.dao.UserFileDao;
+import org.cheetahplatform.web.eyetracking.cleaning.IPupillometryFileLine;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFile;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileColumn;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileHeader;
@@ -73,7 +74,7 @@ public class ComputeScenesServlet extends AbstractCheetahServlet {
 				continue;
 			}
 
-			for (PupillometryFileLine collapsedLine : collapsedLines) {
+			for (IPupillometryFileLine collapsedLine : collapsedLines) {
 				String currentScene = collapsedLine.get(studioEventDataColumn);
 
 				if (previousScene == null || !previousScene.equals(currentScene)) {

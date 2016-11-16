@@ -28,6 +28,7 @@ import org.cheetahplatform.modeler.experiment.IExperiment;
 import org.cheetahplatform.web.dao.UserFileDao;
 import org.cheetahplatform.web.dto.CodeAndExperimentActivity;
 import org.cheetahplatform.web.dto.UserFileDto;
+import org.cheetahplatform.web.eyetracking.cleaning.IPupillometryFileLine;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFile;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileColumn;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileHeader;
@@ -61,7 +62,7 @@ public abstract class AbstractActivityBasedWorkItem extends AbstractCheetahWorkI
 
 	protected Date computeTimestamp(PupillometryFileColumn timestampColumn, PupillometryFileColumn localTimestampColumn,
 			List<PupillometryFileLine> content, int index) throws ParseException {
-		PupillometryFileLine pupillometryFileLine = content.get(index);
+		IPupillometryFileLine pupillometryFileLine = content.get(index);
 		String timestamp = pupillometryFileLine.get(timestampColumn);
 		long parsedTimestamp = Long.parseLong(timestamp) / 1000;
 		String localTimestamp = pupillometryFileLine.get(localTimestampColumn);

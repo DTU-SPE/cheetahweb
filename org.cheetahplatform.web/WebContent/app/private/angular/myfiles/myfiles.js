@@ -10,7 +10,6 @@ angular.module('cheetah.MyFiles', ['ngRoute', 'cheetah.CleanData']).controller('
     $scope.tagsToAdd = [];
     $scope.tagsOfSelectedFiles = [];
     $scope.tagsToRemove = [];
-    $scope.filesToRename = [];
     $scope.cleanFileNamePattern = "";
     $scope.search = "";
     $scope.studies = [];
@@ -77,14 +76,19 @@ angular.module('cheetah.MyFiles', ['ngRoute', 'cheetah.CleanData']).controller('
     $scope.trimTimestampColumn = localStorage.getItem('trimTimestampColumn');
 
     $scope.renameFiles = function () {
-        $scope.filesToRename = [];
+        var data = {};
+        data.filesToRename = [];
         $.each($scope.files, function (index, file) {
             if (file.selection) {
-                $scope.filesToRename.push({id: file.id, oldName: file.filename, newName: file.filename});
+                data.filesToRename.push({id: file.id, oldName: file.filename, newName: file.filename});
             }
         });
-        $("#renameFilesDialog").modal();
+        cheetah.showModal($rootScope, 'cheetah-rename-files', data);
     };
+
+    $scope.$on('cheetah-rename-files.hide', function () {
+        $scope.refreshFiles();
+    });
 
     $scope.openExecuteDataProcessDialog = function () {
         var data = {};
@@ -100,18 +104,6 @@ angular.module('cheetah.MyFiles', ['ngRoute', 'cheetah.CleanData']).controller('
             });
         }
         cheetah.showModal($rootScope, 'cheetah-execute-data-processing', data);
-    };
-
-    $scope.submitRenameFiles = function () {
-        var postData = {files: {}};
-        $.each($scope.filesToRename, function (index, file) {
-            postData.files[file.id] = file.newName;
-        });
-
-        $http.post('../../private/renameFiles', postData).success(function () {
-            $("#renameFilesDialog").modal('hide');
-            $scope.refreshFiles();
-        });
     };
 
     $scope.selectAllDisplayedFiles = function () {
@@ -443,6 +435,21 @@ angular.module('cheetah.MyFiles', ['ngRoute', 'cheetah.CleanData']).controller('
         $("#connectVideoToPpmInstanceDialog").modal('hide');
     };
 
+}).controller('RenameFilesController', function ($rootScope, $scope, $http) {
+    $scope.$on('cheetah-rename-files.show', function (event, data) {
+        $scope.filesToRename = data.filesToRename;
+    });
+
+    $scope.submitRenameFiles = function () {
+        var postData = {files: {}};
+        $.each($scope.filesToRename, function (index, file) {
+            postData.files[file.id] = file.newName;
+        });
+
+        $http.post('../../private/renameFiles', postData).success(function () {
+            cheetah.hideModal($scope, 'cheetah-rename-files');
+        });
+    };
 }).controller('ExecuteDataProcessingController', function ($rootScope, $scope, $http) {
     $scope.$on('cheetah-execute-data-processing.show', function (event, data) {
         $scope.selectedFiles = data.selectedFiles;

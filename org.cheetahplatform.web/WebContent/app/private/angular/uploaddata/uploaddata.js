@@ -1,7 +1,5 @@
-angular
-    .module('cheetah.UploadData', ['ngRoute'])
+angular.module('cheetah.UploadData', ['ngRoute', 'ui.select'])
     .controller('UplaodDataCtrl', function ($scope, $http) {
-
         $scope.uploadedFiles = [];
         $scope.filesToUpload = 0;
         $scope.uploadPercentage = 100;
@@ -61,9 +59,6 @@ angular
                                     $scope.subjects = data;
                                     $("#cheetah-map-files-to-subjects-dialog").modal('show');
                                 });
-                            } else {
-                                $(".js-example-basic-single").select2();
-                                $(".select2-container").css('width', '100%');
                             }
                         }
 
@@ -83,7 +78,7 @@ angular
 
             $.each($scope.unmappedFiles, function (index, file) {
                 var fileId = file.id;
-                var value = $('#cheetah-file-id-' + fileId).val();
+                var value = file.subject.id;
                 if (value > 0) {
                     toMap[fileId] = value;
                     indexToRemove.push(index);
@@ -104,15 +99,10 @@ angular
 
             $http.post('../../private/mapFilesToSubject', {filesToSubjectIds: toMap});
 
-            if($scope.unmappedFiles.length===0){
+            if ($scope.unmappedFiles.length === 0) {
                 $("#cheetah-map-files-to-subjects-dialog").modal('hide');
             }
         };
-
-        $('#cheetah-map-files-to-subjects-dialog').on('show.bs.modal', function (e) {
-            $(".js-example-basic-single").select2();
-            $(".select2-container").css('width', '100%');
-        });
 
         uploadForm.addEventListener('submit', function (e) {
             var uploadFiles = document.getElementById('js-upload-files').files;

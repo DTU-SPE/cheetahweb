@@ -37,7 +37,7 @@ public class ExecuteDataProcessingServlet extends AbstractCheetahServlet {
 			ExecuteDataProcessingWorkItem dataProcessingWorkItem = new ExecuteDataProcessingWorkItem(userId, fileId, processing);
 
 			for (DataProcessingStep dataProcessingStep : processing.getSteps()) {
-				if (DataProcessing.DATA_PROCESSING_TYPE_CLEAN.equals(dataProcessingStep.getType())) {
+				if (DataProcessingStep.DATA_PROCESSING_TYPE_CLEAN.equals(dataProcessingStep.getType())) {
 					CleanDataConfiguration config = readJson(dataProcessingStep.getConfiguration(), CleanDataConfiguration.class);
 
 					FilterRequest filterRequest = new FilterRequest();

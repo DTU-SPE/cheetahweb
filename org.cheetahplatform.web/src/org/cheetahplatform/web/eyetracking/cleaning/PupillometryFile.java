@@ -323,7 +323,7 @@ public class PupillometryFile {
 		return getLines();
 	}
 
-	public boolean removeLine(PupillometryFileLine pupillometryFileLine) {
+	public boolean removeLine(IPupillometryFileLine pupillometryFileLine) {
 		return content.remove(pupillometryFileLine);
 	}
 

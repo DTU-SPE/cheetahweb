@@ -3,6 +3,8 @@ package org.cheetahplatform.web.servlet;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -16,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
+import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.cheetahplatform.common.CommonConstants;
 import org.cheetahplatform.common.logging.ProcessInstance;
 import org.cheetahplatform.common.logging.db.DatabasePromReader;
@@ -122,13 +125,24 @@ public abstract class AbstractCheetahServlet extends HttpServlet {
 		return instance;
 	}
 
-	protected static void writeJson(HttpServletResponse response, Object toWrite)
+	public static void writeJson(HttpServletResponse response, Object toWrite)
 			throws JsonGenerationException, JsonMappingException, IOException {
+		writeJson(response.getOutputStream(), toWrite);
+		response.getOutputStream().flush();
+	}
+
+	public static String writeJson(Object toWrite) throws JsonGenerationException, JsonMappingException, IOException {
+		ByteArrayOutputStream output = new ByteArrayOutputStream();
+		writeJson(output, toWrite);
+
+		return new String(output.toByteArray(), StandardCharsets.UTF_8);
+	}
+
+	public static void writeJson(OutputStream output, Object toWrite) throws JsonGenerationException, JsonMappingException, IOException {
 		JsonFactory factory = new JsonFactory();
-		JsonGenerator generator = factory.createGenerator(response.getOutputStream());
+		JsonGenerator generator = factory.createGenerator(output);
 		ObjectMapper mapper = new ObjectMapper(factory);
 		mapper.writer().writeValue(generator, toWrite);
-		response.getOutputStream().flush();
 	}
 
 	@Override

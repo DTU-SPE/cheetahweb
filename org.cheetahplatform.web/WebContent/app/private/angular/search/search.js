@@ -228,7 +228,6 @@ angular
                                 }
                             }]
                         });
-
                     } else {
                         //no data, but data to prepare
                         showPrepareDataModal();

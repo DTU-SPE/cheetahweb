@@ -1,6 +1,7 @@
 <div>
     <div class="container-fluid">
         <h1>My Studies</h1>
+
         <div class="panel panel-default">
             <div class="panel-body">
                 <div ng-show="mode === 'overview'" ng-controller="StudyOverviewController">
@@ -95,20 +96,33 @@
                                                     ng-click="showEditTrialComputationModal(dataProcessing)"> </span><br></span>
                                         </div>
 
-                                        <ul class="list-group" ng-show="dataProcessing.steps.length > 0">
-                                            <li class="list-group-item" ng-repeat="step in dataProcessing.steps">Step
-                                                {{$index + 1}} ({{step.type}}): {{step.name}}<span
-                                                        class="icon-cheetah-close cheetah-delete-dataprocessing-step"
-                                                        ng-click="deleteDataProcessingStep(dataProcessing, step)"> </span>
-                                                <!--       <span
-                                                               class="icon-cheetah-edit cheetah-delete-dataprocessing-step"
-                                                               ng-click="showEditDataProcessingStepModal(step)"> </span>-->
-                                            </li>
-                                        </ul>
                                         <p ng-show="dataProcessing.steps.length === 0">
                                             For this data processing, no steps have been defined yet. Please use the
                                             button below for adding new steps.
                                         </p>
+                                        <div ng-show="getStepsForType(dataProcessing,'clean').length > 0">
+                                            <p><strong>Cleaning Steps:</strong></p>
+                                            <ul class="list-group">
+                                                <li class="list-group-item"
+                                                    ng-repeat="step in getStepsForType(dataProcessing,'clean')">Step
+                                                    {{$index + 1}}: {{step.name}}<span
+                                                            class="icon-cheetah-close cheetah-delete-dataprocessing-step"
+                                                            ng-click="deleteDataProcessingStep(dataProcessing, step)"> </span>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                        <div ng-show="getStepsForType(dataProcessing,'analyze').length > 0">
+                                            <p><strong>Analyze Steps:</strong></p>
+                                            <ul class="list-group">
+                                                <li class="list-group-item"
+                                                    ng-repeat="step in getStepsForType(dataProcessing,'analyze')">Step
+                                                    {{$index + 1}}: {{step.name}}<span
+                                                            class="icon-cheetah-close cheetah-delete-dataprocessing-step"
+                                                            ng-click="deleteDataProcessingStep(dataProcessing, step)"> </span>
+                                                </li>
+                                            </ul>
+                                        </div>
 
                                         <div>
                                             <button class="btn btn-default"
@@ -129,6 +143,42 @@
     </div>
 </div>
 
+<div class="modal" id="cheetah-add-analyze-step-modal" ng-controller="AddAnalyzeStepModalController">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Add Analyze Step</h4>
+            </div>
+            <div class="modal-body container-fluid">
+                <div class="container-fluid">
+                    <form data-toggle="validator" role="form">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Please define the analysis below.</h3>
+                            </div>
+                            <div class="panel-body">
+                                <div class="form-group">
+                                    <div><label>Name</label></div>
+                                    <select class="form-control" ng-model="analyzeType"
+                                            ng-options="type.name for type in analyzeTypes">
+                                    </select>
+                                    <p class="cheetah-analyze-step-description">{{analyzeType.description}}</p>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn" data-dismiss="modal" aria-label="Close">Cancel</button>
+                            <button type="submit" class="btn btn-primary" ng-click="addAnalyzeStep()">Add Step</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="modal" id="addStudyDialog">
     <div class="modal-dialog">
@@ -160,11 +210,10 @@
                                                 ng-model="newStudyComment">
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="form-group">
-                                    <button type="submit" id="submitNewStudy" class="btn btn-primary">Add Study
-                                    </button>
-                                </div>
+                            <div class="form-group">
+                                <button type="submit" id="submitNewStudy" class="btn btn-primary">Add Study</button>
                             </div>
                         </div>
                     </form>
@@ -321,12 +370,11 @@
     </div>
 </div>
 
-<div class="modal" id="cheetah-select-pupillometry-file-modal" ng-controller="SelectPupillometryFileModalController">
+<div class="modal" id="cheetah-select-pupillometry-file-modal" data-backdrop="static"
+     ng-controller="SelectPupillometryFileModalController">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                        aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title">Select File</h4>
             </div>
             <div class="modal-body container-fluid">
@@ -345,9 +393,9 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <button class="btn btn-primary" ng-click="showScenes()">OK</button>
+                    <div class="form-group cheetah-dialog-button-container">
                         <button class="btn" data-dismiss="modal" aria-label="Close">Cancel</button>
+                        <button class="btn btn-primary" ng-click="showScenes()">Next</button>
                     </div>
                 </form>
             </div>
@@ -355,18 +403,301 @@
     </div>
 </div>
 
-<div class="modal" id="cheetah-prepare-pupillometry-file-modal">
+
+<div class="modal" id="cheetah-define-trial-modal" data-backdrop="static" ng-controller="DefineTrialController">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Preparing File</h4>
+                <h4 class="modal-title">Define the trials</h4>
             </div>
             <div class="modal-body container-fluid">
-                <p>CEP-Web is now preparing your file. Please stand by, this could take some seconds.</p>
+                <div class="cheetah-section-description">While scanning the selected file, we identified the following
+                    scenes.
+                </div>
+                <table class="cheetah-scene-preview-table">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Event</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="scene in data.scenes track by $index">
+                        <td>{{$index + 1}}</td>
+                        <td>{{scene}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div class="cheetah-section-description">In order to separate the collected data into trials, we need
+                    some information on where to cut the data file. Please select the scene that marks the beginning of
+                    a trial below.
+                </div>
+
+                <form>
+                    <div class="form-group">
+                        <label for="cheetah-start-trial-select">Start marker for a trial</label>
+                        <ui-select ng-model="data.config.trialStart" id="cheetah-start-trial-select" theme="select2"
+                                   style="width: 100%"
+                                   title="Select the start trial marker">
+                            <ui-select-match placeholder="Select the start trial marker">{{$select.selected.name}}
+                            </ui-select-match>
+                            <ui-select-choices
+                                    repeat="scene.name as scene in data.aggregatedScenes | filter: {name: $select.search}">
+                                <div ng-bind="scene.name"></div>
+                                <small>
+                                    {{scene.count}} occurrence(s)
+                                </small>
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+                    <div class="form-group">
+                        <label for="cheetah-use-trial-start-for-trial-end">The end of a trial is the start of the next
+                            trial</label>
+                        <input type="checkbox" ng-model="data.config.useTrialStartForTrialEnd"
+                               id="cheetah-use-trial-start-for-trial-end">
+                    </div>
+                    <div class="form-group" ng-hide="data.config.useTrialStartForTrialEnd">
+                        <label for="cheetah-end-trial-select">End marker for a
+                            trial</label>
+                        <ui-select ng-model="data.config.trialEnd" id="cheetah-end-trial-select" theme="select2"
+                                   style="width: 100%"
+                                   title="Select the end trial marker">
+                            <ui-select-match placeholder="Select the end trial marker">{{$select.selected.name}}
+                            </ui-select-match>
+                            <ui-select-choices
+                                    repeat="scene.name as scene in data.aggregatedScenes | filter: {name: $select.search}">
+                                <div ng-bind="scene.name"></div>
+                                <small>
+                                    {{scene.count}} occurrence(s)
+                                </small>
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Define the number of trials that should be ignored. For instance, if you have one introduction trial, you may want to enter "1" to ignore the first trial.</label>
+                        <input type="text" class="form-control" ng-model="data.config.ignoredTrials">
+                    </div>
+                    <div class="form-group cheetah-dialog-button-container">
+                        <button class="btn" data-dismiss="modal" aria-label="Close">Cancel</button>
+                        <button class="btn" ng-click="previewTrialComputation()">Preview Trials</button>
+                        <button class="btn btn-primary" ng-click="showStimulus()"
+                                ng-disabled="(!data.config.trialStart) || (data.config.useTrialStartForTrialEnd === false && !data.config.trialEnd)">
+                            Next
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="cheetah-preview-trial-modal" data-backdrop="static" ng-controller="PreviewTrialController">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Trial Detection Preview</h4>
+            </div>
+            <div class="modal-body container-fluid">
+                <div class="cheetah-section-description">Please carefully inspect whether the detected trials match the
+                    trails you expect (total number of trials: {{trials.length}}):
+                </div>
+                <div ng-hide="notifications.length<1">
+                    <div ng-repeat="notification in notifications"
+                         class="alert alert-{{notification.type}} cheetah-trial-preview-alert">
+                        {{notification.message}}
+                    </div>
+                </div>
+                <div class="cheetah-trial-preview-container">
+                    <div ng-repeat="trial in trials">
+                        <div><strong>{{trial.name}}</strong></div>
+                        <ul>
+                            <li ng-repeat="scene in trial.scenes track by $index">{{scene.name}}</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="form-group cheetah-dialog-button-container">
+                    <button class="btn" ng-click="backToTrialDefinition()">Back</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="cheetah-define-stimulus-modal" data-backdrop="static" ng-controller="DefineStimulusController">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Define the stimulus for the trials</h4>
+            </div>
+            <div class="modal-body container-fluid">
+                <div class="cheetah-section-description">We know know where your trials start and where they end. Next,
+                    we need to know the actual stimulus you are trying to investigate within those trials. Subsequently,
+                    we show you all markers found in the file.
+                </div>
+                <table class="cheetah-scene-preview-table">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Event</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="scene in data.scenes track by $index">
+                        <td>{{$index +1}}</td>
+                        <td>{{scene}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div class="cheetah-section-description">Please select the way how stimuli should be detected in the
+                    trials. To help you with choosing the proper detection type, a short description of the detection
+                    algorithm is displayed below the selected type.
+                </div>
+                <form>
+                    <div class="form-group">
+                        <label for="cheetah-stimulus-type-select">Type of stimulus detection</label>
+                        <select class="form-control" id="cheetah-stimulus-type-select" ng-model="stimulusDetectionType"
+                                ng-options="type.name for type in stimulusDetectionTypes">
+                        </select>
+                        <div class="cheetah-detection-type-description">{{stimulusDetectionType.description}}</div>
+                    </div>
+
+                    <div ng-show="stimulusDetectionType.type === 'default'">
+                        <div class="form-group">
+                            <label for="cheetah-stimulus-start-select">Marker for the stimulus</label>
+                            <ui-select ng-model="data.config.stimulus.stimulusStart" id="cheetah-stimulus-start-select"
+                                       theme="select2"
+                                       style="width: 100%"
+                                       title="Select the start stimulus marker">
+                                <ui-select-match placeholder="Select the start stimulus marker">
+                                    {{$select.selected.name}}
+                                </ui-select-match>
+                                <ui-select-choices
+                                        repeat="scene.name as scene in data.aggregatedScenes | filter: {name: $select.search}">
+                                    <div ng-bind="scene.name"></div>
+                                    <small>
+                                        {{scene.count}} occurrence(s)
+                                    </small>
+                                </ui-select-choices>
+                            </ui-select>
+                        </div>
+                        <div>
+                            <label for="cheetah-stimulus-ends-with-trial-end">Stimulus ends with end of trial</label>
+                            <input type="checkbox" ng-model="data.config.stimulus.stimulusEndsWithTrialEnd"
+                                   id="cheetah-stimulus-ends-with-trial-end">
+                        </div>
+                        <div class="form-group" ng-hide="data.config.stimulus.stimulusEndsWithTrialEnd===true">
+                            <label for="cheetah-stimulus-end-select">Marker for the stimulus end</label>
+                            <ui-select ng-model="data.config.stimulus.stimulusEnd" id="cheetah-stimulus-end-select"
+                                       theme="select2"
+                                       style="width: 100%"
+                                       title="Select the end stimulus marker">
+                                <ui-select-match placeholder="Select the end stimulus marker">{{$select.selected.name}}
+                                </ui-select-match>
+                                <ui-select-choices
+                                        repeat="scene.name as scene in data.aggregatedScenes | filter: {name: $select.search}">
+                                    <div ng-bind="scene.name"></div>
+                                    <small>
+                                        {{scene.count}} occurrence(s)
+                                    </small>
+                                </ui-select-choices>
+                            </ui-select>
+                        </div>
+                    </div>
+
+                    <div ng-show="stimulusDetectionType.type === 'triggered_by_scene'">
+                        <div class="form-group">
+                            <label for="cheetah-precedes-stimulus-select">Marker for the scene that precedes the
+                                stimulus</label>
+                            <ui-select ng-model="data.config.stimulus.precedesStimulus"
+                                       id="cheetah-precedes-stimulus-select"
+                                       theme="select2"
+                                       style="width: 100%"
+                                       title="Select the stimulus marker">
+                                <ui-select-match placeholder="Select the stimulus marker">{{$select.selected.name}}
+                                </ui-select-match>
+                                <ui-select-choices
+                                        repeat="scene.name as scene in data.aggregatedScenes | filter: {name: $select.search}">
+                                    <div ng-bind="scene.name"></div>
+                                    <small>
+                                        {{scene.count}} occurrence(s)
+                                    </small>
+                                </ui-select-choices>
+                            </ui-select>
+                        </div>
+                    </div>
+
+                    <div class="form-group cheetah-dialog-button-container">
+                        <button class="btn" data-dismiss="modal" aria-label="Close">Cancel</button>
+                        <button class="btn" ng-click="previewStimulus()">Preview Stimulus</button>
+                        <button class="btn" ng-click="showTrials()">Previous</button>
+                        <button class="btn btn-primary" ng-click="showBaseline()"
+                                ng-disabled="!validateInput()">
+                            Next
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal" id="cheetah-define-baseline-modal" data-backdrop="static" ng-controller="DefineBaselineController">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Define a baseline for the trials</h4>
+            </div>
+            <div class="modal-body container-fluid">
+                <div class="cheetah-section-description">We know when your trial starts, when it ends, and when you
+                    display your Stimulus. Additionally,
+                    we could try to establish a baseline for your cognitive load measurement.
+                </div>
+                <form>
+                    <div class="form-group">
+                        <label for="cheetah-select-baseline-calculation-type">Computation of Baseline</label>
+                        <select class="form-control" id="cheetah-select-baseline-calculation-type"
+                                ng-model="data.config.baseline.baselineCalculation" style="width: 100%">
+                            <option ng-repeat="calculation in baseLineCalcuationsTypes" value="{{calculation.id}}">
+                                {{calculation.label}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-group"
+                         ng-show="data.config.baseline.baselineCalculation==='baseline-duration-before-stimulus'">
+                        <label for="cheetah-baseline-duration-before-stimulus">Duration [ms] prior to the
+                            stimulus</label>
+                        <input type="text" class="form-control"
+                               id="cheetah-baseline-duration-before-stimulus"
+                               ng-model="data.config.baseline.durationBeforeStimulus">
+                    </div>
+                    <div class="form-group cheetah-dialog-button-container">
+                        <button class="btn" data-dismiss="modal" aria-label="Close">Cancel</button>
+                        <button class="btn" ng-click="showStimulus()">Previous</button>
+                        <button class="btn btn-primary" ng-click="showLoadCalculations()" ng-disabled="!isValid()">
+                            Next
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" data-backdrop="static" id="cheetah-progress-modal" ng-controller="ProgressController">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">{{title}}</h4>
+            </div>
+            <div class="modal-body container-fluid">
+                <p>{{message}}</p>
                 <div class="progress">
                     <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45"
                          aria-valuemin="0" aria-valuemax="100" style="width: 100%">
-                        <span class="sr-only">Preparing...</span>
                     </div>
                 </div>
             </div>
@@ -374,6 +705,98 @@
     </div>
 </div>
 
+<div class="modal" id="cheetah-trial-overview-modal" data-backdrop="static" ng-controller="TrialOverviewController">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Trial Overview</h4>
+            </div>
+            <div class="modal-body container-fluid">
+                <div class="cheetah-section-description">Based on your selection, we were able to identify the following
+                    trials.
+                </div>
+                <form>
+                    <div class="form-group">
+                        <div><label>Number of identified trials: </label><label
+                                ng-bind="data.trialOverview.numberOfTrials"></label></div>
+                        <div><label>Number trials containing a stimulus: </label><label
+                                ng-bind="data.trialOverview.numberOfTrialsWithStimulus"></label></div>
+                        <div><label>Number of trials with stimulus and baseline: </label><label
+                                ng-bind="data.trialOverview.numberOfTrialsWithBaseline"></label></div>
+                    </div>
+                    <div ng-hide="notifications.length<1">
+                        <div ng-repeat="notification in data.trialOverview.notifications"
+                             class="alert alert-{{notification.type}} cheetah-trial-preview-alert">
+                            {{notification.message}}
+                        </div>
+                    </div>
+                    <div class="cheetah-trial-preview-container">
+                        <div ng-repeat="trial in data.trialOverview.preview">
+                            <div><strong>{{trial.name}}</strong></div>
+                            <div ng-hide="trial.notifications.length<1">
+                                <div ng-repeat="notification in trial.notifications"
+                                     class="alert alert-{{notification.type}} cheetah-trial-preview-alert">
+                                    {{notification.message}}
+                                </div>
+                            </div>
+                            <ul>
+                                <li ng-repeat="scene in trial.scenes track by $index"
+                                    ng-bind-html="renderTrialScene(scene)"></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="form-group cheetah-dialog-button-container">
+                        <button class="btn" data-dismiss="modal" aria-label="Close">Cancel</button>
+                        <button class="btn" ng-click="showBaseline()">Previous</button>
+                        <button class="btn btn-primary" ng-click="saveTrialConfiguration()">
+                            Save trial computation
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="cheetah-preview-stimulus-modal" data-backdrop="static" ng-controller="PreviewStimulusController">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Stimulus Detection Preview</h4>
+            </div>
+            <div class="modal-body container-fluid">
+                <div class="cheetah-section-description">Please carefully inspect whether the detected trials and
+                    stimuli match the
+                    trails and stimuli you expect (total number of trials: {{trials.length}}):
+                </div>
+                <div ng-hide="notifications.length<1">
+                    <div ng-repeat="notification in notifications"
+                         class="alert alert-{{notification.type}} cheetah-trial-preview-alert">
+                        {{notification.message}}
+                    </div>
+                </div>
+                <div class="cheetah-trial-preview-container">
+                    <div ng-repeat="trial in trials">
+                        <div><strong>{{trial.name}}</strong></div>
+                        <div ng-hide="trial.notifications.length<1">
+                            <div ng-repeat="notification in trial.notifications"
+                                 class="alert alert-{{notification.type}} cheetah-trial-preview-alert">
+                                {{notification.message}}
+                            </div>
+                        </div>
+                        <ul>
+                            <li ng-repeat="scene in trial.scenes track by $index"
+                                ng-bind-html="renderTrialScene(scene)"></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="form-group cheetah-dialog-button-container">
+                    <button class="btn" ng-click="backToStimulusDefinition()">Back</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div ng-include="'angular/clean-data/clean-data.htm'"></div>
 
