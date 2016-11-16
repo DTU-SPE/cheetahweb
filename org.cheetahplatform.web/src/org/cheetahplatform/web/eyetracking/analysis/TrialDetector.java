@@ -115,6 +115,8 @@ public class TrialDetector extends AbstractPupillopmetryFileDetector {
 		Trial currentTrial = null;
 		String previousScene = "";
 		int trialNumber = 1;
+		int trialsToIgnore = config.getIgnoredTrials();
+
 		for (PupillometryFileLine line : lines) {
 			List<PupillometryFileLine> linesToCheck = extractLinesToConsider(line);
 			for (PupillometryFileLine pupillometryFileLine : linesToCheck) {
@@ -133,7 +135,12 @@ public class TrialDetector extends AbstractPupillopmetryFileDetector {
 						return Collections.emptyList();
 					}
 					currentTrial = new Trial(trialNumber++);
-					trials.add(currentTrial);
+					if (trialsToIgnore > 0) {
+						trialsToIgnore--;
+						trialNumber--;
+					} else {
+						trials.add(currentTrial);
+					}
 				}
 
 				previousScene = scene;

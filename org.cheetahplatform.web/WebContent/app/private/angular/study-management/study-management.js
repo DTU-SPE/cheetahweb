@@ -381,7 +381,9 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData', 'ui.s
         if (!$scope.data.config.useTrialStartForTrialEnd) {
             $scope.data.config.useTrialStartForTrialEnd = true;
         }
-
+        if (!$scope.data.config.ignoredTrials) {
+            $scope.data.config.ignoredTrials = 0;
+        }
 
         var aggregatedScenes = [];
         $.each($scope.data.scenes, function (index, scene) {

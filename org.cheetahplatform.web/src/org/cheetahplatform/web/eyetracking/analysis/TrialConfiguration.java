@@ -6,9 +6,14 @@ public class TrialConfiguration {
 	private boolean useTrialStartForTrialEnd;
 	private BaselineConfiguration baseline;
 	private StimulusConfiguration stimulus;
+	private int ignoredTrials;
 
 	public BaselineConfiguration getBaseline() {
 		return baseline;
+	}
+
+	public int getIgnoredTrials() {
+		return ignoredTrials;
 	}
 
 	public StimulusConfiguration getStimulus() {
@@ -29,6 +34,10 @@ public class TrialConfiguration {
 
 	public void setBaseline(BaselineConfiguration baseline) {
 		this.baseline = baseline;
+	}
+
+	public void setIgnoredTrials(int ignoredTrials) {
+		this.ignoredTrials = ignoredTrials;
 	}
 
 	public void setStimulus(StimulusConfiguration stimulus) {
