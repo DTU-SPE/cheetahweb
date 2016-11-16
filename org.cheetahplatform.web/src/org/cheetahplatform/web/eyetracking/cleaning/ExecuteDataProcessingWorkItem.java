@@ -14,7 +14,6 @@ import org.cheetahplatform.web.eyetracking.analysis.DataProcessing;
 import org.cheetahplatform.web.util.FileUtils;
 
 public class ExecuteDataProcessingWorkItem extends AbstractCheetahWorkItem {
-
 	private DataProcessing processing;
 	private List<IDataProcessingWorkItem> subWorkItems;
 
@@ -35,8 +34,8 @@ public class ExecuteDataProcessingWorkItem extends AbstractCheetahWorkItem {
 		String path = userFileDao.getPath(fileId);
 		File file = userFileDao.getUserFile(path);
 
-		// FIXME read separator from data processing
-		PupillometryFile pupillometryFile = new PupillometryFile(file, PupillometryFile.SEPARATOR_TABULATOR, true, ".");
+		PupillometryFile pupillometryFile = new PupillometryFile(file, PupillometryFile.SEPARATOR_TABULATOR, true,
+				processing.getDecimalSeparator());
 		String preProcessingErrors = runPreProcessing(originalFileDto, pupillometryFile);
 		if (preProcessingErrors != null) {
 			logErrorNotification(preProcessingErrors);

@@ -5,8 +5,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.cheetahplatform.web.eyetracking.analysis.TrialEvaluation;
+
 public class DataProcessingContext {
 	private List<DataProcessingResult> results;
+	private TrialEvaluation trialEvaluation;
 
 	public DataProcessingContext() {
 		results = new ArrayList<>();
@@ -22,5 +25,13 @@ public class DataProcessingContext {
 
 	public List<DataProcessingResult> getResults() {
 		return Collections.unmodifiableList(results);
+	}
+
+	public TrialEvaluation getTrialEvaluation() {
+		return trialEvaluation;
+	}
+
+	public void setTrialEvaluation(TrialEvaluation trialEvaluation) {
+		this.trialEvaluation = trialEvaluation;
 	}
 }
