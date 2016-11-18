@@ -1,5 +1,7 @@
 package org.cheetahplatform.web.eyetracking.analysis;
 
+import java.util.Map;
+
 import org.eclipse.core.runtime.Assert;
 
 public abstract class AbstractTrialAnalyzer implements ITrialAnalyzer {
@@ -11,15 +13,22 @@ public abstract class AbstractTrialAnalyzer implements ITrialAnalyzer {
 	protected AnalyzeConfiguration config;
 	private String name;
 	protected DataProcessing dataProcessing;
+	protected AnalyzeStepType analyzeStep;
 
-	public AbstractTrialAnalyzer(AnalyzeConfiguration config, DataProcessing processing, String name) {
+	public AbstractTrialAnalyzer(AnalyzeConfiguration config, DataProcessing processing, AnalyzeStepType analyzeStep) {
+		this.analyzeStep = analyzeStep;
 		Assert.isNotNull(config);
-		Assert.isNotNull(name);
-		Assert.isLegal(!name.trim().isEmpty());
+		Assert.isNotNull(analyzeStep);
+		Assert.isLegal(!analyzeStep.getName().trim().isEmpty());
 		Assert.isNotNull(processing);
 		this.config = config;
 		this.dataProcessing = processing;
-		this.name = name;
+		this.name = analyzeStep.getName();
+	}
+
+	protected void addResult(Map<String, String> results, Trial trial, double value, String operation) {
+		String key = trial.getIdentifier() + RESULT_SEPARATOR + analyzeStep.getId() + RESULT_SEPARATOR + operation;
+		results.put(key, String.valueOf(value));
 	}
 
 	@Override

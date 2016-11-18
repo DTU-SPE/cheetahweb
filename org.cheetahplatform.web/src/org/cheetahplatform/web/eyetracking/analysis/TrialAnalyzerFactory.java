@@ -10,8 +10,12 @@ public class TrialAnalyzerFactory {
 			return new MeanAbsoluteTrialAnalyzer(config, processing);
 		}
 
-		if (AnalyzeStepType.MEAN_RELATIVE.getId().equals(type)) {
-			return new MeanRelativeTrialAnalyzer(config, processing);
+		if (AnalyzeStepType.MEAN_RELATIVE_DIVIDED.getId().equals(type)) {
+			return new MeanRelativeDividedTrialAnalyzer(config, processing);
+		}
+
+		if (AnalyzeStepType.MEAN_RELATIVE_SUBTRACTED.getId().equals(type)) {
+			return new MeanRelativeSubtractedTrialAnalyzer(config, processing);
 		}
 
 		throw new IllegalArgumentException("Unknown trial analyzer type: " + type);

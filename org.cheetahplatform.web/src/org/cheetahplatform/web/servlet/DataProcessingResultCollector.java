@@ -41,7 +41,7 @@ public class DataProcessingResultCollector {
 		completedGuards.add(guard);
 
 		if (completedGuards.size() == guards.size()) {
-			new ReportableResultWriter().write(userId, collectedResults, dataProcessing.getName(),
+			new ReportableResultWriter().write(userId, resultsForSubject, dataProcessing.getName(),
 					"Executed data processing " + dataProcessing.getName());
 		}
 	}
