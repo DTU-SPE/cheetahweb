@@ -3,7 +3,7 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd" logicalFilePath="changeLog.xml">
 
 	<changeSet id="CEP2.0-1" author="Jakob">
 		<comment>Create tables for user management. Email needs to be duplicated for authentication.</comment>
