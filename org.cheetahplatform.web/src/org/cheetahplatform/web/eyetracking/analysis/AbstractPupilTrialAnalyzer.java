@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.math3.stat.descriptive.moment.Mean;
+import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
+import org.cheetahplatform.web.eyetracking.analysis.steps.AnalyzeStepType;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFile;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileColumn;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileLine;
@@ -44,6 +46,11 @@ public abstract class AbstractPupilTrialAnalyzer extends AbstractTrialAnalyzer {
 	protected double calculateMean(List<PupillometryFileLine> lines, PupillometryFileColumn column) {
 		double[] pupils = PupillometryFileUtils.getPupilValues(lines, column, false);
 		return new Mean().evaluate(pupils);
+	}
+
+	protected double calculateStandardDeviation(List<PupillometryFileLine> lines, PupillometryFileColumn column) {
+		double[] pupils = PupillometryFileUtils.getPupilValues(lines, column, false);
+		return new StandardDeviation().evaluate(pupils);
 	}
 
 	protected double[] divideByBaseline(List<PupillometryFileLine> lines, PupillometryFileColumn leftPupilColumn, double leftBaseline) {

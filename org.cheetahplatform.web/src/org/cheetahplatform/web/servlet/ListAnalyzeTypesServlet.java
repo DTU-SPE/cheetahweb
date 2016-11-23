@@ -6,7 +6,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.cheetahplatform.web.eyetracking.analysis.AnalyzeStepType;
+import org.cheetahplatform.web.eyetracking.analysis.steps.AnalyzeStepType;
 
 /**
  * Servlet implementation class ListAnalyzeTypesServlet

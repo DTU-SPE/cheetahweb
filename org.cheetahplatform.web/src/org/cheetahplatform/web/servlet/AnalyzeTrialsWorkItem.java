@@ -12,7 +12,7 @@ import org.cheetahplatform.web.eyetracking.CheetahWorkItemGuard;
 import org.cheetahplatform.web.eyetracking.analysis.AnalyzeConfiguration;
 import org.cheetahplatform.web.eyetracking.analysis.DataProcessing;
 import org.cheetahplatform.web.eyetracking.analysis.ITrialAnalyzer;
-import org.cheetahplatform.web.eyetracking.analysis.TrialAnalyzerFactory;
+import org.cheetahplatform.web.eyetracking.analysis.steps.TrialAnalyzerFactory;
 import org.cheetahplatform.web.eyetracking.cleaning.DataProcessingContext;
 import org.cheetahplatform.web.eyetracking.cleaning.IDataProcessingWorkItem;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFile;
