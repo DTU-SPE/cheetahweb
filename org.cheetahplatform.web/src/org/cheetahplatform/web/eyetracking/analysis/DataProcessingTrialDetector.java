@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFile;
 
-public class DataProcessingTrialDetector extends TrialDetector {
+public class DataProcessingTrialDetector extends AbstractTrialDetector {
 	private PupillometryFile pupillometryFile;
 
 	public DataProcessingTrialDetector(long fileId, TrialConfiguration config, String decimalSeparator, String timestampColumn,
@@ -16,7 +16,7 @@ public class DataProcessingTrialDetector extends TrialDetector {
 	}
 
 	@Override
-	public PupillometryFile loadPupillometryFile() throws SQLException, FileNotFoundException, IOException {
+	protected PupillometryFile loadPupillometryFile() throws SQLException, FileNotFoundException, IOException {
 		return pupillometryFile;
 	}
 }

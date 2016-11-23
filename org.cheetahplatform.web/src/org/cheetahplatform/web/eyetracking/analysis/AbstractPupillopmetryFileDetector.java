@@ -1,11 +1,14 @@
 package org.cheetahplatform.web.eyetracking.analysis;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFile;
+import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileColumn;
+import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileHeader;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileLine;
 
 public abstract class AbstractPupillopmetryFileDetector {
@@ -35,6 +38,17 @@ public abstract class AbstractPupillopmetryFileDetector {
 
 	public List<TrialDetectionNotification> getNotifications() {
 		return Collections.unmodifiableList(notifications);
+	}
+
+	protected PupillometryFileColumn initializeColumn(PupillometryFile pupillometryFile, String columnName) throws IOException {
+		PupillometryFileColumn column = null;
+		PupillometryFileHeader header = pupillometryFile.getHeader();
+		if (!header.hasColumn(columnName)) {
+			column = pupillometryFile.appendColumn(columnName);
+		} else {
+			column = header.getColumn(columnName);
+		}
+		return column;
 	}
 
 	protected void logErrorNotifcation(String message) {
