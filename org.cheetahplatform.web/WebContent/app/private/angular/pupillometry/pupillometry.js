@@ -243,7 +243,7 @@ angular
             } else {
                 url = url + 'files=' + encodeURIComponent(cheetah.files);
             }
-            $http.get(url + '&start=' + time + '&slidingWindowDuration=' + slidingWindowDuration).success(function (pupillometryData) {
+            $http.get(url + '&start=' + time + '&slidingWindowDuration=' + slidingWindowDuration+"&zoom=1").success(function (pupillometryData) {
                 //preserve the selection of lines, #509
                 if ($scope.pupillometryLines) {
                     var selectedLines = {};

@@ -266,6 +266,9 @@ angular
 
         $scope.visualizeData = function () {
             var visualizePpm = $('#cheetah-visualize-ppm-tab').hasClass('active');
+            var visualizeCustom = $('#cheetah-visualize-custom').hasClass('active');
+            var visualizeWorkload= $('#cheetah-visualize-workload').hasClass('active');
+            
             if (visualizePpm) {
                 if ($scope.selectedProcessInstance.id === undefined) {
                     BootstrapDialog.alert({
@@ -277,7 +280,7 @@ angular
 
                 var url = "visualize.htm?processInstance=" + $scope.selectedProcessInstance.id;
                 window.location.href = url;
-            } else {
+            } else if (visualizeCustom){
                 var selectedFiles = [];
                 $.each($scope.filesToVisualize, function (index, file) {
                     if ($scope.selectedFiles[file.id]) {
@@ -310,6 +313,17 @@ angular
                 if (selectedMovie) {
                     url = url + "&movie=" + selectedMovie.id;
                 }
+                window.location.href = url;
+            }else if (visualizeWorkload) {
+                if ($scope.selectedProcessInstance.id === undefined) {
+                    BootstrapDialog.alert({
+                        title: 'Please Select a PPM',
+                        message: 'Please select the process of process modeling to visualize.'
+                    });
+                    return;
+                }
+
+                var url = "visualize-workload-phase.htm?processInstance=" + $scope.selectedProcessInstance.id;
                 window.location.href = url;
             }
         };

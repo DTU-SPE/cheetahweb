@@ -108,6 +108,16 @@
   </servlet-mapping>
   <servlet>
     <description></description>
+    <display-name>InteractionsFilteredServlet</display-name>
+    <servlet-name>InteractionsFilteredServlet</servlet-name>
+    <servlet-class>org.cheetahplatform.web.servlet.InteractionsFilteredServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>InteractionsFilteredServlet</servlet-name>
+    <url-pattern>/private/interactionsfiltered</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
     <display-name>UploadDataServlet</display-name>
     <servlet-name>UploadDataServlet</servlet-name>
     <servlet-class>org.cheetahplatform.web.servlet.UploadDataServlet</servlet-class>

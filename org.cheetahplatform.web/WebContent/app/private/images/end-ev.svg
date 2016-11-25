@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:oryx="http://oryx-editor.org"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="31"
+   height="31"
+   id="svg3629"
+   version="1.1"
+   inkscape:version="0.48.5 r10040"
+   sodipodi:docname="start-ev.svg">
+  <defs
+     id="defs3631">
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#sid-95AC39A2-71FC-46A2-A5C4-CC39C63A50D8background"
+       id="radialGradient3498"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="scale(1.1153037,0.89661673)"
+       cx="4.1244369"
+       cy="4.0150933"
+       fx="4.1244369"
+       fy="4.0150933"
+       r="45.727451" />
+    <radialGradient
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="scale(1.1153037,0.89661673)"
+       id="sid-95AC39A2-71FC-46A2-A5C4-CC39C63A50D8background"
+       cx="4.1244369"
+       cy="4.0150933"
+       r="45.727451"
+       fx="4.1244369"
+       fy="4.0150933">
+      <stop
+         offset="0%"
+         stop-color="#ffffff"
+         stop-opacity="1"
+         id="sid-95AC39A2-71FC-46A2-A5C4-CC39C63A50D8_sid-95AC39A2-71FC-46A2-A5C4-CC39C63A50D8_18" />
+      <stop
+         id="sid-95AC39A2-71FC-46A2-A5C4-CC39C63A50D8fill_el"
+         offset="100%"
+         stop-color="#ffffcc"
+         stop-opacity="1" />
+    </radialGradient>
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#sid-24FE24A2-D492-4217-A83C-D2B9BAFF8E2Bbackground"
+       id="radialGradient3500"
+       gradientUnits="userSpaceOnUse"
+       cx="3.6000001"
+       cy="3.6000001"
+       fx="3.6000001"
+       fy="3.6000001"
+       r="41" />
+    <radialGradient
+       gradientUnits="userSpaceOnUse"
+       id="sid-24FE24A2-D492-4217-A83C-D2B9BAFF8E2Bbackground"
+       cx="3.6000001"
+       cy="3.6000001"
+       r="41"
+       fx="3.6000001"
+       fy="3.6000001">
+      <stop
+         offset="0%"
+         stop-color="#ffffff"
+         stop-opacity="1"
+         id="sid-24FE24A2-D492-4217-A83C-D2B9BAFF8E2B_sid-24FE24A2-D492-4217-A83C-D2B9BAFF8E2B_5" />
+      <stop
+         id="sid-24FE24A2-D492-4217-A83C-D2B9BAFF8E2Bfill_el"
+         offset="100%"
+         stop-color="#ffffff"
+         stop-opacity="1" />
+    </radialGradient>
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#sid-D8626E80-5855-47AD-9344-B79B92E35F46background"
+       id="radialGradient3502"
+       gradientUnits="userSpaceOnUse"
+       cx="3.6000001"
+       cy="3.6000001"
+       fx="3.6000001"
+       fy="3.6000001"
+       r="41" />
+    <radialGradient
+       gradientUnits="userSpaceOnUse"
+       id="sid-D8626E80-5855-47AD-9344-B79B92E35F46background"
+       cx="3.6000001"
+       cy="3.6000001"
+       r="41"
+       fx="3.6000001"
+       fy="3.6000001">
+      <stop
+         offset="0%"
+         stop-color="#ffffff"
+         stop-opacity="1"
+         id="sid-D8626E80-5855-47AD-9344-B79B92E35F46_sid-D8626E80-5855-47AD-9344-B79B92E35F46_5" />
+      <stop
+         id="sid-D8626E80-5855-47AD-9344-B79B92E35F46fill_el"
+         offset="100%"
+         stop-color="#ffffff"
+         stop-opacity="1" />
+    </radialGradient>
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#sid-29357E55-505A-4687-A220-CBB3CB555271background"
+       id="radialGradient3504"
+       gradientUnits="userSpaceOnUse"
+       cx="2.5999999"
+       cy="2.5999999"
+       fx="2.5999999"
+       fy="2.5999999"
+       r="31" />
+    <radialGradient
+       gradientUnits="userSpaceOnUse"
+       id="sid-29357E55-505A-4687-A220-CBB3CB555271background"
+       cx="2.5999999"
+       cy="2.5999999"
+       r="31"
+       fx="2.5999999"
+       fy="2.5999999">
+      <stop
+         offset="0%"
+         stop-color="#ffffff"
+         stop-opacity="1"
+         id="sid-29357E55-505A-4687-A220-CBB3CB555271_sid-29357E55-505A-4687-A220-CBB3CB555271_6" />
+      <stop
+         id="sid-29357E55-505A-4687-A220-CBB3CB555271fill_el"
+         offset="100%"
+         stop-color="#ffffff"
+         stop-opacity="1" />
+    </radialGradient>
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#sid-C7DE47A2-C73B-4B2E-858D-19C31C990588background"
+       id="radialGradient3506"
+       gradientUnits="userSpaceOnUse"
+       cx="1.6"
+       cy="1.6"
+       fx="1.6"
+       fy="1.6"
+       r="31" />
+    <radialGradient
+       gradientUnits="userSpaceOnUse"
+       id="sid-C7DE47A2-C73B-4B2E-858D-19C31C990588background"
+       cx="1.6"
+       cy="1.6"
+       r="31"
+       fx="1.6"
+       fy="1.6">
+      <stop
+         offset="0%"
+         stop-color="#ffffff"
+         stop-opacity="1"
+         id="sid-C7DE47A2-C73B-4B2E-858D-19C31C990588_sid-C7DE47A2-C73B-4B2E-858D-19C31C990588_6" />
+      <stop
+         id="sid-C7DE47A2-C73B-4B2E-858D-19C31C990588fill_el"
+         offset="100%"
+         stop-color="#ffffff"
+         stop-opacity="1" />
+    </radialGradient>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="2.8"
+     inkscape:cx="-171.33004"
+     inkscape:cy="77.094422"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="1920"
+     inkscape:window-height="1061"
+     inkscape:window-x="-4"
+     inkscape:window-y="-4"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata3634">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-408.13394,-585.30861)">
+    <g
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;stroke:#000000;font-family:'\'Open Sans\', \'Ezra SIL\', \'DejaVu Sans\', HanaMinA, HanaMinB, sans-serif'"
+       id="svg-sid-42DC2F98-2225-46DF-B985-431390D5BEE0"
+       transform="translate(48.63394,240.80861)">
+      <g
+         class="stencils"
+         transform="translate(361,346)"
+         id="g3111">
+        <g
+           class="me"
+           id="g3113">
+          <g
+             pointer-events="fill"
+             id="sid-C7DE47A2-C73B-4B2E-858D-19C31C990588"
+             title="End Event">
+            <defs
+               id="sid-C7DE47A2-C73B-4B2E-858D-19C31C990588_sid-C7DE47A2-C73B-4B2E-858D-19C31C990588_5">
+              <radialGradient
+                 gradientUnits="userSpaceOnUse"
+                 id="radialGradient3951"
+                 cx="1.6"
+                 cy="1.6"
+                 r="31"
+                 fx="1.6"
+                 fy="1.6">
+                <stop
+                   offset="0%"
+                   stop-color="#ffffff"
+                   stop-opacity="1"
+                   id="stop3953" />
+                <stop
+                   id="stop3955"
+                   offset="100%"
+                   stop-color="#ffffff"
+                   stop-opacity="1" />
+              </radialGradient>
+            </defs>
+            <circle
+               d="M 28,14 C 28,21.731986 21.731986,28 14,28 6.2680135,28 0,21.731986 0,14 0,6.2680135 6.2680135,0 14,0 21.731986,0 28,6.2680135 28,14 z"
+               style="fill:url(#radialGradient3506);stroke:#000000;stroke-width:3"
+               sodipodi:ry="14"
+               sodipodi:rx="14"
+               sodipodi:cy="14"
+               sodipodi:cx="14"
+               id="sid-C7DE47A2-C73B-4B2E-858D-19C31C990588bg_frame"
+               cx="14"
+               cy="14"
+               r="14" />
+            <text
+               font-size="11"
+               id="sid-C7DE47A2-C73B-4B2E-858D-19C31C990588text_name"
+               x="14"
+               y="30"
+               oryx:align="top center"
+               oryx:positioning="outter"
+               oryx:distance="9px 9px"
+               letter-spacing="-0.01px"
+               transform="matrix(1,1.7453293e-5,-1.7453293e-5,1,5.2360091e-4,-2.4434153e-4)"
+               oryx:fontSize="11"
+               style="font-size:11px;letter-spacing:-0.01px;text-anchor:middle;fill:#000000;stroke:none;display:none" />
+            <title
+               id="title3122">End Event</title>
+          </g>
+        </g>
+        <g
+           class="children"
+           id="g3124" />
+        <g
+           class="edge"
+           id="g3126" />
+      </g>
+      <g
+         class="controls"
+         id="g3128">
+        <g
+           class="dockers"
+           id="g3130" />
+        <g
+           class="magnets"
+           transform="translate(361,346)"
+           id="g3132" />
+      </g>
+    </g>
+  </g>
+</svg>

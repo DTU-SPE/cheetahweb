@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Cheetah Experimental Platform</title>
+
+    <link href="../public/css/lib/bootstrap.css" rel="stylesheet">
+    <link href="../public/css/lib/bootstrap-theme.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../public/css/lib/jquery.gridster.css">
+    <link rel="stylesheet" type="text/css" href="../public/css/lib/jquery-ui.min.css">
+    <link rel="stylesheet" type="text/css" href="../public/css/lib/jquery-ui.theme.css">
+    <link rel="stylesheet" type="text/css" href="../public/css/cheetah.css">
+    <link rel="stylesheet" type="text/css" href="../public/css/icomoon.css">
+
+    <script src="../public/js/lib/jquery.js"></script>
+    <script src="../public/js/lib/bootstrap.js"></script>
+    <link href="../public/css/cheetah.css" rel="stylesheet">
+    <script src="../public/js/lib/underscore-min.js"></script>
+    <script src="../public/js/lib/jquery-ui.min.js"></script>
+    <script src="../public/js/lib/angular.js"></script>
+    <script src="../public/js/lib/angular-route.js"></script>
+    <script src="js/visualize-workload-phase.js"></script>
+    <script src="../public/js/lib/d3.min.js"></script>
+    <script src="../public/js/lib/shim.js"></script>
+    <script src="../public/js/lib/bootstrap-dialog.min.js"></script>
+
+    <script src="angular/pupillometry-workflow/pupillometry-workflow.js"></script>
+    <script src="angular/video/video.js"></script>
+    <script src="angular/interactions/interactions.js"></script>
+    <script src="angular/navigation/navigation.js"></script>
+</head>
+
+<body role="document">
+
+<div ng-app="cheetah.Navigation" ng-view="" ng-controller="NavigationCtrl"
+     ng-init="setActive('cheetah-visualize')"></div>
+
+<div role="main" class="visualize-body">
+    <div ng-app="cheetah.PupillometryWorkflow" ng-view="" class="visualize-widget-content"></div>
+</div>
+
+</body>
+</html>

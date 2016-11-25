@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:oryx="http://oryx-editor.org"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="114.54805"
+   height="15.005936"
+   id="svg3629"
+   version="1.1"
+   inkscape:version="0.48.5 r10040"
+   sodipodi:docname="end-ev.svg">
+  <defs
+     id="defs3631">
+    <radialGradient
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="scale(1.1153037,0.89661673)"
+       id="sid-95AC39A2-71FC-46A2-A5C4-CC39C63A50D8background"
+       cx="4.1244369"
+       cy="4.0150933"
+       r="45.727451"
+       fx="4.1244369"
+       fy="4.0150933">
+      <stop
+         offset="0%"
+         stop-color="#ffffff"
+         stop-opacity="1"
+         id="sid-95AC39A2-71FC-46A2-A5C4-CC39C63A50D8_sid-95AC39A2-71FC-46A2-A5C4-CC39C63A50D8_18" />
+      <stop
+         id="sid-95AC39A2-71FC-46A2-A5C4-CC39C63A50D8fill_el"
+         offset="100%"
+         stop-color="#ffffcc"
+         stop-opacity="1" />
+    </radialGradient>
+    <radialGradient
+       gradientUnits="userSpaceOnUse"
+       id="sid-24FE24A2-D492-4217-A83C-D2B9BAFF8E2Bbackground"
+       cx="3.6000001"
+       cy="3.6000001"
+       r="41"
+       fx="3.6000001"
+       fy="3.6000001">
+      <stop
+         offset="0%"
+         stop-color="#ffffff"
+         stop-opacity="1"
+         id="sid-24FE24A2-D492-4217-A83C-D2B9BAFF8E2B_sid-24FE24A2-D492-4217-A83C-D2B9BAFF8E2B_5" />
+      <stop
+         id="sid-24FE24A2-D492-4217-A83C-D2B9BAFF8E2Bfill_el"
+         offset="100%"
+         stop-color="#ffffff"
+         stop-opacity="1" />
+    </radialGradient>
+    <radialGradient
+       gradientUnits="userSpaceOnUse"
+       id="sid-D8626E80-5855-47AD-9344-B79B92E35F46background"
+       cx="3.6000001"
+       cy="3.6000001"
+       r="41"
+       fx="3.6000001"
+       fy="3.6000001">
+      <stop
+         offset="0%"
+         stop-color="#ffffff"
+         stop-opacity="1"
+         id="sid-D8626E80-5855-47AD-9344-B79B92E35F46_sid-D8626E80-5855-47AD-9344-B79B92E35F46_5" />
+      <stop
+         id="sid-D8626E80-5855-47AD-9344-B79B92E35F46fill_el"
+         offset="100%"
+         stop-color="#ffffff"
+         stop-opacity="1" />
+    </radialGradient>
+    <radialGradient
+       gradientUnits="userSpaceOnUse"
+       id="sid-29357E55-505A-4687-A220-CBB3CB555271background"
+       cx="2.5999999"
+       cy="2.5999999"
+       r="31"
+       fx="2.5999999"
+       fy="2.5999999">
+      <stop
+         offset="0%"
+         stop-color="#ffffff"
+         stop-opacity="1"
+         id="sid-29357E55-505A-4687-A220-CBB3CB555271_sid-29357E55-505A-4687-A220-CBB3CB555271_6" />
+      <stop
+         id="sid-29357E55-505A-4687-A220-CBB3CB555271fill_el"
+         offset="100%"
+         stop-color="#ffffff"
+         stop-opacity="1" />
+    </radialGradient>
+    <radialGradient
+       gradientUnits="userSpaceOnUse"
+       id="sid-C7DE47A2-C73B-4B2E-858D-19C31C990588background"
+       cx="1.6"
+       cy="1.6"
+       r="31"
+       fx="1.6"
+       fy="1.6">
+      <stop
+         offset="0%"
+         stop-color="#ffffff"
+         stop-opacity="1"
+         id="sid-C7DE47A2-C73B-4B2E-858D-19C31C990588_sid-C7DE47A2-C73B-4B2E-858D-19C31C990588_6" />
+      <stop
+         id="sid-C7DE47A2-C73B-4B2E-858D-19C31C990588fill_el"
+         offset="100%"
+         stop-color="#ffffff"
+         stop-opacity="1" />
+    </radialGradient>
+    <marker
+       orient="auto"
+       markerHeight="11"
+       markerWidth="17"
+       markerUnits="userSpaceOnUse"
+       refY="5"
+       refX="1"
+       id="sid-972BD062-0A88-4EF4-9CD8-8F158CB108AAstart_shadow" />
+    <marker
+       orient="auto"
+       markerHeight="16"
+       markerWidth="15"
+       markerUnits="userSpaceOnUse"
+       refY="8"
+       refX="15"
+       id="sid-972BD062-0A88-4EF4-9CD8-8F158CB108AAend_shadow">
+      <path
+         style="fill:#000000;stroke:#ffffff;stroke-width:5;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:0.7"
+         inkscape:connector-curvature="0"
+         d="M 0,3 15,8 0,13 z"
+         id="sid-972BD062-0A88-4EF4-9CD8-8F158CB108AAarrowhead_shadow" />
+    </marker>
+    <marker
+       orient="auto"
+       markerHeight="11"
+       markerWidth="17"
+       markerUnits="userSpaceOnUse"
+       refY="5"
+       refX="1"
+       id="sid-972BD062-0A88-4EF4-9CD8-8F158CB108AAstart" />
+    <marker
+       orient="auto"
+       markerHeight="16"
+       markerWidth="15"
+       markerUnits="userSpaceOnUse"
+       refY="8"
+       refX="15"
+       id="sid-972BD062-0A88-4EF4-9CD8-8F158CB108AAend">
+      <path
+         style="fill:#000000;stroke:#000000;stroke-width:2;stroke-linejoin:round"
+         inkscape:connector-curvature="0"
+         d="M 0,3 15,8 0,13 z"
+         id="sid-972BD062-0A88-4EF4-9CD8-8F158CB108AAarrowhead" />
+    </marker>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="2.8"
+     inkscape:cx="-39.424926"
+     inkscape:cy="35.665962"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="1920"
+     inkscape:window-height="1061"
+     inkscape:window-x="-4"
+     inkscape:window-y="-4"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata3634">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-276.22882,-559.87421)">
+    <g
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;stroke:#000000;font-family:'\'Open Sans\', \'Ezra SIL\', \'DejaVu Sans\', HanaMinA, HanaMinB, sans-serif'"
+       id="svg-sid-9A441145-3A65-4F4F-AD1F-5A611BD95235"
+       transform="translate(28.276797,117.38004)">
+      <g
+         class="stencils"
+         id="g3137">
+        <g
+           class="me"
+           id="g3139">
+          <g
+             pointer-events="painted"
+             id="g3141">
+            <path
+               style="fill:none;stroke:#ffffff;stroke-width:5;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:0.7;marker-start:url(#sid-972BD062-0A88-4EF4-9CD8-8F158CB108AAstart_shadow);marker-end:url(#sid-972BD062-0A88-4EF4-9CD8-8F158CB108AAend_shadow)"
+               inkscape:connector-curvature="0"
+               id="sid-972BD062-0A88-4EF4-9CD8-8F158CB108AAbg_frame_shadow"
+               d="m 249,450 111,0" />
+            <path
+               style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;marker-start:url(#sid-972BD062-0A88-4EF4-9CD8-8F158CB108AAstart);marker-end:url(#sid-972BD062-0A88-4EF4-9CD8-8F158CB108AAend)"
+               inkscape:connector-curvature="0"
+               id="sid-972BD062-0A88-4EF4-9CD8-8F158CB108AAbg_frame"
+               d="m 249,450 111,0" />
+          </g>
+          <text
+             id="sid-972BD062-0A88-4EF4-9CD8-8F158CB108AAtext_name"
+             x="257"
+             y="442"
+             oryx:edgePosition="startTop"
+             letter-spacing="-0.01px"
+             font-size="12"
+             transform="matrix(1,1.7453293e-5,-1.7453293e-5,1,0.00785402,-0.0043458)"
+             oryx:fontSize="12"
+             style="font-size:12px;letter-spacing:-0.01px;text-anchor:start;fill:#000000;stroke:none;display:none" />
+        </g>
+        <g
+           class="children"
+           id="g3146" />
+        <g
+           class="edge"
+           id="g3148" />
+      </g>
+      <g
+         class="controls"
+         id="g3150">
+        <g
+           class="dockers"
+           id="g3152" />
+        <g
+           class="magnets"
+           id="g3154" />
+      </g>
+    </g>
+  </g>
+</svg>

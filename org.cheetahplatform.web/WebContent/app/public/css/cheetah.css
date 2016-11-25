@@ -530,3 +530,11 @@ ul.dropdown-menu a {
 .cheetah-analyze-step-description {
   padding-top: 7px;
 }
+
+.cheetah-analyze-step-time input[type=text] {
+  margin-left: 5px;
+}
+
+.cheetah-analyze-step-time label:not(:first-child) {
+  font-weight: normal;
+}

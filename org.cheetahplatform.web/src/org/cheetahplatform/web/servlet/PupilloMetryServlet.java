@@ -19,9 +19,10 @@ import org.cheetahplatform.web.eyetracking.EyeTrackingEntry;
 public class PupilloMetryServlet extends AbstractCheetahServlet {
 
 	private static final int AVERAGE_NUMBER = 10;
-	private static final int MAX_ENTRIES = 3000;
-
+	private static final int MAX_ENTRIES = 9000;
 	private static final long serialVersionUID = 680265988208330039L;
+
+	private long dataTimes = 1;
 
 	private List<EyeTrackingEntry> average(List<EyeTrackingEntry> toAverage) {
 		List<EyeTrackingEntry> averaged = new ArrayList<EyeTrackingEntry>();
@@ -89,6 +90,11 @@ public class PupilloMetryServlet extends AbstractCheetahServlet {
 				}
 			}
 
+			String zoom = request.getParameter("zoom");
+			if (zoom != null) {
+				dataTimes = Integer.parseInt(zoom);
+			}
+
 			int slidingWindowDuration = Integer.parseInt(request.getParameter("slidingWindowDuration"));
 			List<PupillometryDto> results = new ArrayList<>();
 			for (CachedEyeTrackingData data : cachedData) {
@@ -125,12 +131,12 @@ public class PupilloMetryServlet extends AbstractCheetahServlet {
 				continue;
 			}
 
-			if (entry.getTimestamp() > timestamp + 10 * 1000 * 1000) {
+			if (entry.getTimestamp() > timestamp + dataTimes * 10 * 1000 * 1000) {
 				continue;
 			}
 
 			filtered.add(entry);
-			if (filtered.size() >= MAX_ENTRIES) {
+			if (filtered.size() >= MAX_ENTRIES * dataTimes) {
 				break;
 			}
 		}
