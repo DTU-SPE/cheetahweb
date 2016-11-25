@@ -34,14 +34,16 @@ public class TrialAnalyzerFactory {
 			throw new IllegalArgumentException("Unknown trial analyzer type: " + typeId);
 		}
 
+		long startTime = config.getStartTime();
+		long endTime = config.getEndTime();
 		if (typeId.endsWith("absolute")) {
-			return new AbsoluteTrialAnalyzer(config, processing, type, statistic);
+			return new AbsoluteTrialAnalyzer(config, processing, type, statistic, startTime, endTime);
 		}
 		if (typeId.endsWith("relative_divided")) {
-			return new RelativeDividedTrialAnalyzer(config, processing, type, statistic);
+			return new RelativeDividedTrialAnalyzer(config, processing, type, statistic, startTime, endTime);
 		}
 		if (typeId.endsWith("relative_subtracted")) {
-			return new RelativeSubtractedTrialAnalyzer(config, processing, type, statistic);
+			return new RelativeSubtractedTrialAnalyzer(config, processing, type, statistic, startTime, endTime);
 		}
 		throw new IllegalArgumentException("Unknown trial analyzer type: " + typeId);
 	}

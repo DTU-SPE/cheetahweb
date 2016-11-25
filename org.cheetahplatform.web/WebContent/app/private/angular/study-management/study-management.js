@@ -279,15 +279,64 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData', 'ui.s
         }
     };
 }).controller('AddAnalyzeStepModalController', function ($scope, $http) {
+    $scope.computations = [{id: 'mean', name: 'Mean'}, {
+        id: 'standard_deviation',
+        name: 'Standard Deviation'
+    }, {id: 'standard_error', name: 'Standard Error'}, {id: 'median', name: 'Median'}, {
+        id: 'maximum',
+        name: 'Maximum'
+    }, {id: 'minimum', name: 'Minimum'}];
+    $scope.types = [{id: 'absolute', name: 'Absolute'}, {
+        id: 'relative_divided',
+        name: 'Relative Divided'
+    }, {id: 'relative_subtracted', name: 'Relative Subtracted'}];
+
     $scope.$on('cheetah-add-analyze-step-modal.show', function (event, data) {
         $scope.analyzeTypes = data.analyzeTypes;
         $scope.dataProcessing = data.dataProcessing;
-        $scope.analyzeType = $scope.analyzeTypes[0];
+        $scope.computation = $scope.computations[0];
+        $scope.type = $scope.types[0];
         $scope.name = data.name;
+        $scope.startTime = 'startWithStimulus';
+        $scope.endTime = 'endWithStimulus';
+
+        $scope.updateAnalyzeType();
     });
 
+    function isValidInteger(number) {
+        var parsed = parseInt(number);
+        if (isNaN(parsed)) {
+            return false;
+        }
+
+        return parsed > 0 && parsed % 1 == 0;
+    }
+
     $scope.addAnalyzeStep = function () {
-        var configuration = {type: $scope.analyzeType.id};
+        var startTime = -1;
+        var endTime = -1;
+        var error;
+        if ($scope.startTime === 'startAfterDuration') {
+            if (!isValidInteger($scope.startTimeOffset)) {
+                error = 'Please enter a valid, positive integer for the start time.'
+            } else {
+                startTime = parseInt($scope.startTimeOffset);
+            }
+        }
+        if ($scope.endTime === 'endAfterDuration') {
+            if (!isValidInteger($scope.endTimeOffset)) {
+                error = 'Please enter a valid, positive integer for the end time.'
+            } else {
+                endTime = parseInt($scope.endTimeOffset);
+            }
+        }
+
+        if (error) {
+            BootstrapDialog.alert({title: 'Invalid Input', messag: error});
+            return;
+        }
+
+        var configuration = {type: $scope.analyzeType.id, startTime: startTime, endTime: endTime};
         var step = {
             dataProcessingId: $scope.dataProcessing.id,
             name: $scope.name,
@@ -299,6 +348,16 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData', 'ui.s
         $http.post('../../private/addDataProcessingStep', step).then(function (id) {
             step.id = id;
             $scope.dataProcessing.steps.push(step);
+        });
+    };
+
+    $scope.updateAnalyzeType = function () {
+        var id = $scope.computation.id + "_" + $scope.type.id;
+        $.each($scope.analyzeTypes, function (index, type) {
+            if (type.id === id) {
+                $scope.analyzeType = type;
+                return false;
+            }
         });
     };
 }).controller('EditDataProcessingModalController', function ($scope, $http) {

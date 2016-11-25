@@ -9,22 +9,22 @@ import org.cheetahplatform.web.eyetracking.analysis.AnalyzeConfiguration;
 import org.cheetahplatform.web.eyetracking.analysis.DataProcessing;
 import org.cheetahplatform.web.eyetracking.analysis.Stimulus;
 import org.cheetahplatform.web.eyetracking.analysis.Trial;
+import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFile;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileColumn;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileLine;
-import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileUtils;
 
 public class AbsoluteTrialAnalyzer extends AbstractPupilTrialAnalyzer {
 	private UnivariateStatistic statistic;
 
 	public AbsoluteTrialAnalyzer(AnalyzeConfiguration config, DataProcessing processing, AnalyzeStepType type,
-			UnivariateStatistic statistic) {
-		super(config, processing, type);
+			UnivariateStatistic statistic, long startTime, long endTime) {
+		super(config, processing, type, startTime, endTime);
 
 		this.statistic = statistic;
 	}
 
 	@Override
-	protected void analyzeTrial(Trial trial, Map<String, String> results, PupillometryFileColumn leftPupilColumn,
+	protected void analyzeTrial(PupillometryFile file, Trial trial, Map<String, String> results, PupillometryFileColumn leftPupilColumn,
 			PupillometryFileColumn rightPupilColumn) {
 		Stimulus stimulus = trial.getStimulus();
 		if (stimulus == null) {
@@ -36,14 +36,15 @@ public class AbsoluteTrialAnalyzer extends AbstractPupilTrialAnalyzer {
 			return;
 		}
 
-		double[] leftPupils = PupillometryFileUtils.getPupilValues(lines, leftPupilColumn, false);
+		double[] leftPupils = getPupilValues(file, leftPupilColumn, lines);
 		double leftValue = statistic.evaluate(leftPupils);
 		addResult(results, trial, leftValue, PUPIL_LEFT);
 
-		double[] rightPupils = PupillometryFileUtils.getPupilValues(lines, rightPupilColumn, false);
+		double[] rightPupils = getPupilValues(file, rightPupilColumn, lines);
 		double rightValue = statistic.evaluate(rightPupils);
 		addResult(results, trial, rightValue, PUPIL_RIGHT);
 
 		addAveragePupilSizeToResults(trial, results, leftValue, rightValue);
 	}
+
 }

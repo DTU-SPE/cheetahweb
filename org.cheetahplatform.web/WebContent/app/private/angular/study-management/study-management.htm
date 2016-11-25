@@ -143,7 +143,7 @@
     </div>
 </div>
 
-<div class="modal" id="cheetah-add-analyze-step-modal" ng-controller="AddAnalyzeStepModalController">
+<div class="modal" id="cheetah-add-analyze-step-modal" ng-controller="AddAnalyzeStepModalController" data-backdrop="static">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -160,13 +160,49 @@
                             </div>
                             <div class="panel-body">
                                 <div class="form-group">
-                                    <div><label>Name</label></div>
-                                    <select class="form-control" ng-model="analyzeType"
-                                            ng-options="type.name for type in analyzeTypes">
+                                    <div><label>Computation</label></div>
+                                    <select class="form-control" ng-model="computation" ng-change="updateAnalyzeType()"
+                                            ng-options="computation.name for computation in computations">
                                     </select>
-                                    <p class="cheetah-analyze-step-description">{{analyzeType.description}}</p>
+                                </div>
+                                <div class="form-group">
+                                    <div><label>Type</label></div>
+                                    <select class="form-control" ng-model="type" ng-change="updateAnalyzeType()"
+                                            ng-options="type.name for type in types">
+                                    </select>
+                                </div>
+                                <span><strong>Description of this computation:</strong></span>
+                                <p class="cheetah-analyze-step-description">{{analyzeType.description}}</p>
+
+                                <div class="form-group cheetah-analyze-step-time">
+                                    <div><label>Start Time</label></div>
+                                    <label>
+                                        <input type="radio" name="startTime" ng-model="startTime"
+                                               value="startWithStimulus">
+                                        Start with stimulus onset
+                                    </label>
+                                    <br>
+                                    <label>
+                                        <input type="radio" name="startTime" ng-model="startTime"
+                                               value="startAfterDuration">
+                                        Start milliseconds after stimulus onset:
+                                    </label>
+                                    <input type="text"ng-disabled="startTime === 'startWithStimulus'" ng-model="startTimeOffset">
                                 </div>
 
+                                <div class="form-group cheetah-analyze-step-time">
+                                    <div><label>End Time</label></div>
+                                    <label>
+                                        <input type="radio" name="endTime" ng-model="endTime" value="endWithStimulus">
+                                        End with stimulus
+                                    </label>
+                                    <br>
+                                    <label>
+                                        <input type="radio" name="endTime" ng-model="endTime" value="endAfterDuration">
+                                        End milliseconds after stimulus onset:
+                                    </label>
+                                    <input type="text" ng-disabled="endTime === 'endWithStimulus'"  ng-model="endTimeOffset">
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -476,7 +512,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Define the number of trials that should be ignored. For instance, if you have one introduction trial, you may want to enter "1" to ignore the first trial.</label>
+                        <label>Define the number of trials that should be ignored. For instance, if you have one
+                            introduction trial, you may want to enter "1" to ignore the first trial.</label>
                         <input type="text" class="form-control" ng-model="data.config.ignoredTrials">
                     </div>
                     <div class="form-group cheetah-dialog-button-container">
