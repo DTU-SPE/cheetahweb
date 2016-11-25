@@ -278,6 +278,19 @@ public class PupillometryFile {
 		return header;
 	}
 
+	public Iterator<PupillometryFileLine> getIteratorStartingAt(long timestamp, PupillometryFileColumn timestampColumn) {
+		int index = 0;
+		for (PupillometryFileLine line : content) {
+			long currentTimestamp = line.getLong(timestampColumn);
+			if (currentTimestamp > timestamp) {
+				break;
+			}
+			index++;
+		}
+
+		return content.listIterator(index);
+	}
+
 	public List<IPupillometryFileLine> getLines() {
 		List<IPupillometryFileLine> lines = new LinkedList<IPupillometryFileLine>();
 		lines.add(header);

@@ -14,7 +14,6 @@ import org.cheetahplatform.web.eyetracking.analysis.DataProcessing;
 import org.cheetahplatform.web.util.FileUtils;
 
 public class ExecuteDataProcessingWorkItem extends AbstractCheetahWorkItem {
-
 	private DataProcessing processing;
 	private List<IDataProcessingWorkItem> subWorkItems;
 
@@ -35,8 +34,8 @@ public class ExecuteDataProcessingWorkItem extends AbstractCheetahWorkItem {
 		String path = userFileDao.getPath(fileId);
 		File file = userFileDao.getUserFile(path);
 
-		// FIXME read separator from data processing
-		PupillometryFile pupillometryFile = new PupillometryFile(file, PupillometryFile.SEPARATOR_TABULATOR, true, ".");
+		PupillometryFile pupillometryFile = new PupillometryFile(file, PupillometryFile.SEPARATOR_TABULATOR, true,
+				processing.getDecimalSeparator());
 		String preProcessingErrors = runPreProcessing(originalFileDto, pupillometryFile);
 		if (preProcessingErrors != null) {
 			logErrorNotification(preProcessingErrors);
@@ -66,38 +65,8 @@ public class ExecuteDataProcessingWorkItem extends AbstractCheetahWorkItem {
 				return;
 			}
 		}
-		StringBuilder builder = new StringBuilder();
-		builder.append("The following data processing steps were executed: ");
-		List<DataProcessingResult> results = context.getResults();
-		for (DataProcessingResult dataProcessingResult : results) {
-			builder.append(dataProcessingResult.getMessage());
-			if (dataProcessingResult.getAdditionalInformation() != null) {
-				builder.append(" (");
-				builder.append(dataProcessingResult.getAdditionalInformation());
-				builder.append(");");
-			}
-		}
-		String comment = builder.toString();
 
-		String newName = null;
-		String fileName = originalFileDto.getFilename();
-		String subjectName = FileUtils.getSubjectName(fileName, originalFileDto.getSubjectId(), userId);
-		if (!subjectName.trim().isEmpty()) {
-			subjectName = subjectName + CheetahWebConstants.FILENAME_PATTERN_SEPARATOR;
-		}
-
-		int position = fileName.lastIndexOf(".");
-		newName = subjectName + fileName.substring(0, position) + CheetahWebConstants.FILENAME_PATTERN_SEPARATOR + "study_data_processed"
-				+ fileName.substring(position);
-
-		String relativePath = userFileDao.generateRelativePath(userId, newName);
-
-		String absolutePath = userFileDao.getAbsolutePath(relativePath);
-		pupillometryFile.writeToFile(new File(absolutePath));
-		long newFileId = userFileDao.insertUserFile(userId, newName, relativePath, originalFileDto.getType(), comment, null,
-				originalFileDto.getSubjectId(), false, null);
-		logSuccessNotification("Successfully processed a file as part of a study data processing! Processed pupillometry file: " + newName);
-		userFileDao.addTags(newFileId, UserFileDao.TAG_STUDY_DATA_PROCESSED);
+		writeProcessedFile(userFileDao, originalFileDto, pupillometryFile);
 	}
 
 	private String runPreProcessing(UserFileDto originalFileDto, PupillometryFile pupillometryFile) throws IOException, SQLException {
@@ -122,5 +91,34 @@ public class ExecuteDataProcessingWorkItem extends AbstractCheetahWorkItem {
 		pupillometryFile.removeNullValues("-1");
 		pupillometryFile.adaptTimestamps(timestampColumn);
 		return null;
+	}
+
+	private void writeProcessedFile(UserFileDao userFileDao, UserFileDto originalFileDto, PupillometryFile pupillometryFile)
+			throws SQLException, IOException {
+		String newName = null;
+		String fileName = originalFileDto.getFilename();
+		String subjectName = FileUtils.getSubjectName(fileName, originalFileDto.getSubjectId(), userId);
+		if (!subjectName.trim().isEmpty()) {
+			subjectName = subjectName + CheetahWebConstants.FILENAME_PATTERN_SEPARATOR;
+		}
+
+		// no need to add subject name if name is already there :)
+		if (fileName.startsWith(subjectName)) {
+			subjectName = "";
+		}
+		int position = fileName.lastIndexOf(".");
+		newName = subjectName + fileName.substring(0, position) + CheetahWebConstants.FILENAME_PATTERN_SEPARATOR + "study_data_processed"
+				+ fileName.substring(position);
+
+		String relativePath = userFileDao.generateRelativePath(userId, newName);
+
+		String absolutePath = userFileDao.getAbsolutePath(relativePath);
+		pupillometryFile.writeToFile(new File(absolutePath));
+
+		String comment = "Executed data processing: '" + processing.getName() + "'.";
+		long newFileId = userFileDao.insertUserFile(userId, newName, relativePath, originalFileDto.getType(), comment, null,
+				originalFileDto.getSubjectId(), false, null);
+		logSuccessNotification("Successfully processed a file as part of a study data processing! Processed pupillometry file: " + newName);
+		userFileDao.addTags(newFileId, UserFileDao.TAG_STUDY_DATA_PROCESSED);
 	}
 }

@@ -28,6 +28,10 @@ public class Trial extends AbstractPupillometryFileSection {
 		return baseline;
 	}
 
+	public String getIdentifier() {
+		return "trial_" + trialNumber;
+	}
+
 	public List<TrialDetectionNotification> getNotifications() {
 		return Collections.unmodifiableList(notifications);
 	}

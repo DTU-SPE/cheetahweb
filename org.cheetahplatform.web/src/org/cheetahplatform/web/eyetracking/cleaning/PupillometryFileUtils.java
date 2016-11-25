@@ -9,6 +9,41 @@ public class PupillometryFileUtils {
 	/**
 	 * Get the pupil values
 	 *
+	 * @param lines
+	 *            the lines to be processed
+	 * @param column
+	 *            the columns to be processed
+	 * @param subsituteMissings
+	 *            if <code>true</code> missing values are substituted with 0, if <code>false</code> missing values are ignored and not added
+	 *            to the result
+	 * @return the pupil values
+	 * @throws IOException
+	 */
+	public static double[] getPupilValues(List<PupillometryFileLine> lines, PupillometryFileColumn column, boolean subsituteMissings) {
+		List<Double> pupils = new ArrayList<Double>();
+		for (PupillometryFileLine line : lines) {
+			if (line.isEmpty(column)) {
+				if (subsituteMissings) {
+					pupils.add(0.0);
+				}
+
+				continue;
+			}
+
+			pupils.add(line.getDouble(column));
+		}
+
+		double[] result = new double[pupils.size()];
+		for (int i = 0; i < pupils.size(); i++) {
+			result[i] = pupils.get(i);
+		}
+
+		return result;
+	}
+
+	/**
+	 * Get the pupil values
+	 *
 	 * @param file
 	 *            the file to be processed
 	 * @param column
@@ -22,25 +57,7 @@ public class PupillometryFileUtils {
 	public static double[] getPupilValues(PupillometryFile file, PupillometryFileColumn column, boolean subsituteMissings)
 			throws IOException {
 		List<PupillometryFileLine> content = file.getContent();
-		List<Double> pupils = new ArrayList<Double>();
-		for (PupillometryFileLine line : content) {
-			if (line.isEmpty(column)) {
-				if (subsituteMissings) {
-					pupils.add(0.0);
-				}
-	
-				continue;
-			}
-	
-			pupils.add(line.getDouble(column));
-		}
-	
-		double[] result = new double[pupils.size()];
-		for (int i = 0; i < pupils.size(); i++) {
-			result[i] = pupils.get(i);
-		}
-	
-		return result;
+		return getPupilValues(content, column, subsituteMissings);
 	}
 
 }

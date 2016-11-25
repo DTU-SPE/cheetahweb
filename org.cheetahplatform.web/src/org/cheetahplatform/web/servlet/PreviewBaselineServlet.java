@@ -13,7 +13,7 @@ import org.cheetahplatform.web.dto.ComputeTrialsRequest;
 import org.cheetahplatform.web.dto.PreviewBaselineDto;
 import org.cheetahplatform.web.dto.PreviewBaselineResponse;
 import org.cheetahplatform.web.eyetracking.analysis.Trial;
-import org.cheetahplatform.web.eyetracking.analysis.TrialDetector;
+import org.cheetahplatform.web.eyetracking.analysis.DefaultTrialDetector;
 import org.cheetahplatform.web.eyetracking.analysis.TrialEvaluation;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFile;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileColumn;
@@ -26,7 +26,7 @@ public class PreviewBaselineServlet extends AbstractCheetahServlet {
 	protected void doPostWithDatabaseConnection(Connection connection, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		ComputeTrialsRequest trialRequest = readJson(request, ComputeTrialsRequest.class);
-		TrialDetector trialDetector = new TrialDetector(trialRequest.getFileId(), trialRequest.getConfig(),
+		DefaultTrialDetector trialDetector = new DefaultTrialDetector(trialRequest.getFileId(), trialRequest.getConfig(),
 				trialRequest.getDecimalSeparator(), trialRequest.getTimestampColumn());
 
 		PupillometryFile pupillometryFile = trialDetector.loadPupillometryFile();

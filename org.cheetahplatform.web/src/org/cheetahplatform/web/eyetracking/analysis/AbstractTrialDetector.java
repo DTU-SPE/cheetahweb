@@ -2,7 +2,6 @@ package org.cheetahplatform.web.eyetracking.analysis;
 
 import static org.cheetahplatform.web.eyetracking.cleaning.CleanPupillometryDataWorkItem.STUDIO_EVENT_DATA;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -10,25 +9,39 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.cheetahplatform.web.dao.UserFileDao;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFile;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileColumn;
+import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileHeader;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileLine;
 
-public class TrialDetector extends AbstractPupillopmetryFileDetector {
-	private long fileId;
-	private TrialConfiguration config;
-	private String decimalSeparator;
-	private IPupillometryFileSectionIdentifier trialIdentifier;
-	private String timestampColumn;
+public abstract class AbstractTrialDetector extends AbstractPupillopmetryFileDetector {
 
-	public TrialDetector(long fileId, TrialConfiguration config, String decimalSeparator, String timestampColumn) {
-		super();
+	private static final String TRIAL_NUMBER_COLUMN = "Trial_number";
+	private static final String TIME_SINCE_TRIAL_START = "Time_since_trial_start";
+	protected long fileId;
+	protected TrialConfiguration config;
+	protected String decimalSeparator;
+	private IPupillometryFileSectionIdentifier trialIdentifier;
+	protected String timestampColumn;
+
+	public AbstractTrialDetector(long fileId, TrialConfiguration config, String decimalSeparator, String timestampColumn) {
 		this.fileId = fileId;
 		this.config = config;
 		this.decimalSeparator = decimalSeparator;
 		this.timestampColumn = timestampColumn;
 		readConfig();
+	}
+
+	public void addRelativeTime(PupillometryFileColumn relativeTimeColumn, PupillometryFileColumn timeStampColumn,
+			List<PupillometryFileLine> linesInSegment, PupillometryFileLine lineToAddRelativetime) {
+		long relativeTime = 0;
+		if (!linesInSegment.isEmpty()) {
+			long timestamp = lineToAddRelativetime.getLong(timeStampColumn);
+			long startTimeStamp = linesInSegment.get(0).getLong(timeStampColumn);
+			relativeTime = timestamp - startTimeStamp;
+		}
+
+		lineToAddRelativetime.setValue(relativeTimeColumn, relativeTime);
 	}
 
 	private void detectBaseline(PupillometryFileColumn timeStamp, List<Trial> trials) {
@@ -69,23 +82,7 @@ public class TrialDetector extends AbstractPupillopmetryFileDetector {
 		return new TrialEvaluation(trials, getNotifications());
 	}
 
-	/**
-	 * Loads the pupillometry file defined in this detector.
-	 *
-	 * @return
-	 * @throws SQLException
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 */
-	public PupillometryFile loadPupillometryFile() throws SQLException, FileNotFoundException, IOException {
-		UserFileDao userFileDao = new UserFileDao();
-		String filePath = userFileDao.getPath(fileId);
-		File file = userFileDao.getUserFile(filePath);
-		PupillometryFile pupillometryFile = new PupillometryFile(file, PupillometryFile.SEPARATOR_TABULATOR, true, decimalSeparator);
-		PupillometryFileColumn timeStamp = pupillometryFile.getHeader().getColumn(timestampColumn);
-		pupillometryFile.collapseEmptyColumns(timeStamp);
-		return pupillometryFile;
-	}
+	protected abstract PupillometryFile loadPupillometryFile() throws SQLException, FileNotFoundException, IOException;
 
 	private void readConfig() {
 		String trialStart = config.getTrialStart();
@@ -108,8 +105,12 @@ public class TrialDetector extends AbstractPupillopmetryFileDetector {
 	 */
 	public List<Trial> splitFileIntoTrials(PupillometryFile pupillometryFile) throws Exception {
 		List<Trial> trials = new ArrayList<>();
+		PupillometryFileColumn trialNumberColumn = initializeColumn(pupillometryFile, TRIAL_NUMBER_COLUMN);
+		PupillometryFileColumn relativeTimeColumn = initializeColumn(pupillometryFile, TIME_SINCE_TRIAL_START);
 
-		PupillometryFileColumn studioEventDataColumn = pupillometryFile.getHeader().getColumn(STUDIO_EVENT_DATA);
+		PupillometryFileHeader header = pupillometryFile.getHeader();
+		PupillometryFileColumn studioEventDataColumn = header.getColumn(STUDIO_EVENT_DATA);
+		PupillometryFileColumn timeStampColumn = header.getColumn(timestampColumn);
 
 		List<PupillometryFileLine> lines = pupillometryFile.getContent();
 		Trial currentTrial = null;
@@ -147,10 +148,14 @@ public class TrialDetector extends AbstractPupillopmetryFileDetector {
 			}
 
 			if (currentTrial != null) {
+				line.setValue(trialNumberColumn, currentTrial.getTrialNumber());
+				addRelativeTime(relativeTimeColumn, timeStampColumn, currentTrial.getLines(), line);
+
 				currentTrial.addLine(line);
 			}
 		}
 
 		return trials;
 	}
+
 }
