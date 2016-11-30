@@ -199,6 +199,39 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData', 'ui.s
             return step.type === type;
         });
     };
+
+    $scope.assembleStepName = function (step) {
+        if (step.type === 'analyze') {
+            var configuration = JSON.parse(step.configuration);
+            var computation = '';
+            if (configuration.type.indexOf('mean') != -1) {
+                computation = 'Mean';
+            } else if (configuration.type.indexOf('standard_deviation') != -1) {
+                computation = 'Standard Deviation';
+            } else if (configuration.type.indexOf('standard_error') != -1) {
+                computation = 'Standard Error';
+            } else if (configuration.type.indexOf('median') != -1) {
+                computation = 'Median';
+            } else if (configuration.type.indexOf('maximum') != -1) {
+                computation = 'Maximum';
+            } else if (configuration.type.indexOf('minimum') != -1) {
+                computation = 'Minimum';
+            }
+
+            var type = '';
+            if (configuration.type.indexOf('absolute') != -1) {
+                type = 'Absolute';
+            } else if (configuration.type.indexOf('relative_divided') != -1) {
+                type = 'Relative, Divided by Baseline';
+            } else if (configuration.type.indexOf('absolute_subtracted') != -1) {
+                type = 'Relative, with Baseline Subtracted';
+            }
+
+            return computation + ' - ' + type;
+        }
+
+        return step.name;
+    };
 }).controller('AddDataProcessingModalController', function ($scope, $http) {
     $scope.$on('cheetah-add-data-processing-modal.show', function (event, study) {
         $scope.study = study;
@@ -256,11 +289,6 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData', 'ui.s
     });
 
     $scope.addDataProcessingStep = function () {
-        if ($scope.name.trim().length === 0) {
-            BootstrapDialog.alert({title: 'Name Missing', message: 'Please enter a name for the step.'});
-            return;
-        }
-
         if ($scope.type === 'clean') {
             cheetah.hideModal($scope, 'cheetah-add-data-processing-step-modal');
             cheetah.showModal($rootScope, 'cheetah-clean-data-modal');

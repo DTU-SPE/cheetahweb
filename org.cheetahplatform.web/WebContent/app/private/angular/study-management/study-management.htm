@@ -117,7 +117,7 @@
                                             <ul class="list-group">
                                                 <li class="list-group-item"
                                                     ng-repeat="step in getStepsForType(dataProcessing,'analyze')">Step
-                                                    {{$index + 1}}: {{step.name}}<span
+                                                    {{$index + 1}}: {{assembleStepName(step)}}<span
                                                             class="icon-cheetah-close cheetah-delete-dataprocessing-step"
                                                             ng-click="deleteDataProcessingStep(dataProcessing, step)"> </span>
                                                 </li>
