@@ -62,4 +62,15 @@ public abstract class AbstractPupillopmetryFileDetector {
 	protected void logWarningNotifcation(String message) {
 		notifications.add(new TrialDetectionNotification(message, TrialDetectionNotification.TYPE_WARNING));
 	}
+
+	protected void addRelativeTime(PupillometryFileColumn relativeTimeColumn, PupillometryFileColumn timeStampColumn, List<PupillometryFileLine> linesInSegment, PupillometryFileLine lineToAddRelativetime) {
+		long relativeTime = 0;
+		if (!linesInSegment.isEmpty()) {
+			long timestamp = lineToAddRelativetime.getLong(timeStampColumn);
+			long startTimeStamp = linesInSegment.get(0).getLong(timeStampColumn);
+			relativeTime = timestamp - startTimeStamp;
+		}
+	
+		lineToAddRelativetime.setValue(relativeTimeColumn, relativeTime);
+	}
 }

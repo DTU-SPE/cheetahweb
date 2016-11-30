@@ -10,15 +10,19 @@ import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileColumn;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileLine;
 
 public class StimulusDetector extends AbstractPupillopmetryFileDetector {
+	private static final String STIMULUS_COLUMN_NAME = "Stimulus";
+	private static final String TIME_SINCE_STIMULUS_START = "Time_since_stimulus_start";
 	private Trial trial;
 	private TrialConfiguration config;
 	private PupillometryFile pupillometryFile;
 	private IPupillometryFileSectionIdentifier stimulusIdentifier;
+	private PupillometryFileColumn timeStampColumn;
 
-	public StimulusDetector(Trial trial, TrialConfiguration config, PupillometryFile pupillometryFile) {
+	public StimulusDetector(Trial trial, TrialConfiguration config, PupillometryFile pupillometryFile, PupillometryFileColumn timeStamp) {
 		this.trial = trial;
 		this.config = config;
 		this.pupillometryFile = pupillometryFile;
+		this.timeStampColumn = timeStamp;
 
 		readConfiguration();
 	}
@@ -26,6 +30,9 @@ public class StimulusDetector extends AbstractPupillopmetryFileDetector {
 	public Stimulus detectStimulus() throws Exception {
 		PupillometryFileColumn studioEventDataColumn = pupillometryFile.getHeader().getColumn(STUDIO_EVENT_DATA);
 		PupillometryFileColumn studioEventColumn = pupillometryFile.getHeader().getColumn(CleanPupillometryDataWorkItem.STUDIO_EVENT);
+
+		PupillometryFileColumn baseLineColumn = initializeColumn(pupillometryFile, STIMULUS_COLUMN_NAME);
+		PupillometryFileColumn relativeTimeColumn = initializeColumn(pupillometryFile, TIME_SINCE_STIMULUS_START);
 
 		String previousScene = "";
 		Stimulus stimulus = null;
@@ -54,6 +61,9 @@ public class StimulusDetector extends AbstractPupillopmetryFileDetector {
 			}
 
 			if (stimulus != null) {
+				line.setValue(baseLineColumn, Boolean.TRUE.toString());
+				addRelativeTime(relativeTimeColumn, timeStampColumn, stimulus.getLines(), line);
+
 				stimulus.addLine(line);
 			}
 
