@@ -90,6 +90,12 @@ public class ExecuteDataProcessingWorkItem extends AbstractCheetahWorkItem {
 		pupillometryFile.collapseEmptyLines(timestampColumn);
 		pupillometryFile.removeNullValues("-1");
 		pupillometryFile.adaptTimestamps(timestampColumn);
+
+		if (header.hasColumn(CleanPupillometryDataWorkItem.STUDIO_EVENT_DATA)) {
+			PupillometryFileColumn studioEventDataColumn = header.getColumn(CleanPupillometryDataWorkItem.STUDIO_EVENT_DATA);
+			pupillometryFile.addSceneColumn(studioEventDataColumn);
+		}
+
 		return null;
 	}
 

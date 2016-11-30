@@ -6,8 +6,10 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import org.cheetahplatform.web.dao.UserFileDao;
+import org.cheetahplatform.web.eyetracking.cleaning.CleanPupillometryDataWorkItem;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFile;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileColumn;
+import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileHeader;
 
 public class DefaultTrialDetector extends AbstractTrialDetector {
 	public DefaultTrialDetector(long fileId, TrialConfiguration config, String decimalSeparator, String timestampColumn) {
@@ -28,8 +30,15 @@ public class DefaultTrialDetector extends AbstractTrialDetector {
 		String filePath = userFileDao.getPath(fileId);
 		File file = userFileDao.getUserFile(filePath);
 		PupillometryFile pupillometryFile = new PupillometryFile(file, PupillometryFile.SEPARATOR_TABULATOR, true, decimalSeparator);
-		PupillometryFileColumn timeStamp = pupillometryFile.getHeader().getColumn(timestampColumn);
+		PupillometryFileHeader header = pupillometryFile.getHeader();
+		PupillometryFileColumn timeStamp = header.getColumn(timestampColumn);
 		pupillometryFile.collapseEmptyLines(timeStamp);
+
+		if (header.hasColumn(CleanPupillometryDataWorkItem.STUDIO_EVENT_DATA)) {
+			PupillometryFileColumn studioEventDataColumn = header.getColumn(CleanPupillometryDataWorkItem.STUDIO_EVENT_DATA);
+			pupillometryFile.addSceneColumn(studioEventDataColumn);
+		}
+
 		return pupillometryFile;
 	}
 }

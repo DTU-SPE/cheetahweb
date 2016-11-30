@@ -18,7 +18,8 @@ import java.util.List;
 import org.apache.commons.io.input.BOMInputStream;
 
 public class PupillometryFile {
-	public static final String SCENE = "Scene";
+	private static final String SCENE_COLUMN = "Scene";
+	public static final String SCENE = SCENE_COLUMN;
 	public static final String SEPARATOR_SEMICOLON = ";";
 	public static final String SEPARATOR_TABULATOR = "\t";
 	public static final String SEPARATOR_COMMA = ",";
@@ -124,6 +125,37 @@ public class PupillometryFile {
 
 			long timestamp = (long) (line.getDouble(column) * 1000);
 			line.setValue(column, timestamp);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public void addSceneColumn(PupillometryFileColumn sceneDataColumn) throws IOException {
+		if (content == null) {
+			read();
+		}
+
+		String columnName = SCENE_COLUMN;
+		PupillometryFileColumn column = null;
+		PupillometryFileHeader header = getHeader();
+		if (!header.hasColumn(columnName)) {
+			column = appendColumn(columnName);
+		}
+
+		String scene = null;
+		for (PupillometryFileLine line : content) {
+			scene = processScene(sceneDataColumn, scene, line);
+			if (scene != null) {
+				line.setValue(column, scene);
+			}
+
+			List<PupillometryFileLine> collapsed = (List<PupillometryFileLine>) line.getMarking(COLLAPSED_COLUMNS);
+			if (collapsed == null) {
+				continue;
+			}
+
+			for (PupillometryFileLine pupillometryFileLine : collapsed) {
+				scene = processScene(sceneDataColumn, scene, pupillometryFileLine);
+			}
 		}
 	}
 
@@ -300,6 +332,25 @@ public class PupillometryFile {
 
 	public boolean hasColumn(String column) {
 		return header.hasColumn(column);
+	}
+
+	public String processScene(PupillometryFileColumn sceneDataColumn, String scene, PupillometryFileLine pupillometryFileLine) {
+		String sceneData = pupillometryFileLine.get(sceneDataColumn);
+		// nothing has changed - life is good
+		if (sceneData == null || sceneData.trim().isEmpty()) {
+			return scene;
+		}
+
+		if (scene == null) {
+			scene = sceneData;
+		} else {
+			if (scene.equals(sceneData)) {
+				scene = null;
+			} else {
+				throw new IllegalStateException("Did not find the closing scene data for scene: " + scene);
+			}
+		}
+		return scene;
 	}
 
 	/**
