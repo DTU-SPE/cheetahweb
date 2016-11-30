@@ -109,6 +109,15 @@ public abstract class AbstractTrialDetector extends AbstractPupillopmetryFileDet
 		int trialsToIgnore = config.getIgnoredTrials();
 
 		for (PupillometryFileLine line : lines) {
+			// the marking with studio event is always added to the previous line --> for start event, add the lines to the next trial, for
+			// end event, add the lines to the next trial
+			if (currentTrial != null && trialsToIgnore == 0) {
+				line.setValue(trialNumberColumn, currentTrial.getTrialNumber());
+				addRelativeTime(relativeTimeColumn, timeStampColumn, currentTrial.getLines(), line);
+
+				currentTrial.addLine(line);
+			}
+
 			List<PupillometryFileLine> linesToCheck = extractLinesToConsider(line);
 			for (PupillometryFileLine pupillometryFileLine : linesToCheck) {
 				String scene = pupillometryFileLine.get(studioEventDataColumn);
@@ -135,13 +144,6 @@ public abstract class AbstractTrialDetector extends AbstractPupillopmetryFileDet
 				}
 
 				previousScene = scene;
-			}
-
-			if (currentTrial != null) {
-				line.setValue(trialNumberColumn, currentTrial.getTrialNumber());
-				addRelativeTime(relativeTimeColumn, timeStampColumn, currentTrial.getLines(), line);
-
-				currentTrial.addLine(line);
 			}
 		}
 

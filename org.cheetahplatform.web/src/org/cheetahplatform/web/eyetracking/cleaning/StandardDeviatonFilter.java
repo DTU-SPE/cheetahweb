@@ -50,7 +50,7 @@ public class StandardDeviatonFilter extends AbstractPupillometryFilter {
 		resultBuilder.append("Removed=");
 		resultBuilder.append(numberRemovedValues);
 		resultBuilder.append(";");
-		System.out.println(resultBuilder.toString());
+
 		return resultBuilder.toString();
 	}
 

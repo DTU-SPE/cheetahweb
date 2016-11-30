@@ -10,11 +10,11 @@ import liquibase.database.jvm.JdbcConnection;
 import liquibase.resource.FileSystemResourceAccessor;
 
 public class LiquibaseMigrator {
-	private static final int PORT = 3306;
-	private static final String HOST = "localhost";
-	private static final String PASSWORD = "cheetah_web_pass";
-	private static final String USER = "cheetah_web";
-	private static final String SCHEMA = "cheetah_web";
+	private static final int PORT = 13306;
+	private static final String HOST = "138.232.65.123";
+	private static final String PASSWORD = "coffee_admin166";
+	private static final String USER = "coffee_admin";
+	private static final String SCHEMA = "cheetah2_0";
 	
 	public static void main(String[] args) throws Exception {
 		Connection connection = DriverManager

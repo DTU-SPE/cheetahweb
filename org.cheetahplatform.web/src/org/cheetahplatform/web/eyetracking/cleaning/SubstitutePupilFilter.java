@@ -11,10 +11,9 @@ import org.cheetahplatform.web.dto.FilterRequest;
 public class SubstitutePupilFilter extends AbstractPupillometryFilter {
 
 	public static final String MISSING_COLUMN = "MissingValue";
-
-	private static final String MISSING_LEFT = "left";
-	private static final String MISSING_RIGHT = "right";
-	private static final String MISSING_BOTH = "both";
+	public static final String MISSING_LEFT = "left";
+	public static final String MISSING_RIGHT = "right";
+	public static final String MISSING_BOTH = "both";
 
 	public SubstitutePupilFilter(long id) {
 		super(id, "Pupil Substitution");
@@ -51,7 +50,7 @@ public class SubstitutePupilFilter extends AbstractPupillometryFilter {
 				line.setValue(missingColumn, MISSING_BOTH);
 			}
 		}
-		
+
 		return "Substituted " + replaced + " values";
 	}
 

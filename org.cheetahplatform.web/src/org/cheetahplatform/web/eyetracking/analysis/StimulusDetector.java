@@ -38,6 +38,15 @@ public class StimulusDetector extends AbstractPupillopmetryFileDetector {
 		Stimulus stimulus = null;
 		boolean stimulusComplete = false;
 		for (PupillometryFileLine line : trial.getLines()) {
+			// the marking with studio event is always added to the previous line --> for start event, add the lines to the next trial, for
+			// end event, add the lines to the next trial
+			if (stimulus != null) {
+				line.setValue(baseLineColumn, Boolean.TRUE.toString());
+				addRelativeTime(relativeTimeColumn, timeStampColumn, stimulus.getLines(), line);
+
+				stimulus.addLine(line);
+			}
+
 			List<PupillometryFileLine> extractLinesToConsider = extractLinesToConsider(line);
 			for (PupillometryFileLine pupillometryFileLine : extractLinesToConsider) {
 				String scene = pupillometryFileLine.get(studioEventDataColumn);
@@ -58,13 +67,6 @@ public class StimulusDetector extends AbstractPupillopmetryFileDetector {
 				}
 
 				previousScene = scene;
-			}
-
-			if (stimulus != null) {
-				line.setValue(baseLineColumn, Boolean.TRUE.toString());
-				addRelativeTime(relativeTimeColumn, timeStampColumn, stimulus.getLines(), line);
-
-				stimulus.addLine(line);
 			}
 
 			if (stimulusComplete) {

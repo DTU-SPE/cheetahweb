@@ -16,7 +16,10 @@ public class TrialAnalyzerFactory {
 		String typeId = config.getType();
 		AnalyzeStepType type = AnalyzeStepType.byId(typeId);
 		if (typeId.equals(AnalyzeStepType.BLINKS.getId())) {
-			return new BlinkAnalyzer(config, processing);
+			return new BlinkTrialAnalyzer(config, processing);
+		}
+		if (typeId.equals(AnalyzeStepType.MISSING_TOTAL.getId())) {
+			return new MissingTrialAnalyzer(config, processing);
 		}
 
 		UnivariateStatistic statistic = null;

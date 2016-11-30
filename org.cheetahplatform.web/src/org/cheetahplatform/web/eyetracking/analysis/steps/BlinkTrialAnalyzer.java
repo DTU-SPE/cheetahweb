@@ -19,9 +19,9 @@ import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFile;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileColumn;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileLine;
 
-public class BlinkAnalyzer extends AbstractTrialAnalyzer {
+public class BlinkTrialAnalyzer extends AbstractTrialAnalyzer {
 
-	public BlinkAnalyzer(AnalyzeConfiguration config, DataProcessing processing) {
+	public BlinkTrialAnalyzer(AnalyzeConfiguration config, DataProcessing processing) {
 		super(config, processing, AnalyzeStepType.BLINKS);
 	}
 
@@ -40,11 +40,14 @@ public class BlinkAnalyzer extends AbstractTrialAnalyzer {
 		List<Trial> trials = trialEvaluation.getTrials();
 		for (Trial trial : trials) {
 			int blinks = 0;
+			boolean isCurrentlyBlink = false;
 			for (PupillometryFileLine line : trial.getLines()) {
 				String blink = line.get(blinkColumn);
-				if (blink != null && (blink.equals(BLINK_LEFT) || blink.equals(BLINK_RIGHT) || blink.equals(BLINK_BOTH))) {
+				boolean isNowBlink = blink != null && (blink.equals(BLINK_LEFT) || blink.equals(BLINK_RIGHT) || blink.equals(BLINK_BOTH));
+				if (!isCurrentlyBlink && isNowBlink) {
 					blinks++;
 				}
+				isCurrentlyBlink = isNowBlink;
 			}
 
 			String key = trial.getIdentifier() + RESULT_SEPARATOR + analyzeStep.getId();
@@ -53,5 +56,4 @@ public class BlinkAnalyzer extends AbstractTrialAnalyzer {
 
 		return results;
 	}
-
 }
