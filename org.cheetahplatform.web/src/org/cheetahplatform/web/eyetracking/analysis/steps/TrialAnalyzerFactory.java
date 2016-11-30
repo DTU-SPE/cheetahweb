@@ -1,5 +1,9 @@
 package org.cheetahplatform.web.eyetracking.analysis.steps;
 
+import static org.cheetahplatform.web.eyetracking.analysis.steps.AnalyzeStepType.BLINKS;
+import static org.cheetahplatform.web.eyetracking.analysis.steps.AnalyzeStepType.MISSING_PERCENT;
+import static org.cheetahplatform.web.eyetracking.analysis.steps.AnalyzeStepType.MISSING_TOTAL;
+
 import org.apache.commons.math3.stat.descriptive.UnivariateStatistic;
 import org.apache.commons.math3.stat.descriptive.moment.Mean;
 import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
@@ -15,11 +19,11 @@ public class TrialAnalyzerFactory {
 		Assert.isNotNull(config);
 		String typeId = config.getType();
 		AnalyzeStepType type = AnalyzeStepType.byId(typeId);
-		if (typeId.equals(AnalyzeStepType.BLINKS.getId())) {
+		if (type.equals(BLINKS)) {
 			return new BlinkTrialAnalyzer(config, processing);
 		}
-		if (typeId.equals(AnalyzeStepType.MISSING_TOTAL.getId())) {
-			return new MissingTrialAnalyzer(config, processing);
+		if (type.equals(MISSING_TOTAL) || type.equals(MISSING_PERCENT)) {
+			return new MissingTrialAnalyzer(config, processing, type);
 		}
 
 		UnivariateStatistic statistic = null;
