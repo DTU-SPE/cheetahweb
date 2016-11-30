@@ -32,28 +32,18 @@ public abstract class AbstractTrialDetector extends AbstractPupillopmetryFileDet
 		readConfig();
 	}
 
-	public void addRelativeTime(PupillometryFileColumn relativeTimeColumn, PupillometryFileColumn timeStampColumn,
-			List<PupillometryFileLine> linesInSegment, PupillometryFileLine lineToAddRelativetime) {
-		long relativeTime = 0;
-		if (!linesInSegment.isEmpty()) {
-			long timestamp = lineToAddRelativetime.getLong(timeStampColumn);
-			long startTimeStamp = linesInSegment.get(0).getLong(timeStampColumn);
-			relativeTime = timestamp - startTimeStamp;
-		}
-
-		lineToAddRelativetime.setValue(relativeTimeColumn, relativeTime);
-	}
-
-	private void detectBaseline(PupillometryFileColumn timeStamp, List<Trial> trials) {
+	private void detectBaseline(PupillometryFileColumn timeStamp, List<Trial> trials, PupillometryFile pupillometryFile) throws Exception {
 		for (Trial trial : trials) {
-			BaselineDetector baselineDetector = new BaselineDetector(trial, config, timeStamp);
+			BaselineDetector baselineDetector = new BaselineDetector(trial, config, timeStamp, pupillometryFile);
 			baselineDetector.detectBaseline();
 		}
 	}
 
 	private void detectStimulus(PupillometryFile pupillometryFile, List<Trial> trials) throws Exception {
+		PupillometryFileColumn timestamp = pupillometryFile.getHeader().getColumn(timestampColumn);
+
 		for (Trial trial : trials) {
-			StimulusDetector stimulusDetector = new StimulusDetector(trial, config, pupillometryFile);
+			StimulusDetector stimulusDetector = new StimulusDetector(trial, config, pupillometryFile, timestamp);
 			Stimulus stimulus = stimulusDetector.detectStimulus();
 			trial.setStimulus(stimulus);
 			trial.addAllNotifications(stimulusDetector.getNotifications());
@@ -76,7 +66,7 @@ public abstract class AbstractTrialDetector extends AbstractPupillopmetryFileDet
 			detectStimulus(pupillometryFile, trials);
 		}
 		if (detectBaseline) {
-			detectBaseline(pupillometryFile.getHeader().getColumn(timestampColumn), trials);
+			detectBaseline(pupillometryFile.getHeader().getColumn(timestampColumn), trials, pupillometryFile);
 		}
 
 		return new TrialEvaluation(trials, getNotifications());

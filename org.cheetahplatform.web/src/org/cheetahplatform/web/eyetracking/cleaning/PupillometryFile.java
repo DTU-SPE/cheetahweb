@@ -165,15 +165,15 @@ public class PupillometryFile {
 	}
 
 	/**
-	 * Tobii export creates empty columns when there is data for "StudioEvent" and "StudioEventData". This method removes these rows and
-	 * adds the removed rows to the previous row.
+	 * Tobii export creates empty lines when there is data for "StudioEvent" and "StudioEventData". This method removes these rows and adds
+	 * the removed rows to the previous row.
 	 *
 	 * @param timestampColumn
 	 *            the column that identifies timestamps
 	 * @throws IOException
 	 */
 	@SuppressWarnings("unchecked")
-	public void collapseEmptyColumns(PupillometryFileColumn timestampColumn) throws IOException {
+	public void collapseEmptyLines(PupillometryFileColumn timestampColumn) throws IOException {
 		if (content == null) {
 			read();
 		}

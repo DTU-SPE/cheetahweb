@@ -62,7 +62,7 @@ public class ComputeScenesServlet extends AbstractCheetahServlet {
 		PupillometryFile pupillometryFile = new PupillometryFile(rawFile, PupillometryFile.SEPARATOR_TABULATOR, true, ".");
 		PupillometryFileHeader header = pupillometryFile.getHeader();
 		PupillometryFileColumn timestampColumn = header.getColumn(computeRequest.getTimestampColumn());
-		pupillometryFile.collapseEmptyColumns(timestampColumn);
+		pupillometryFile.collapseEmptyLines(timestampColumn);
 
 		PupillometryFileColumn studioEventDataColumn = header.getColumn(STUDIO_EVENT_DATA);
 		List<String> scenes = new ArrayList<>();

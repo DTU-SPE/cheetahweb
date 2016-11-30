@@ -29,7 +29,7 @@ public class DefaultTrialDetector extends AbstractTrialDetector {
 		File file = userFileDao.getUserFile(filePath);
 		PupillometryFile pupillometryFile = new PupillometryFile(file, PupillometryFile.SEPARATOR_TABULATOR, true, decimalSeparator);
 		PupillometryFileColumn timeStamp = pupillometryFile.getHeader().getColumn(timestampColumn);
-		pupillometryFile.collapseEmptyColumns(timeStamp);
+		pupillometryFile.collapseEmptyLines(timeStamp);
 		return pupillometryFile;
 	}
 }

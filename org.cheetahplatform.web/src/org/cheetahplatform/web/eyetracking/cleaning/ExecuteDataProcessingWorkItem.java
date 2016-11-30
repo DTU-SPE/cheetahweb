@@ -87,7 +87,7 @@ public class ExecuteDataProcessingWorkItem extends AbstractCheetahWorkItem {
 		}
 
 		// do some pre-processing
-		pupillometryFile.collapseEmptyColumns(timestampColumn);
+		pupillometryFile.collapseEmptyLines(timestampColumn);
 		pupillometryFile.removeNullValues("-1");
 		pupillometryFile.adaptTimestamps(timestampColumn);
 		return null;

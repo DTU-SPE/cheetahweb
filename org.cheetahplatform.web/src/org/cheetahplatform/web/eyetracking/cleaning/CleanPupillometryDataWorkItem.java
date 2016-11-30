@@ -348,7 +348,7 @@ public class CleanPupillometryDataWorkItem extends AbstractCheetahWorkItem imple
 		}
 
 		// do some pre-processing
-		pupillometryFile.collapseEmptyColumns(timestampColumn);
+		pupillometryFile.collapseEmptyLines(timestampColumn);
 		pupillometryFile.removeNullValues("-1");
 		pupillometryFile.adaptTimestamps(timestampColumn);
 	}
