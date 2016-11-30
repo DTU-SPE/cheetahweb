@@ -203,31 +203,42 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData', 'ui.s
     $scope.assembleStepName = function (step) {
         if (step.type === 'analyze') {
             var configuration = JSON.parse(step.configuration);
+            var type = configuration.type;
+            if (type === 'blinks') {
+                return 'Blinks';
+            }
+            if (type === 'missing_total') {
+                return "Missing - Total";
+            }
+            if (type === 'missing_percent') {
+                return 'Missing - Percentage';
+            }
+
             var computation = '';
-            if (configuration.type.indexOf('mean') != -1) {
+            if (type.indexOf('mean') != -1) {
                 computation = 'Mean';
-            } else if (configuration.type.indexOf('standard_deviation') != -1) {
+            } else if (type.indexOf('standard_deviation') != -1) {
                 computation = 'Standard Deviation';
-            } else if (configuration.type.indexOf('standard_error') != -1) {
+            } else if (type.indexOf('standard_error') != -1) {
                 computation = 'Standard Error';
-            } else if (configuration.type.indexOf('median') != -1) {
+            } else if (type.indexOf('median') != -1) {
                 computation = 'Median';
-            } else if (configuration.type.indexOf('maximum') != -1) {
+            } else if (type.indexOf('maximum') != -1) {
                 computation = 'Maximum';
-            } else if (configuration.type.indexOf('minimum') != -1) {
+            } else if (type.indexOf('minimum') != -1) {
                 computation = 'Minimum';
             }
 
-            var type = '';
-            if (configuration.type.indexOf('absolute') != -1) {
-                type = 'Absolute';
-            } else if (configuration.type.indexOf('relative_divided') != -1) {
-                type = 'Relative, Divided by Baseline';
-            } else if (configuration.type.indexOf('absolute_subtracted') != -1) {
-                type = 'Relative, with Baseline Subtracted';
+            var computationType = '';
+            if (type.indexOf('absolute') != -1) {
+                computationType = 'Absolute';
+            } else if (type.indexOf('relative_divided') != -1) {
+                computationType = 'Relative, Divided by Baseline';
+            } else if (type.indexOf('absolute_subtracted') != -1) {
+                computationType = 'Relative, with Baseline Subtracted';
             }
 
-            return computation + ' - ' + type;
+            return computation + ' - ' + computationType;
         }
 
         return step.name;
@@ -313,7 +324,10 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData', 'ui.s
     }, {id: 'standard_error', name: 'Standard Error'}, {id: 'median', name: 'Median'}, {
         id: 'maximum',
         name: 'Maximum'
-    }, {id: 'minimum', name: 'Minimum'}];
+    }, {id: 'minimum', name: 'Minimum'}, {id: 'missing_total', name: 'Missing - Total'}, {
+        id: 'missing_percent',
+        name: 'Missing - Percentage'
+    }, {id: 'blinks', name: 'Blinks'}];
     $scope.types = [{id: 'absolute', name: 'Absolute'}, {
         id: 'relative_divided',
         name: 'Relative Divided'
@@ -384,6 +398,16 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData', 'ui.s
         $.each($scope.analyzeTypes, function (index, type) {
             if (type.id === id) {
                 $scope.analyzeType = type;
+                $scope.isAggregatedType = true;
+                return false;
+            }
+        });
+
+        //check for non-assembled types as well
+        $.each($scope.analyzeTypes, function (index, type) {
+            if (type.id === $scope.computation.id) {
+                $scope.analyzeType = type;
+                $scope.isAggregatedType = false;
                 return false;
             }
         });

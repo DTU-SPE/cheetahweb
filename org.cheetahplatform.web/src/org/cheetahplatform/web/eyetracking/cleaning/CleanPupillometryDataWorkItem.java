@@ -37,7 +37,8 @@ public class CleanPupillometryDataWorkItem extends AbstractCheetahWorkItem imple
 	}
 
 	/**
-	 * Analyze data for Thomas Maran.
+	 * Analyze data for Thomas Maran. Is replaced with a more flexible analysis infrastructure - just keeping the code at the moment for
+	 * looking up how things were done.
 	 *
 	 * @param request
 	 *
@@ -49,6 +50,7 @@ public class CleanPupillometryDataWorkItem extends AbstractCheetahWorkItem imple
 	 * @throws IOException
 	 * @throws SQLException
 	 */
+	@SuppressWarnings("unused")
 	private void analyzeData(PupillometryFile file, FilterRequest request, long userId, UserFileDto originalFileDto,
 			IAnalysisContributor contributor) throws IOException, SQLException {
 		// compute trial column if necessary (Tobii output does not provide the trial id)
@@ -300,13 +302,6 @@ public class CleanPupillometryDataWorkItem extends AbstractCheetahWorkItem imple
 		}
 
 		String relativePath = userFileDao.generateRelativePath(userId, newName);
-
-		if (request.isAnalyisDefined()) {
-			System.out.println("Running analysis...");
-			analyzeData(pupillometryFile, request, userId, originalFileDto, request.resolveAnalysisContributor());
-			System.out.println("Analysis finished.");
-		}
-
 		String absolutePath = userFileDao.getAbsolutePath(relativePath);
 		pupillometryFile.writeToFile(new File(absolutePath));
 		long cleanedId = userFileDao.insertUserFile(userId, newName, relativePath, originalFileDto.getType(),
@@ -350,14 +345,6 @@ public class CleanPupillometryDataWorkItem extends AbstractCheetahWorkItem imple
 			logErrorNotification(
 					"Could not find right pupil column '" + request.getRightPupilColumn() + "' in file " + originalFileDto.getFilename());
 			return;
-		}
-
-		// some particular processing for Thomas Maran
-		IAnalysisContributor contributor = request.resolveAnalysisContributor();
-		if (request.isAnalyisDefined()) {
-			pupillometryFile.processSceneColumns(contributor);
-			pupillometryFile.copyColumn(leftPupilColumn, leftPupilColumn.getName() + " (raw)");
-			pupillometryFile.copyColumn(rightPupilColumn, rightPupilColumn.getName() + " (raw)");
 		}
 
 		// do some pre-processing

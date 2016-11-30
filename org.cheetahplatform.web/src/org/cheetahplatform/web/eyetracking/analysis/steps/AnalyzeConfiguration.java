@@ -1,4 +1,4 @@
-package org.cheetahplatform.web.eyetracking.analysis;
+package org.cheetahplatform.web.eyetracking.analysis.steps;
 
 public class AnalyzeConfiguration {
 	private String type;

@@ -14,11 +14,11 @@ public class PupillometryDataFilterRegistry {
 	static {
 		AVAILABLE_FIlTERS = new LinkedHashMap<Long, IPupillometryFilter>();
 		AVAILABLE_FIlTERS.put(1l, new SubstitutePupilFilter(1));
+		AVAILABLE_FIlTERS.put(6l, new SubstituteGazePointFilter(6));
 		AVAILABLE_FIlTERS.put(2l, new StandardDeviatonFilter(2));
 		AVAILABLE_FIlTERS.put(3l, new BlinkDetectionFilter(3));
 		AVAILABLE_FIlTERS.put(4l, new LinearInterpolationFilter(4));
 		AVAILABLE_FIlTERS.put(5l, new ButterworthFilter(5));
-		AVAILABLE_FIlTERS.put(6l, new SubstituteGazePointFilter(6));
 	}
 
 	public static IPupillometryFilter getFilter(Long id) {

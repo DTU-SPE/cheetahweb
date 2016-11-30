@@ -1,30 +1,4 @@
 angular.module('cheetah.CleanData', []).controller('CleanDataModalController', function ($scope, $http) {
-    /*, {
-     id: 'thomas_maran',
-     name: 'Thomas Maran (Experiment 1)'
-     }*/
-    $scope.analysisOptions = [{id: 'no_analysis', name: 'Daten nicht analysieren'}, {
-        id: 'thomas_maran_persona_experiment',
-        name: 'Thomas Maran (Persona Experiment)'
-    }];
-
-    if ($scope.analysisOption === undefined) {
-        var previousSetting = localStorage.getItem('analysisOption');
-        if (previousSetting != undefined) {
-            $.each($scope.analysisOptions, function (index, option) {
-                if (option.id === previousSetting) {
-                    $scope.analysisOption = option;
-                    return false;
-                }
-            });
-            if ($scope.analysisOption === undefined) {
-                $scope.analysisOption = $scope.analysisOptions[0];
-            }
-        } else {
-            $scope.analysisOption = $scope.analysisOptions[0];
-        }
-    }
-
     if ($scope.decimalSeparator === undefined) {
         var previousSeparator = localStorage.getItem('decimalSeparator');
         if (previousSeparator != undefined) {
@@ -106,12 +80,10 @@ angular.module('cheetah.CleanData', []).controller('CleanDataModalController', f
 
         localStorage.setItem('decimalSeparator', $scope.decimalSeparator);
         localStorage.setItem('analyzeData', $scope.analyzeData);
-        localStorage.setItem('analysisOption', $scope.analysisOption.id);
 
         var data = {
             parameters: parameters,
             filters: filters,
-            analyzeData: $scope.analysisOption.id,
             decimalSeparator: $scope.decimalSeparator,
             fileNamePostFix: $scope.cleanFileNamePattern
         };

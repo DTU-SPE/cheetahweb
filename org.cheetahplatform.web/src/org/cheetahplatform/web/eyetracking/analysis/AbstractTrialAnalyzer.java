@@ -2,6 +2,7 @@ package org.cheetahplatform.web.eyetracking.analysis;
 
 import java.util.Map;
 
+import org.cheetahplatform.web.eyetracking.analysis.steps.AnalyzeConfiguration;
 import org.cheetahplatform.web.eyetracking.analysis.steps.AnalyzeStepType;
 import org.eclipse.core.runtime.Assert;
 

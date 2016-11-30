@@ -6,7 +6,6 @@ import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 import org.apache.commons.math3.stat.descriptive.rank.Max;
 import org.apache.commons.math3.stat.descriptive.rank.Median;
 import org.apache.commons.math3.stat.descriptive.rank.Min;
-import org.cheetahplatform.web.eyetracking.analysis.AnalyzeConfiguration;
 import org.cheetahplatform.web.eyetracking.analysis.DataProcessing;
 import org.cheetahplatform.web.eyetracking.analysis.ITrialAnalyzer;
 import org.eclipse.core.runtime.Assert;
@@ -16,6 +15,9 @@ public class TrialAnalyzerFactory {
 		Assert.isNotNull(config);
 		String typeId = config.getType();
 		AnalyzeStepType type = AnalyzeStepType.byId(typeId);
+		if (typeId.equals(AnalyzeStepType.BLINKS.getId())) {
+			return new BlinkAnalyzer(config, processing);
+		}
 
 		UnivariateStatistic statistic = null;
 		if (typeId.startsWith("mean")) {

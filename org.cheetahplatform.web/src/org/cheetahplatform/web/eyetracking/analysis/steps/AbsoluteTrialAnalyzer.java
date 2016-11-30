@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.apache.commons.math3.stat.descriptive.UnivariateStatistic;
 import org.cheetahplatform.web.eyetracking.analysis.AbstractPupilTrialAnalyzer;
-import org.cheetahplatform.web.eyetracking.analysis.AnalyzeConfiguration;
 import org.cheetahplatform.web.eyetracking.analysis.DataProcessing;
 import org.cheetahplatform.web.eyetracking.analysis.Stimulus;
 import org.cheetahplatform.web.eyetracking.analysis.Trial;

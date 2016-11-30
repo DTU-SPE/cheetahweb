@@ -463,14 +463,18 @@ angular.module('cheetah.MyFiles', ['ngRoute', 'cheetah.CleanData']).controller('
                     $scope.containsFilesFromOtherStudy = true;
                     return false;
                 }
-            })
+            });
+
+            if ($scope.selectedStudy.dataProcessing.length > 0) {
+                $scope.selectedDataProcessing = $scope.selectedStudy.dataProcessing[0];
+            }
         }
     });
 
     $scope.startProcessing = function () {
         var postData = {};
         postData.fileIds = [];
-        postData.dataProcessingId = parseInt($scope.selectedDataProcessing, 10);
+        postData.dataProcessingId = $scope.selectedDataProcessing.id;
         postData.studyId = $scope.selectedStudy.id;
 
         $.each($scope.selectedFiles, function (index, file) {

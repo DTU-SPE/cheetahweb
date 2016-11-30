@@ -5,18 +5,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.cheetahplatform.web.CheetahWebConstants;
-import org.cheetahplatform.web.eyetracking.cleaning.IAnalysisContributor;
 import org.cheetahplatform.web.eyetracking.cleaning.IPupillometryFilter;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryDataFilterRegistry;
-import org.cheetahplatform.web.eyetracking.cleaning.ThomasMaran1Contributor;
-import org.cheetahplatform.web.eyetracking.cleaning.ThomasMaranPersonaExperimentContributor;
 
 public class FilterRequest {
-	private static final String NO_ANALYSIS = "no_analysis";
 	private List<Long> files;
 	private List<Long> filters;
 	private Map<String, String> parameters;
-	private String analyzeData;
 	private String decimalSeparator;
 	private String fileNamePostFix;
 
@@ -68,33 +63,6 @@ public class FilterRequest {
 
 	public String getTimestampColumn() {
 		return parameters.get(CheetahWebConstants.TIMESTAMP);
-	}
-
-	public boolean isAnalyisDefined() {
-		return analyzeData != null && !analyzeData.equals(NO_ANALYSIS);
-	}
-
-	public String isAnalyzeData() {
-		return analyzeData;
-	}
-
-	public IAnalysisContributor resolveAnalysisContributor() {
-		if (!isAnalyisDefined()) {
-			return null;
-		}
-
-		if (analyzeData.equals("thomas_maran")) {
-			return new ThomasMaran1Contributor();
-		}
-		if (analyzeData.equals("thomas_maran_persona_experiment")) {
-			return new ThomasMaranPersonaExperimentContributor();
-		}
-
-		throw new RuntimeException("Unknown analysis: " + analyzeData);
-	}
-
-	public void setAnalyzeData(String analyzeData) {
-		this.analyzeData = analyzeData;
 	}
 
 	public void setDecimalSeparator(String decimalSeparator) {

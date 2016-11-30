@@ -6,9 +6,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.cheetahplatform.web.dao.DataProcessingStepDao;
-import org.cheetahplatform.web.eyetracking.analysis.AnalyzeConfiguration;
 import org.cheetahplatform.web.eyetracking.analysis.CleanDataConfiguration;
 import org.cheetahplatform.web.eyetracking.analysis.DataProcessingStep;
+import org.cheetahplatform.web.eyetracking.analysis.steps.AnalyzeConfiguration;
 
 public class AddDataProcessingStepServlet extends AbstractCheetahServlet {
 	static class AddDataProcessingStepRequest {

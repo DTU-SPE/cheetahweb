@@ -12,6 +12,9 @@ import org.cheetahplatform.web.dto.FilterRequest;
 
 public class BlinkDetectionFilter extends AbstractPupillometryFilter {
 	public static final String BLINK_COLUMN = "BlinkPedrotti";
+	public static final String BLINK_LEFT = "left";
+	public static final String BLINK_RIGHT = "right";
+	public static final String BLINK_BOTH = "both";
 
 	private static final String BLINK_LEFT_MARKING = "BLINK_LEFT";
 	private static final String BLINK_RIGHT_MARKING = "BLINK_RIGHT";
@@ -19,9 +22,6 @@ public class BlinkDetectionFilter extends AbstractPupillometryFilter {
 	private static final String ARTIFACT_LEFT_MARKING = "ARTIFACT_LEFT";
 	private static final String DELETED_RIGHT_MARKING = "DELETED_RIGHT";
 	private static final String ARTIFACT_RIGHT_MARKING = "ARTIFACT_RIGHT";
-	private static final String BLINK_LEFT = "left";
-	private static final String BLINK_RIGHT = "right";
-	private static final String BLINK_BOTH = "both";
 
 	public BlinkDetectionFilter(long id) {
 		super(id, "Blink Detection, Pedrotti (2011)");
@@ -29,8 +29,6 @@ public class BlinkDetectionFilter extends AbstractPupillometryFilter {
 
 	private boolean alignData(PupillometryFile file, PupillometryFileColumn pupilColumn, PupillometryFileColumn gazeXColumn,
 			PupillometryFileColumn gazeYColumn) throws IOException {
-		System.out.println("Aligning Data");
-		int aligned = 0;
 		LinkedList<PupillometryFileLine> content = file.getContent();
 		ListIterator<PupillometryFileLine> iterator = content.listIterator();
 
@@ -47,7 +45,6 @@ public class BlinkDetectionFilter extends AbstractPupillometryFilter {
 					if (isInvalidGazePoint(current, gazeXColumn, gazeYColumn)) {
 						current.deleteValue(pupilColumn);
 						changed = true;
-						aligned++;
 					}
 				}
 
@@ -60,24 +57,19 @@ public class BlinkDetectionFilter extends AbstractPupillometryFilter {
 					if (isInvalidGazePoint(current, gazeXColumn, gazeYColumn)) {
 						current.deleteValue(pupilColumn);
 						changed = true;
-						aligned++;
 					}
 				}
 				iterator.previous();
 			}
 		}
 
-		System.out.println("Aligned: " + aligned);
 		return changed;
 	}
 
 	private void cleanPupil(PupillometryFile file, PupillometryFileColumn leftPupilColumn, PupillometryFileColumn leftPupilGazeXColumn,
 			PupillometryFileColumn leftPupilGazeYColumn, String deletedMarking, String artifactMarking) throws IOException {
 
-		int count = 0;
 		while (true) {
-			count++;
-			System.out.println("--------" + count + "----------");
 			boolean changed = false;
 			changed = markArtifacts(file, leftPupilColumn, artifactMarking) || changed;
 			changed = removeArtifacts(file, leftPupilColumn, artifactMarking, deletedMarking) || changed;
@@ -152,14 +144,12 @@ public class BlinkDetectionFilter extends AbstractPupillometryFilter {
 	}
 
 	private boolean markArtifacts(PupillometryFile file, PupillometryFileColumn column, String artifactMarking) throws IOException {
-		System.out.println("marking artifacts");
 		double[] pupils = getPupilValues(file, column);
 		double standardDeviation = new StandardDeviation().evaluate(pupils);
 		double mean = new Mean().evaluate(pupils);
 		double upperBound = mean + 3 * standardDeviation;
 		double lowerBound = mean - 3 * standardDeviation;
 
-		int marked = 0;
 		boolean changes = false;
 		List<PupillometryFileLine> lines = file.getContent();
 		for (PupillometryFileLine line : lines) {
@@ -170,20 +160,16 @@ public class BlinkDetectionFilter extends AbstractPupillometryFilter {
 			Double value = line.getDouble(column);
 			if (value < lowerBound || value > upperBound) {
 				line.mark(artifactMarking);
-				marked++;
 				changes = true;
 			}
 		}
 
-		System.out.println("Marked: " + marked);
 		return changes;
 	}
 
 	private boolean removeArtifacts(PupillometryFile file, PupillometryFileColumn leftPupilColumn, String artifactMarking,
 			String deletedMarking) throws IOException {
 		boolean changed = false;
-		System.out.println("Remove artifacts");
-		int removed = 0;
 		LinkedList<PupillometryFileLine> content = file.getContent();
 		ListIterator<PupillometryFileLine> iterator = content.listIterator();
 		while (iterator.hasNext()) {
@@ -198,7 +184,6 @@ public class BlinkDetectionFilter extends AbstractPupillometryFilter {
 						previous.deleteValue(leftPupilColumn);
 						previous.mark(deletedMarking);
 						changed = true;
-						removed++;
 					}
 				}
 				iterator.next();
@@ -210,18 +195,15 @@ public class BlinkDetectionFilter extends AbstractPupillometryFilter {
 					next.deleteValue(leftPupilColumn);
 					next.mark(deletedMarking);
 					changed = true;
-					removed++;
 				}
 				iterator.previous();
 			}
 		}
-		System.out.println("Removed: " + removed);
 		return changed;
 	}
 
 	private int removeBlinks(PupillometryFile file, PupillometryFileColumn leftPupilColumn, PupillometryFileColumn timestampColumn,
 			long threshold, String blinkMarking) throws IOException {
-		System.out.println("Removing Blinks");
 		LinkedList<PupillometryFileLine> content = file.getContent();
 		ListIterator<PupillometryFileLine> iterator = content.listIterator();
 		int blinks = 0;
@@ -297,9 +279,7 @@ public class BlinkDetectionFilter extends AbstractPupillometryFilter {
 				.getColumn(request.getParameters().get(CheetahWebConstants.RIGHT_PUPIL_GAZE_Y_PX));
 		PupillometryFileColumn timestampColumn = header.getColumn(request.getParameters().get(CheetahWebConstants.TIMESTAMP));
 
-		System.out.println("Clean left");
 		cleanPupil(file, leftPupilColumn, leftPupilGazeXColumn, leftPupilGazeYColumn, DELETED_LEFT_MARKING, ARTIFACT_LEFT_MARKING);
-		System.out.println("Clean right");
 		cleanPupil(file, rightPupilColumn, rightPupilGazeXColumn, rightPupilGazeYColumn, DELETED_RIGHT_MARKING, ARTIFACT_RIGHT_MARKING);
 
 		String parameter = request.getParameter(CheetahWebConstants.BLINK_DETECTION_TIME_THRESHOLD);
@@ -309,17 +289,11 @@ public class BlinkDetectionFilter extends AbstractPupillometryFilter {
 		int blinksRight = removeBlinks(file, rightPupilColumn, timestampColumn, threshold, BLINK_RIGHT_MARKING);
 
 		copyMarks(file);
-
-		String result = "Blinks left: " + blinksLeft + "; Blinks Right: " + blinksRight;
-		System.out.println(result);
-
-		return result;
+		return "Blinks left: " + blinksLeft + "; Blinks Right: " + blinksRight;
 	}
 
 	private boolean validateData(PupillometryFile file, PupillometryFileColumn column, PupillometryFileColumn gazeXColumn,
 			PupillometryFileColumn gazeYColumn) throws IOException {
-		System.out.println("Validating Data");
-		int validated = 0;
 		boolean changed = false;
 		LinkedList<PupillometryFileLine> content = file.getContent();
 		ListIterator<PupillometryFileLine> iterator = content.listIterator();
@@ -332,17 +306,15 @@ public class BlinkDetectionFilter extends AbstractPupillometryFilter {
 			if (current.isEmpty(gazeXColumn) || current.isEmpty(gazeYColumn)) {
 				current.deleteValue(column);
 				changed = true;
-				validated++;
 				continue;
 			}
 
 			if (isInvalidGazePoint(current, gazeXColumn, gazeYColumn)) {
 				current.deleteValue(column);
-				validated++;
 				changed = true;
 			}
 		}
-		System.out.println("Validated: " + validated);
+
 		return changed;
 	}
 }

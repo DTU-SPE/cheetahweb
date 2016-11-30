@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.math3.stat.descriptive.moment.Mean;
+import org.cheetahplatform.web.eyetracking.analysis.steps.AnalyzeConfiguration;
 import org.cheetahplatform.web.eyetracking.analysis.steps.AnalyzeStepType;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFile;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileColumn;
@@ -41,7 +42,6 @@ public abstract class AbstractPupilTrialAnalyzer extends AbstractTrialAnalyzer {
 		PupillometryFileColumn rightPupilColumn = pupillometryFile.getHeader().getColumn(dataProcessing.getRightPupilColumn());
 
 		Map<String, String> results = new HashMap<>();
-
 		List<Trial> trials = trialEvaluation.getTrials();
 		for (Trial trial : trials) {
 			analyzeTrial(pupillometryFile, trial, results, leftPupilColumn, rightPupilColumn);

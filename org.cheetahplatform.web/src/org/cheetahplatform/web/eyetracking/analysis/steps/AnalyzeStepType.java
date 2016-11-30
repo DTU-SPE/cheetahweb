@@ -58,6 +58,12 @@ public class AnalyzeStepType {
 			"Minimum: Relative Subtracted",
 			"Computes the relative minimum of the pupil sizes within the stimulus by subtracting the baseline: minimum(value - mean(baseline value))");
 
+	public static final AnalyzeStepType MISSING_TOTAL = new AnalyzeStepType("missing_total", "Missing - Total",
+			"The total amount of missing values in this trial");
+	public static final AnalyzeStepType MISSING_PERCENT = new AnalyzeStepType("missing_percent", "Missing - Percent",
+			"The percentage of missing values in this trial");
+	public static final AnalyzeStepType BLINKS = new AnalyzeStepType("blinks", "Blinks", "The number of blinks in this trial");
+
 	public static final List<AnalyzeStepType> ALL;
 
 	static {
@@ -80,6 +86,9 @@ public class AnalyzeStepType {
 		all.add(MINIMUM_ABSOLUTE);
 		all.add(MINIMUM_RELATIVE_DIVIDED);
 		all.add(MINIMUM_RELATIVE_SUBTRACTED);
+		all.add(MISSING_TOTAL);
+		all.add(MISSING_PERCENT);
+		all.add(BLINKS);
 
 		ALL = Collections.unmodifiableList(all);
 	}
@@ -96,7 +105,6 @@ public class AnalyzeStepType {
 
 	private String id;
 	private String name;
-
 	private String description;
 
 	private AnalyzeStepType(String id, String name, String description) {

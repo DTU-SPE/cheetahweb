@@ -165,7 +165,7 @@
                                             ng-options="computation.name for computation in computations">
                                     </select>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group" ng-show="isAggregatedType">
                                     <div><label>Type</label></div>
                                     <select class="form-control" ng-model="type" ng-change="updateAnalyzeType()"
                                             ng-options="type.name for type in types">
@@ -174,7 +174,7 @@
                                 <span><strong>Description of this computation:</strong></span>
                                 <p class="cheetah-analyze-step-description">{{analyzeType.description}}</p>
 
-                                <div class="form-group cheetah-analyze-step-time">
+                                <div class="form-group cheetah-analyze-step-time"  ng-show="isAggregatedType">
                                     <div><label>Start Time</label></div>
                                     <label>
                                         <input type="radio" name="startTime" ng-model="startTime"
@@ -190,7 +190,7 @@
                                     <input type="text"ng-disabled="startTime === 'startWithStimulus'" ng-model="startTimeOffset">
                                 </div>
 
-                                <div class="form-group cheetah-analyze-step-time">
+                                <div class="form-group cheetah-analyze-step-time"  ng-show="isAggregatedType">
                                     <div><label>End Time</label></div>
                                     <label>
                                         <input type="radio" name="endTime" ng-model="endTime" value="endWithStimulus">

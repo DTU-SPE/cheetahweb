@@ -448,16 +448,12 @@
                         might include filtering steps, but also data analysis steps can be included. For more
                         information fo to <a href="study-management.htm">My Studies</a>.
                     </div>
-                    <div ng-show="containsFilesFromOtherStudy" class="alert alert-warning">Some of the files you
-                        selected
-                        correspond to a different
+                    <div ng-show="containsFilesFromOtherStudy" class="alert alert-warning">Some of the files you selected correspond to a different
                         study. We will skip these files when executing the data processing.
                     </div>
                     <label class="control-label" for="cheeta-data-processing-select">Data processing routine</label>
-                    <select class="form-control" id="cheeta-data-processing-select" ng-model="selectedDataProcessing">
-                        <option ng-repeat="processing in selectedStudy.dataProcessing"
-                                value="{{processing.id}}">{{processing.name}}
-                        </option>
+                    <select class="form-control" id="cheeta-data-processing-select" ng-model="selectedDataProcessing"
+                            ng-options="processing.name for processing in selectedStudy.dataProcessing">
                     </select>
                 </div>
                 <div ng-show="selectedStudy && selectedStudy.dataProcessing.length===0">No data processing routine has
