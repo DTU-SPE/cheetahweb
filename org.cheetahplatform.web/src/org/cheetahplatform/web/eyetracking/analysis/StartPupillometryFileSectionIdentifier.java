@@ -2,11 +2,15 @@ package org.cheetahplatform.web.eyetracking.analysis;
 
 import org.cheetahplatform.web.eyetracking.cleaning.IPupillometryFileLine;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileColumn;
+import org.eclipse.core.runtime.Assert;
 
 public class StartPupillometryFileSectionIdentifier extends AbstractPupillometryFileSectionIdentifier {
 	protected String start;
+	protected boolean started = false;
 
 	public StartPupillometryFileSectionIdentifier(String start) {
+		Assert.isNotNull(start);
+		Assert.isLegal(!start.trim().isEmpty());
 		this.start = start;
 	}
 
@@ -18,7 +22,13 @@ public class StartPupillometryFileSectionIdentifier extends AbstractPupillometry
 
 	@Override
 	public boolean isStart(IPupillometryFileLine line, PupillometryFileColumn column) {
-		return matches(line, column, start);
+		boolean matches = matches(line, column, start);
+		if (matches) {
+			if (started) {
+				matches = false;
+			}
+			started = !started;
+		}
+		return matches;
 	}
-
 }

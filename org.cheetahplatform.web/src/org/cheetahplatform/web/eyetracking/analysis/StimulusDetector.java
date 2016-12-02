@@ -34,7 +34,6 @@ public class StimulusDetector extends AbstractPupillopmetryFileDetector {
 		PupillometryFileColumn baseLineColumn = initializeColumn(pupillometryFile, STIMULUS_COLUMN_NAME);
 		PupillometryFileColumn relativeTimeColumn = initializeColumn(pupillometryFile, TIME_SINCE_STIMULUS_START);
 
-		String previousScene = "";
 		Stimulus stimulus = null;
 		boolean stimulusComplete = false;
 		for (PupillometryFileLine line : trial.getLines()) {
@@ -47,26 +46,17 @@ public class StimulusDetector extends AbstractPupillopmetryFileDetector {
 				stimulus.addLine(line);
 			}
 
-			List<PupillometryFileLine> extractLinesToConsider = extractLinesToConsider(line);
-			for (PupillometryFileLine pupillometryFileLine : extractLinesToConsider) {
-				String scene = pupillometryFileLine.get(studioEventDataColumn);
-				if (previousScene.equals(scene) || scene == null || scene.trim().isEmpty()) {
-					continue;
-				}
-				if (stimulusIdentifier.isEnd(pupillometryFileLine, studioEventDataColumn)) {
-					stimulusComplete = true;
-					break;
-				}
+			if (stimulusIdentifier.isEnd(line, studioEventDataColumn)) {
+				stimulusComplete = true;
+				break;
+			}
 
-				if (stimulusIdentifier.isStart(pupillometryFileLine, studioEventDataColumn)) {
-					if (stimulus != null) {
-						logErrorNotifcation("Found multiple stimulus start events in one trial.");
-						return null;
-					}
-					stimulus = new Stimulus();
+			if (stimulusIdentifier.isStart(line, studioEventDataColumn)) {
+				if (stimulus != null) {
+					logErrorNotifcation("Found multiple stimulus start events in one trial.");
+					return null;
 				}
-
-				previousScene = scene;
+				stimulus = new Stimulus();
 			}
 
 			if (stimulusComplete) {

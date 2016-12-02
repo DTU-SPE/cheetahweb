@@ -40,7 +40,7 @@ public class TriggeredBySceneFileSectionIdentifier extends AbstractPupillometryF
 
 		Set<String> studioEvents = extractKeysConsideringCollapsedColumns(line, studioEventDataColumn);
 		// no start/event of scene --> this is not the end of the stimulus
-		if (studioEvents.isEmpty()) {
+		if (studioEvents == null || studioEvents.isEmpty()) {
 			return false;
 		}
 
@@ -54,7 +54,7 @@ public class TriggeredBySceneFileSectionIdentifier extends AbstractPupillometryF
 		if (nextSceneIsStimulusScene && stimulusScene == null) {
 			Set<String> studioEvents = extractKeysConsideringCollapsedColumns(line, studioEventDataColumn);
 			// no start/event of scene --> this is not the start of the stimulus
-			if (studioEvents.isEmpty()) {
+			if (studioEvents == null || studioEvents.isEmpty()) {
 				return false;
 			}
 

@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFile;
@@ -15,7 +14,6 @@ import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileHeader;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileLine;
 
 public abstract class AbstractTrialDetector extends AbstractPupillopmetryFileDetector {
-
 	private static final String TRIAL_NUMBER_COLUMN = "Trial_number";
 	private static final String TIME_SINCE_TRIAL_START = "Time_since_trial_start";
 	protected long fileId;
@@ -78,12 +76,11 @@ public abstract class AbstractTrialDetector extends AbstractPupillopmetryFileDet
 		String trialStart = config.getTrialStart();
 		String trialEnd = null;
 		if (config.isUseTrialStartForTrialEnd()) {
-			trialEnd = trialStart;
+			trialIdentifier = new StartPupillometryFileSectionIdentifier(trialStart);
 		} else {
 			trialEnd = config.getTrialEnd();
+			trialIdentifier = new StartAndEndPupillometryFileSectionIdentifier(trialStart, trialEnd);
 		}
-
-		trialIdentifier = new StartAndEndPupillometryFileSectionIdentifier(trialStart, trialEnd);
 	}
 
 	/**
@@ -104,7 +101,6 @@ public abstract class AbstractTrialDetector extends AbstractPupillopmetryFileDet
 
 		List<PupillometryFileLine> lines = pupillometryFile.getContent();
 		Trial currentTrial = null;
-		String previousScene = "";
 		int trialNumber = 1;
 		int trialsToIgnore = config.getIgnoredTrials();
 
@@ -118,36 +114,25 @@ public abstract class AbstractTrialDetector extends AbstractPupillopmetryFileDet
 				currentTrial.addLine(line);
 			}
 
-			List<PupillometryFileLine> linesToCheck = extractLinesToConsider(line);
-			for (PupillometryFileLine pupillometryFileLine : linesToCheck) {
-				String scene = pupillometryFileLine.get(studioEventDataColumn);
-				if (scene == null || scene.trim().isEmpty() || previousScene.equals(scene)) {
-					continue;
-				}
+			if (trialIdentifier.isEnd(line, studioEventDataColumn)) {
+				currentTrial = null;
+			}
 
-				if (trialIdentifier.isEnd(pupillometryFileLine, studioEventDataColumn)) {
-					currentTrial = null;
+			if (trialIdentifier.isStart(line, studioEventDataColumn)) {
+				// if (currentTrial != null) {
+				// logErrorNotifcation("Multiple start events within a single trial were detected.");
+				// return Collections.emptyList();
+				// }
+				currentTrial = new Trial(trialNumber++);
+				if (trialsToIgnore > 0) {
+					trialsToIgnore--;
+					trialNumber--;
+				} else {
+					trials.add(currentTrial);
 				}
-
-				if (trialIdentifier.isStart(pupillometryFileLine, studioEventDataColumn)) {
-					if (currentTrial != null) {
-						logErrorNotifcation("Multiple start events within a single trial were detected.");
-						return Collections.emptyList();
-					}
-					currentTrial = new Trial(trialNumber++);
-					if (trialsToIgnore > 0) {
-						trialsToIgnore--;
-						trialNumber--;
-					} else {
-						trials.add(currentTrial);
-					}
-				}
-
-				previousScene = scene;
 			}
 		}
 
 		return trials;
 	}
-
 }
