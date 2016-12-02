@@ -73,6 +73,13 @@ angular.module('cheetah.MyFiles', ['ngRoute', 'cheetah.CleanData']).controller('
     if (storedSearch) {
         $scope.search = JSON.parse(storedSearch);
     }
+
+    var storedStudy = localStorage.getItem('myfiles.selectedStudy');
+    if (storedStudy) {
+        var studyId = parseInt(storedStudy, 10);
+        $scope.selectedStudy = studyId;
+    }
+
     $scope.trimTimestampColumn = localStorage.getItem('trimTimestampColumn');
 
     $scope.renameFiles = function () {
@@ -277,7 +284,7 @@ angular.module('cheetah.MyFiles', ['ngRoute', 'cheetah.CleanData']).controller('
                 return false;
             }
 
-            return $scope.selectedStudy === file.studyId.toString();
+            return $scope.selectedStudy === file.studyId;
         }
 
         var filtered = $.grep($scope.files, function (file, index) {
@@ -303,7 +310,7 @@ angular.module('cheetah.MyFiles', ['ngRoute', 'cheetah.CleanData']).controller('
         });
 
         localStorage.setItem('myfiles.search', JSON.stringify($scope.search));
-
+        localStorage.setItem('myfiles.selectedStudy', $scope.selectedStudy);
         return filtered;
     };
 

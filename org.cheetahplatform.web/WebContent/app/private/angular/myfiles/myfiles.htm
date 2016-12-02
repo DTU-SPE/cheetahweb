@@ -25,9 +25,8 @@
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="cheetah-files-search-input">Study</label>
                             <div class="col-sm-10">
-                                <select class="form-control" id="study" ng-model="selectedStudy">
+                                <select class="form-control" id="study" ng-model="selectedStudy" ng-options="study.id as study.name for study in studies">
                                     <option value=""></option>
-                                    <option ng-repeat="study in studies" value="{{study.id}}">{{study.name}}</option>
                                 </select>
                                 <div id="cheetah-files-status-bar">
                                     <span>Total number of files: </span> <span
