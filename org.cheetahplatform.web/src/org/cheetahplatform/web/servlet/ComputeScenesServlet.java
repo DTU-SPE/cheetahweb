@@ -77,9 +77,11 @@ public class ComputeScenesServlet extends AbstractCheetahServlet {
 			for (IPupillometryFileLine collapsedLine : collapsedLines) {
 				String currentScene = collapsedLine.get(studioEventDataColumn);
 
-				if (previousScene == null || !previousScene.equals(currentScene)) {
+				if (previousScene == null) {
 					scenes.add(currentScene);
 					previousScene = currentScene;
+				} else if (previousScene.equals(currentScene)) {
+					previousScene = null;
 				}
 			}
 		}
