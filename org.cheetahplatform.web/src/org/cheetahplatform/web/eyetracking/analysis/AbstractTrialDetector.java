@@ -107,10 +107,9 @@ public abstract class AbstractTrialDetector extends AbstractPupillopmetryFileDet
 		for (PupillometryFileLine line : lines) {
 			// the marking with studio event is always added to the previous line --> for start event, add the lines to the next trial, for
 			// end event, add the lines to the next trial
-			if (currentTrial != null && trialsToIgnore == 0) {
+			if (currentTrial != null) {
 				line.setValue(trialNumberColumn, currentTrial.getTrialNumber());
 				addRelativeTime(relativeTimeColumn, timeStampColumn, currentTrial.getLines(), line);
-
 				currentTrial.addLine(line);
 			}
 
@@ -119,15 +118,10 @@ public abstract class AbstractTrialDetector extends AbstractPupillopmetryFileDet
 			}
 
 			if (trialIdentifier.isStart(line, studioEventDataColumn)) {
-				// if (currentTrial != null) {
-				// logErrorNotifcation("Multiple start events within a single trial were detected.");
-				// return Collections.emptyList();
-				// }
-				currentTrial = new Trial(trialNumber++);
 				if (trialsToIgnore > 0) {
 					trialsToIgnore--;
-					trialNumber--;
 				} else {
+					currentTrial = new Trial(trialNumber++);
 					trials.add(currentTrial);
 				}
 			}
