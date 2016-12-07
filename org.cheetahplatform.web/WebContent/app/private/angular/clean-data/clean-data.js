@@ -1,4 +1,4 @@
-angular.module('cheetah.CleanData', []).controller('CleanDataModalController', function ($scope, $http) {
+angular.module('cheetah.CleanData', []).controller('CleanDataModalController', function ($scope, $http, $timeout) {
     if ($scope.decimalSeparator === undefined) {
         var previousSeparator = localStorage.getItem('decimalSeparator');
         if (previousSeparator != undefined) {
@@ -52,6 +52,8 @@ angular.module('cheetah.CleanData', []).controller('CleanDataModalController', f
                     $scope.fileNamePostFix = data.fileNamePostFix;
                 }
             }
+
+            $('#cheetah-clean-data-modal').data('bs.modal').adjustBackdrop();
         });
     });
 
@@ -95,6 +97,10 @@ angular.module('cheetah.CleanData', []).controller('CleanDataModalController', f
         filter.timestamp = new Date().valueOf();
 
         updateFilterColumns();
+        //trigger the backdrop computation whenever the modal size might change, #633
+        $timeout(function () {
+            $('#cheetah-clean-data-modal').data('bs.modal').adjustBackdrop();
+        });
     };
 
     function updateFilterColumns() {
