@@ -657,7 +657,7 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData', 'ui.s
     $scope.$on('cheetah-define-baseline-modal.show', function (event, data) {
         $scope.data = data;
         if (!$scope.data.config.baseline) {
-            $scope.data.config.baseline = {}
+            $scope.data.config.baseline = {};
         }
 
         if (!$scope.data.config.baseline.baselineCalculation) {

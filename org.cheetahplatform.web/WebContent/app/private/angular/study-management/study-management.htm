@@ -143,7 +143,8 @@
     </div>
 </div>
 
-<div class="modal" id="cheetah-add-analyze-step-modal" ng-controller="AddAnalyzeStepModalController" data-backdrop="static">
+<div class="modal" id="cheetah-add-analyze-step-modal" ng-controller="AddAnalyzeStepModalController"
+     data-backdrop="static">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -174,7 +175,7 @@
                                 <span><strong>Description of this computation:</strong></span>
                                 <p class="cheetah-analyze-step-description">{{analyzeType.description}}</p>
 
-                                <div class="form-group cheetah-analyze-step-time"  ng-show="isAggregatedType">
+                                <div class="form-group cheetah-analyze-step-time" ng-show="isAggregatedType">
                                     <div><label>Start Time</label></div>
                                     <label>
                                         <input type="radio" name="startTime" ng-model="startTime"
@@ -187,10 +188,11 @@
                                                value="startAfterDuration">
                                         Start milliseconds after stimulus onset:
                                     </label>
-                                    <input type="text"ng-disabled="startTime === 'startWithStimulus'" ng-model="startTimeOffset">
+                                    <input type="text" ng-disabled="startTime === 'startWithStimulus'"
+                                           ng-model="startTimeOffset">
                                 </div>
 
-                                <div class="form-group cheetah-analyze-step-time"  ng-show="isAggregatedType">
+                                <div class="form-group cheetah-analyze-step-time" ng-show="isAggregatedType">
                                     <div><label>End Time</label></div>
                                     <label>
                                         <input type="radio" name="endTime" ng-model="endTime" value="endWithStimulus">
@@ -201,7 +203,8 @@
                                         <input type="radio" name="endTime" ng-model="endTime" value="endAfterDuration">
                                         End milliseconds after stimulus onset:
                                     </label>
-                                    <input type="text" ng-disabled="endTime === 'endWithStimulus'"  ng-model="endTimeOffset">
+                                    <input type="text" ng-disabled="endTime === 'endWithStimulus'"
+                                           ng-model="endTimeOffset">
                                 </div>
                             </div>
                         </div>
@@ -259,7 +262,8 @@
     </div>
 </div>
 
-<div class="modal" id="cheetah-add-data-processing-modal" data-backdrop="static"  ng-controller="AddDataProcessingModalController">
+<div class="modal" id="cheetah-add-data-processing-modal" data-backdrop="static"
+     ng-controller="AddDataProcessingModalController">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -321,7 +325,8 @@
 </div>
 
 
-<div class="modal" id="cheetah-add-data-processing-step-modal" data-backdrop="static" ng-controller="AddDataProcessingStepModalController">
+<div class="modal" id="cheetah-add-data-processing-step-modal" data-backdrop="static"
+     ng-controller="AddDataProcessingStepModalController">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -695,21 +700,26 @@
                 </div>
                 <form>
                     <div class="form-group">
-                        <label for="cheetah-select-baseline-calculation-type">Computation of Baseline</label>
-                        <select class="form-control" id="cheetah-select-baseline-calculation-type"
-                                ng-model="data.config.baseline.baselineCalculation" style="width: 100%">
-                            <option ng-repeat="calculation in baseLineCalcuationsTypes" value="{{calculation.id}}">
-                                {{calculation.label}}
-                            </option>
-                        </select>
+                        <label><input type="checkbox" ng-model="data.config.baseline.noBaseline">Skip baseline computation</label>
                     </div>
-                    <div class="form-group"
-                         ng-show="data.config.baseline.baselineCalculation==='baseline-duration-before-stimulus'">
-                        <label for="cheetah-baseline-duration-before-stimulus">Duration [ms] prior to the
-                            stimulus</label>
-                        <input type="text" class="form-control"
-                               id="cheetah-baseline-duration-before-stimulus"
-                               ng-model="data.config.baseline.durationBeforeStimulus">
+                    <div ng-show="!data.config.baseline.noBaseline">
+                        <div class="form-group">
+                            <label for="cheetah-select-baseline-calculation-type">Computation of Baseline</label>
+                            <select class="form-control" id="cheetah-select-baseline-calculation-type"
+                                    ng-model="data.config.baseline.baselineCalculation" style="width: 100%">
+                                <option ng-repeat="calculation in baseLineCalcuationsTypes" value="{{calculation.id}}">
+                                    {{calculation.label}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-group"
+                             ng-show="data.config.baseline.baselineCalculation==='baseline-duration-before-stimulus'">
+                            <label for="cheetah-baseline-duration-before-stimulus">Duration [ms] prior to the
+                                stimulus</label>
+                            <input type="text" class="form-control"
+                                   id="cheetah-baseline-duration-before-stimulus"
+                                   ng-model="data.config.baseline.durationBeforeStimulus">
+                        </div>
                     </div>
                     <div class="form-group cheetah-dialog-button-container">
                         <button class="btn" data-dismiss="modal" aria-label="Close">Cancel</button>

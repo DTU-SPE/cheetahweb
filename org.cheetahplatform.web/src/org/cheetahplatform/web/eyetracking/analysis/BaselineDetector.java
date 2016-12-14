@@ -26,7 +26,7 @@ public class BaselineDetector extends AbstractPupillopmetryFileDetector {
 	}
 
 	public void detectBaseline() throws Exception {
-		if (baselineIdentifier == null) {
+		if (baselineIdentifier == null || config.getBaseline().isNoBaseline()) {
 			return;
 		}
 
