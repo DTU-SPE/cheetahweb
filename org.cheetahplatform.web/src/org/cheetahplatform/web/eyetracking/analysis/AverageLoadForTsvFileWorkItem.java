@@ -11,6 +11,7 @@ import org.apache.commons.math3.stat.descriptive.moment.Mean;
 import org.cheetahplatform.web.AbstractCheetahWorkItem;
 import org.cheetahplatform.web.dao.UserFileDao;
 import org.cheetahplatform.web.dto.ReportableResult;
+import org.cheetahplatform.web.dto.ReportableResultEntry;
 import org.cheetahplatform.web.eyetracking.CheetahWorkItemGuard;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFile;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileColumn;
@@ -56,10 +57,9 @@ public class AverageLoadForTsvFileWorkItem extends AbstractCheetahWorkItem {
 
 		ReportableResult reportableResult = new ReportableResult(splitted[0]);
 		DecimalFormat format = new DecimalFormat("0.####", DecimalFormatSymbols.getInstance(Locale.GERMAN));
-		reportableResult.addResult(splitted[1] + "_" + "pupil_left", format.format(leftMean));
-		reportableResult.addResult(splitted[1] + "_" + "pupil_right", format.format(rightMean));
-		reportableResult.addResult(splitted[1] + "_" + "source_file_name", fileName);
+		reportableResult.addResult("average_pupil_left", new ReportableResultEntry(format.format(leftMean)));
+		reportableResult.addResult("average_pupil_right", new ReportableResultEntry(format.format(rightMean)));
+		reportableResult.addResult("source_file_name", new ReportableResultEntry(fileName));
 		guard.reportResult(reportableResult);
 	}
-
 }

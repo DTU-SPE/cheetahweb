@@ -1,7 +1,11 @@
 package org.cheetahplatform.web.eyetracking.analysis;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
+import org.cheetahplatform.web.dto.ReportableResultEntry;
+import org.cheetahplatform.web.dto.TrialAnalysisReportableResultEntry;
 import org.cheetahplatform.web.eyetracking.analysis.steps.AnalyzeConfiguration;
 import org.cheetahplatform.web.eyetracking.analysis.steps.AnalyzeStepType;
 import org.eclipse.core.runtime.Assert;
@@ -28,9 +32,17 @@ public abstract class AbstractTrialAnalyzer implements ITrialAnalyzer {
 		this.name = analyzeStep.getName();
 	}
 
-	protected void addResult(Map<String, String> results, Trial trial, double value, String operation) {
-		String key = trial.getIdentifier() + RESULT_SEPARATOR + analyzeStep.getId() + RESULT_SEPARATOR + operation;
-		results.put(key, String.valueOf(value));
+	public void addResult(Map<String, List<ReportableResultEntry>> results, String key, TrialAnalysisReportableResultEntry entry) {
+		if (!results.containsKey(key)) {
+			results.put(key, new ArrayList<ReportableResultEntry>());
+		}
+		results.get(key).add(entry);
+	}
+
+	protected void addResult(Map<String, List<ReportableResultEntry>> results, Trial trial, double value, String operation) {
+		String key = analyzeStep.getId() + RESULT_SEPARATOR + operation;
+		TrialAnalysisReportableResultEntry entry = new TrialAnalysisReportableResultEntry(trial.getTrialNumber(), String.valueOf(value));
+		addResult(results, key, entry);
 	}
 
 	@Override

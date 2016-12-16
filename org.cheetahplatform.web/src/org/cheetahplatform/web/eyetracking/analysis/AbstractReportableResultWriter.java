@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.text.Collator;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -17,50 +18,13 @@ import org.cheetahplatform.web.dao.NotificationDao;
 import org.cheetahplatform.web.dao.UserFileDao;
 import org.cheetahplatform.web.dto.ReportableResult;
 
-public class ReportableResultWriter {
-	private static final String SUBJECT_COLUMN = "subject";
-	private static final String SEPARATOR = ";";
+public abstract class AbstractReportableResultWriter implements IReportableResultWriter {
+	protected static final String SUBJECT_COLUMN = "subject";
+	protected static final String SEPARATOR = ";";
 	private static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("YYYY-MM-dd_HH-mm");
 
-	public void write(long userId, Map<String, ReportableResult> collectedResults, String filePrefix, String resultFileComment) {
-		List<String> headers = new ArrayList<>();
-		headers.add(SUBJECT_COLUMN);
-		for (Entry<String, ReportableResult> entry : collectedResults.entrySet()) {
-			Set<String> keys = entry.getValue().getDefinedKeys();
-			for (String key : keys) {
-				if (!headers.contains(key)) {
-					headers.add(key);
-				}
-			}
-		}
-		Collections.sort(headers, Collator.getInstance());
-
+	protected void writeResultFile(long userId, String filePrefix, String resultFileComment, String fileContent) {
 		NotificationDao notificationDao = new NotificationDao();
-		StringBuilder builder = new StringBuilder();
-		for (String header : headers) {
-			builder.append(header);
-			builder.append(SEPARATOR);
-		}
-		builder.append("\n");
-
-		for (Entry<String, ReportableResult> entry : collectedResults.entrySet()) {
-			for (String key : headers) {
-				if (key.equals(SUBJECT_COLUMN)) {
-					builder.append(entry.getKey());
-					builder.append(SEPARATOR);
-					continue;
-				}
-
-				ReportableResult reportableResult = entry.getValue();
-				String result = reportableResult.getResult(key);
-				if (result != null) {
-					builder.append(result);
-				}
-				builder.append(SEPARATOR);
-			}
-			builder.append("\n");
-		}
-
 		UserFileDao userFileDao = new UserFileDao();
 		String fileName = filePrefix + "_" + DATE_FORMAT.format(new java.util.Date()) + ".csv";
 		String relativePath = userFileDao.generateRelativePath(userId, fileName);
@@ -68,7 +32,7 @@ public class ReportableResultWriter {
 		File file = new File(absolutePath);
 		try {
 			FileWriter writer = new FileWriter(file);
-			writer.write(builder.toString());
+			writer.write(fileContent);
 			writer.close();
 
 			long fileId = userFileDao.insertUserFile(userId, fileName, relativePath, "application/octet-stream", resultFileComment, null,
@@ -89,4 +53,31 @@ public class ReportableResultWriter {
 			e.printStackTrace();
 		}
 	}
+
+	protected List<String> extractHeaders(Map<String, ReportableResult> collectedResults, String... additionalHeaders) {
+		List<String> headers = new ArrayList<>();
+		headers.add(SUBJECT_COLUMN);
+		headers.addAll(Arrays.asList(additionalHeaders));
+		for (Entry<String, ReportableResult> entry : collectedResults.entrySet()) {
+			Set<String> keys = entry.getValue().getDefinedKeys();
+			for (String key : keys) {
+				if (!headers.contains(key)) {
+					headers.add(key);
+				}
+			}
+		}
+		Collections.sort(headers, Collator.getInstance());
+		return headers;
+	}
+
+	protected StringBuilder writeHeaders(List<String> headers) {
+		StringBuilder builder = new StringBuilder();
+		for (String header : headers) {
+			builder.append(header);
+			builder.append(SEPARATOR);
+		}
+		builder.append("\n");
+		return builder;
+	}
+
 }

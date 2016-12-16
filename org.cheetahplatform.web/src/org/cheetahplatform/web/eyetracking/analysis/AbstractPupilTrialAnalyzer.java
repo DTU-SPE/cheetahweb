@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.math3.stat.descriptive.moment.Mean;
+import org.cheetahplatform.web.dto.ReportableResultEntry;
 import org.cheetahplatform.web.eyetracking.analysis.steps.AnalyzeConfiguration;
 import org.cheetahplatform.web.eyetracking.analysis.steps.AnalyzeStepType;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFile;
@@ -29,7 +30,7 @@ public abstract class AbstractPupilTrialAnalyzer extends AbstractTrialAnalyzer {
 		this.endTime = endTime;
 	}
 
-	protected void addAveragePupilSizeToResults(Trial trial, Map<String, String> results, double left, double right) {
+	protected void addAveragePupilSizeToResults(Trial trial, Map<String, List<ReportableResultEntry>> results, double left, double right) {
 		if (left != 0 && right != 0) {
 			double average = (left + right) / 2;
 			addResult(results, trial, average, PUPIL_AVERAGE);
@@ -37,11 +38,12 @@ public abstract class AbstractPupilTrialAnalyzer extends AbstractTrialAnalyzer {
 	}
 
 	@Override
-	public Map<String, String> analyze(TrialEvaluation trialEvaluation, PupillometryFile pupillometryFile) throws Exception {
+	public Map<String, List<ReportableResultEntry>> analyze(TrialEvaluation trialEvaluation, PupillometryFile pupillometryFile)
+			throws Exception {
 		PupillometryFileColumn leftPupilColumn = pupillometryFile.getHeader().getColumn(dataProcessing.getLeftPupilColumn());
 		PupillometryFileColumn rightPupilColumn = pupillometryFile.getHeader().getColumn(dataProcessing.getRightPupilColumn());
 
-		Map<String, String> results = new HashMap<>();
+		Map<String, List<ReportableResultEntry>> results = new HashMap<>();
 		List<Trial> trials = trialEvaluation.getTrials();
 		for (Trial trial : trials) {
 			analyzeTrial(pupillometryFile, trial, results, leftPupilColumn, rightPupilColumn);
@@ -50,7 +52,7 @@ public abstract class AbstractPupilTrialAnalyzer extends AbstractTrialAnalyzer {
 		return results;
 	}
 
-	protected abstract void analyzeTrial(PupillometryFile pupillometryFile, Trial trial, Map<String, String> results,
+	protected abstract void analyzeTrial(PupillometryFile pupillometryFile, Trial trial, Map<String, List<ReportableResultEntry>> results,
 			PupillometryFileColumn leftPupilColumn, PupillometryFileColumn rightPupilColumn);
 
 	protected double calculateMean(List<PupillometryFileLine> lines, PupillometryFileColumn column) {

@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.cheetahplatform.web.dto.ReportableResultEntry;
+import org.cheetahplatform.web.dto.TrialAnalysisReportableResultEntry;
 import org.cheetahplatform.web.eyetracking.analysis.AbstractTrialAnalyzer;
 import org.cheetahplatform.web.eyetracking.analysis.DataProcessing;
 import org.cheetahplatform.web.eyetracking.analysis.Trial;
@@ -26,8 +28,9 @@ public class MissingTrialAnalyzer extends AbstractTrialAnalyzer {
 	}
 
 	@Override
-	public Map<String, String> analyze(TrialEvaluation trialEvaluation, PupillometryFile pupillometryFile) throws Exception {
-		Map<String, String> results = new HashMap<>();
+	public Map<String, List<ReportableResultEntry>> analyze(TrialEvaluation trialEvaluation, PupillometryFile pupillometryFile)
+			throws Exception {
+		Map<String, List<ReportableResultEntry>> results = new HashMap<>();
 		PupillometryFileColumn missingColumn = pupillometryFile.getHeader().getColumn(MISSING_COLUMN);
 		if (missingColumn == null) {
 			trialEvaluation.setNotifications(Arrays.asList(new TrialDetectionNotification(
@@ -53,11 +56,11 @@ public class MissingTrialAnalyzer extends AbstractTrialAnalyzer {
 			if (analyzeStep.equals(AnalyzeStepType.MISSING_PERCENT)) {
 				result = missingCount / trial.getLines().size();
 			}
-			String key = trial.getIdentifier() + RESULT_SEPARATOR + analyzeStep.getId() + RESULT_SEPARATOR;
-			results.put(key, String.valueOf(result));
+			TrialAnalysisReportableResultEntry entry = new TrialAnalysisReportableResultEntry(trial.getTrialNumber(),
+					String.valueOf(result));
+			addResult(results, analyzeStep.getId(), entry);
 		}
 
 		return results;
 	}
-
 }

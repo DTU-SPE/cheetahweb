@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.cheetahplatform.web.dto.ReportableResultEntry;
+import org.cheetahplatform.web.dto.TrialAnalysisReportableResultEntry;
 import org.cheetahplatform.web.eyetracking.analysis.AbstractTrialAnalyzer;
 import org.cheetahplatform.web.eyetracking.analysis.DataProcessing;
 import org.cheetahplatform.web.eyetracking.analysis.Trial;
@@ -26,9 +28,10 @@ public class BlinkTrialAnalyzer extends AbstractTrialAnalyzer {
 	}
 
 	@Override
-	public Map<String, String> analyze(TrialEvaluation trialEvaluation, PupillometryFile pupillometryFile) throws Exception {
+	public Map<String, List<ReportableResultEntry>> analyze(TrialEvaluation trialEvaluation, PupillometryFile pupillometryFile)
+			throws Exception {
 		PupillometryFileColumn blinkColumn = pupillometryFile.getHeader().getColumn(BLINK_COLUMN);
-		Map<String, String> results = new HashMap<>();
+		Map<String, List<ReportableResultEntry>> results = new HashMap<>();
 		if (blinkColumn == null) {
 			trialEvaluation.setNotifications(Arrays.asList(new TrialDetectionNotification(
 					"The input file does not contain a column named " + BLINK_COLUMN
@@ -50,8 +53,10 @@ public class BlinkTrialAnalyzer extends AbstractTrialAnalyzer {
 				isCurrentlyBlink = isNowBlink;
 			}
 
-			String key = trial.getIdentifier() + RESULT_SEPARATOR + analyzeStep.getId();
-			results.put(key, String.valueOf(blinks));
+			String key = analyzeStep.getId();
+			TrialAnalysisReportableResultEntry entry = new TrialAnalysisReportableResultEntry(trial.getTrialNumber(),
+					String.valueOf(blinks));
+			addResult(results, key, entry);
 		}
 
 		return results;

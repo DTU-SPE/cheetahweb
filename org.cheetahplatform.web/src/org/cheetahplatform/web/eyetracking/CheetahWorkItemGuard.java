@@ -2,6 +2,7 @@ package org.cheetahplatform.web.eyetracking;
 
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -11,7 +12,8 @@ import java.util.concurrent.TimeUnit;
 import org.cheetahplatform.web.ICheetahWorkItem;
 import org.cheetahplatform.web.dao.NotificationDao;
 import org.cheetahplatform.web.dto.ReportableResult;
-import org.cheetahplatform.web.eyetracking.analysis.ReportableResultWriter;
+import org.cheetahplatform.web.dto.ReportableResultEntry;
+import org.cheetahplatform.web.eyetracking.analysis.DefaultReportableResultWriter;
 
 public class CheetahWorkItemGuard extends Thread {
 
@@ -37,8 +39,40 @@ public class CheetahWorkItemGuard extends Thread {
 		numberOfExpectedResults--;
 	}
 
+	protected void mergeResults(ReportableResult result, ReportableResult reportableResult) {
+		for (Entry<String, List<ReportableResultEntry>> entry : result.getResults().entrySet()) {
+			List<ReportableResultEntry> resultEntriesForKey = entry.getValue();
+			for (ReportableResultEntry reportableResultEntry : resultEntriesForKey) {
+				if (!reportableResult.isResultDefined(entry.getKey())) {
+					reportableResult.addResult(entry.getKey(), reportableResultEntry);
+				} else {
+					int fileCount = 1;
+					String columnName = entry.getKey() + "_" + fileCount;
+					while (reportableResult.isResultDefined(columnName)) {
+						fileCount++;
+						columnName = entry.getKey() + "_" + fileCount;
+					}
+					reportableResult.addResult(columnName, reportableResultEntry);
+				}
+			}
+
+		}
+	}
+
 	public void postResults(Map<String, ReportableResult> collectedResults) {
-		new ReportableResultWriter().write(userId, collectedResults, filePrefix, resultFileComment);
+		new DefaultReportableResultWriter().write(userId, collectedResults, filePrefix, resultFileComment);
+	}
+
+	protected void processResult(Map<String, ReportableResult> collectedResults, ReportableResult result) {
+		ReportableResult reportableResult = collectedResults.get(result.getIdentifier());
+		if (reportableResult == null) {
+			reportableResult = new ReportableResult(result.getIdentifier());
+			reportableResult.putAllResults(result.getResults());
+
+			collectedResults.put(result.getIdentifier(), reportableResult);
+		} else {
+			mergeResults(result, reportableResult);
+		}
 	}
 
 	public synchronized void reportResult(ReportableResult reportableResult) {
@@ -54,12 +88,12 @@ public class CheetahWorkItemGuard extends Thread {
 
 		Map<String, ReportableResult> collectedResults = new HashMap<>();
 
-		int i = 0;
-		while (i < numberOfExpectedResults) {
+		int numberOfCollectedResults = 0;
+		while (numberOfCollectedResults < numberOfExpectedResults) {
 			try {
 				ReportableResult result = results.poll(60, TimeUnit.MINUTES);
 				// The last work item I have been waiting for has been cancelled in the mean time -> done :)
-				if (i >= numberOfExpectedResults) {
+				if (numberOfCollectedResults >= numberOfExpectedResults) {
 					break;
 				}
 
@@ -74,28 +108,8 @@ public class CheetahWorkItemGuard extends Thread {
 					}
 				}
 
-				i++;
-				ReportableResult reportableResult = collectedResults.get(result.getIdentifier());
-				if (reportableResult == null) {
-					reportableResult = new ReportableResult(result.getIdentifier());
-					reportableResult.addAllResults(result.getResults());
-
-					collectedResults.put(result.getIdentifier(), reportableResult);
-				} else {
-					for (Entry<String, String> entry : result.getResults().entrySet()) {
-						if (!reportableResult.isResultDefined(entry.getKey())) {
-							reportableResult.addResult(entry.getKey(), entry.getValue());
-						} else {
-							int fileCount = 1;
-							String columnName = entry.getKey() + "_" + fileCount;
-							while (reportableResult.isResultDefined(columnName)) {
-								fileCount++;
-								columnName = entry.getKey() + "_" + fileCount;
-							}
-							reportableResult.addResult(columnName, entry.getValue());
-						}
-					}
-				}
+				numberOfCollectedResults++;
+				processResult(collectedResults, result);
 
 			} catch (InterruptedException e) {
 				// ignore - just retry

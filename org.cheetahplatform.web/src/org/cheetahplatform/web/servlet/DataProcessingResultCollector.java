@@ -8,9 +8,9 @@ import java.util.Set;
 
 import org.cheetahplatform.web.dto.ReportableResult;
 import org.cheetahplatform.web.eyetracking.CheetahWorkItemGuard;
+import org.cheetahplatform.web.eyetracking.analysis.AggregatedTrialReportableResultWriter;
 import org.cheetahplatform.web.eyetracking.analysis.DataProcessing;
 import org.cheetahplatform.web.eyetracking.analysis.DataProcessingStep;
-import org.cheetahplatform.web.eyetracking.analysis.ReportableResultWriter;
 
 public class DataProcessingResultCollector {
 	private Map<DataProcessingStep, CheetahWorkItemGuard> guards = new HashMap<>();
@@ -35,13 +35,13 @@ public class DataProcessingResultCollector {
 			}
 
 			ReportableResult reportableResult = resultsForSubject.get(entry.getKey());
-			reportableResult.addAllResults(entry.getValue().getResults());
+			reportableResult.putAllResults(entry.getValue().getResults());
 		}
 
 		completedGuards.add(guard);
 
 		if (completedGuards.size() == guards.size()) {
-			new ReportableResultWriter().write(userId, resultsForSubject, dataProcessing.getName(),
+			new AggregatedTrialReportableResultWriter().write(userId, resultsForSubject, dataProcessing.getName(),
 					"Executed data processing " + dataProcessing.getName());
 		}
 	}

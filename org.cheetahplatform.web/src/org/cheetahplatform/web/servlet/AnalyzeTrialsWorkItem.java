@@ -1,11 +1,13 @@
 package org.cheetahplatform.web.servlet;
 
+import java.util.List;
 import java.util.Map;
 
 import org.cheetahplatform.web.AbstractCheetahWorkItem;
 import org.cheetahplatform.web.dao.SubjectDao;
 import org.cheetahplatform.web.dao.UserFileDao;
 import org.cheetahplatform.web.dto.ReportableResult;
+import org.cheetahplatform.web.dto.ReportableResultEntry;
 import org.cheetahplatform.web.dto.SubjectDto;
 import org.cheetahplatform.web.dto.UserFileDto;
 import org.cheetahplatform.web.eyetracking.CheetahWorkItemGuard;
@@ -36,7 +38,7 @@ public class AnalyzeTrialsWorkItem extends AbstractCheetahWorkItem implements ID
 
 	@Override
 	public boolean doWork(PupillometryFile file, DataProcessingContext context) throws Exception {
-		Map<String, String> results = analyzer.analyze(context.getTrialEvaluation(), file);
+		Map<String, List<ReportableResultEntry>> results = analyzer.analyze(context.getTrialEvaluation(), file);
 
 		UserFileDto userFileDto = new UserFileDao().getFile(fileId);
 		Long subjectId = userFileDto.getSubjectId();
@@ -44,7 +46,7 @@ public class AnalyzeTrialsWorkItem extends AbstractCheetahWorkItem implements ID
 		String subjectName = subject.getSubjectName();
 
 		ReportableResult reportableResult = new ReportableResult(subjectName);
-		reportableResult.addAllResults(results);
+		reportableResult.putAllResults(results);
 		guard.reportResult(reportableResult);
 
 		return true;

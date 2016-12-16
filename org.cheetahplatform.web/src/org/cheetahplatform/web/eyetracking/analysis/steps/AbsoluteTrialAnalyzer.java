@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.math3.stat.descriptive.UnivariateStatistic;
+import org.cheetahplatform.web.dto.ReportableResultEntry;
 import org.cheetahplatform.web.eyetracking.analysis.AbstractPupilTrialAnalyzer;
 import org.cheetahplatform.web.eyetracking.analysis.DataProcessing;
 import org.cheetahplatform.web.eyetracking.analysis.Stimulus;
@@ -23,8 +24,8 @@ public class AbsoluteTrialAnalyzer extends AbstractPupilTrialAnalyzer {
 	}
 
 	@Override
-	protected void analyzeTrial(PupillometryFile file, Trial trial, Map<String, String> results, PupillometryFileColumn leftPupilColumn,
-			PupillometryFileColumn rightPupilColumn) {
+	protected void analyzeTrial(PupillometryFile file, Trial trial, Map<String, List<ReportableResultEntry>> results,
+			PupillometryFileColumn leftPupilColumn, PupillometryFileColumn rightPupilColumn) {
 		Stimulus stimulus = trial.getStimulus();
 		if (stimulus == null) {
 			return;
@@ -45,5 +46,4 @@ public class AbsoluteTrialAnalyzer extends AbstractPupilTrialAnalyzer {
 
 		addAveragePupilSizeToResults(trial, results, leftValue, rightValue);
 	}
-
 }
