@@ -700,7 +700,8 @@
                 </div>
                 <form>
                     <div class="form-group">
-                        <label><input type="checkbox" ng-model="data.config.baseline.noBaseline">Skip baseline computation</label>
+                        <label><input type="checkbox" ng-model="data.config.baseline.noBaseline">Skip baseline
+                            computation</label>
                     </div>
                     <div ng-show="!data.config.baseline.noBaseline">
                         <div class="form-group">
@@ -719,6 +720,45 @@
                             <input type="text" class="form-control"
                                    id="cheetah-baseline-duration-before-stimulus"
                                    ng-model="data.config.baseline.durationBeforeStimulus">
+                        </div>
+                        <div class="form-group" ng-show="data.config.baseline.baselineCalculation==='baseline-scene-trigger'">
+                            <div class="form-group">
+                                <label for="cheetah-baseline-start-select">Marker for the baseline</label>
+                                <ui-select ng-model="data.config.baseline.baselineStart"
+                                           id="cheetah-baseline-start-select"
+                                           theme="select2"
+                                           style="width: 100%"
+                                           title="Select the start stimulus marker">
+                                    <ui-select-match placeholder="Select the start baseline marker">
+                                        {{$select.selected.name}}
+                                    </ui-select-match>
+                                    <ui-select-choices
+                                            repeat="scene.name as scene in data.aggregatedScenes | filter: {name: $select.search}">
+                                        <div ng-bind="scene.name"></div>
+                                        <small>
+                                            {{scene.count}} occurrence(s)
+                                        </small>
+                                    </ui-select-choices>
+                                </ui-select>
+                            </div>
+                            <div class="form-group">
+                                <label for="cheetah-baseline-end-select">Marker for the baseline end</label>
+                                <ui-select ng-model="data.config.baseline.baselineEnd" id="cheetah-baseline-end-select"
+                                           theme="select2"
+                                           style="width: 100%"
+                                           title="Select the end stimulus marker">
+                                    <ui-select-match placeholder="Select the end baseline marker">
+                                        {{$select.selected.name}}
+                                    </ui-select-match>
+                                    <ui-select-choices
+                                            repeat="scene.name as scene in data.aggregatedScenes | filter: {name: $select.search}">
+                                        <div ng-bind="scene.name"></div>
+                                        <small>
+                                            {{scene.count}} occurrence(s)
+                                        </small>
+                                    </ui-select-choices>
+                                </ui-select>
+                            </div>
                         </div>
                     </div>
                     <div class="form-group cheetah-dialog-button-container">

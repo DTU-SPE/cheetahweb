@@ -1,28 +1,17 @@
 package org.cheetahplatform.web.eyetracking.analysis;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "baselineCalculation")
+@JsonSubTypes({ @Type(value = BaselineTriggeredBySceneConfiguration.class, name = "baseline-scene-trigger"),
+		@Type(value = DurationBeforeStimulusBaselineConfiguration.class, name = "baseline-duration-before-stimulus") })
 public class BaselineConfiguration {
 	private boolean noBaseline;
-	private String baselineCalculation;
-	private Integer durationBeforeStimulus;
-
-	public String getBaselineCalculation() {
-		return baselineCalculation;
-	}
-
-	public Integer getDurationBeforeStimulus() {
-		return durationBeforeStimulus;
-	}
 
 	public boolean isNoBaseline() {
 		return noBaseline;
-	}
-
-	public void setBaselineCalculation(String baselineCalculation) {
-		this.baselineCalculation = baselineCalculation;
-	}
-
-	public void setDurationBeforeStimulus(Integer durationBeforeStimulus) {
-		this.durationBeforeStimulus = durationBeforeStimulus;
 	}
 
 	public void setNoBaseline(boolean noBaseline) {

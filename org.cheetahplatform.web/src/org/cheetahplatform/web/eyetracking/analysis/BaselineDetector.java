@@ -1,5 +1,9 @@
 package org.cheetahplatform.web.eyetracking.analysis;
 
+import static org.cheetahplatform.web.eyetracking.cleaning.CleanPupillometryDataWorkItem.STUDIO_EVENT_DATA;
+
+import java.io.IOException;
+
 import org.cheetahplatform.web.eyetracking.cleaning.IPupillometryFileLine;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFile;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileColumn;
@@ -17,7 +21,7 @@ public class BaselineDetector extends AbstractPupillopmetryFileDetector {
 	private PupillometryFile pupillometryFile;
 
 	public BaselineDetector(Trial trial, TrialConfiguration config, PupillometryFileColumn timestampColumn,
-			PupillometryFile pupillometryFile) {
+			PupillometryFile pupillometryFile) throws IOException {
 		this.trial = trial;
 		this.config = config;
 		this.timestampColumn = timestampColumn;
@@ -59,18 +63,26 @@ public class BaselineDetector extends AbstractPupillopmetryFileDetector {
 		trial.addAllNotifications(getNotifications());
 	}
 
-	private void readConfig() {
+	private void readConfig() throws IOException {
 		BaselineConfiguration baselineConfiguration = config.getBaseline();
-		String calculationMethod = baselineConfiguration.getBaselineCalculation();
-		if (calculationMethod.equals(TimeBeforeEventPupillometryFileSectionIdentifier.BASELINE_TYPE)) {
+		if (baselineConfiguration instanceof DurationBeforeStimulusBaselineConfiguration) {
+			DurationBeforeStimulusBaselineConfiguration castedConfiguration = (DurationBeforeStimulusBaselineConfiguration) baselineConfiguration;
+
 			if (!trial.hasStimulus()) {
 				return;
 			}
 
 			IPupillometryFileLine firstStimulusLine = trial.getStimulus().getLines().get(0);
-			Integer durationBeforeStimulus = baselineConfiguration.getDurationBeforeStimulus();
+			Integer durationBeforeStimulus = castedConfiguration.getDurationBeforeStimulus();
 			baselineIdentifier = new TimeBeforeEventPupillometryFileSectionIdentifier((PupillometryFileLine) firstStimulusLine,
 					durationBeforeStimulus, timestampColumn);
+		} else if (baselineConfiguration instanceof BaselineTriggeredBySceneConfiguration) {
+			BaselineTriggeredBySceneConfiguration castedConfiguration = (BaselineTriggeredBySceneConfiguration) baselineConfiguration;
+			PupillometryFileColumn studioEventDataColumn = pupillometryFile.getHeader().getColumn(STUDIO_EVENT_DATA);
+
+			baselineIdentifier = new StartAndEndBaselineIdentifier(castedConfiguration.getBaselineStart(),
+					castedConfiguration.getBaselineEnd(), studioEventDataColumn);
 		}
+
 	}
 }

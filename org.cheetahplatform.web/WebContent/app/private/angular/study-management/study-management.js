@@ -660,6 +660,9 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData', 'ui.s
     $scope.baseLineCalcuationsTypes = [{
         id: 'baseline-duration-before-stimulus',
         label: "Predefined duration before stimulus"
+    }, {
+        id: 'baseline-scene-trigger',
+        label: 'Select Markers'
     }];
 
     $scope.$on('cheetah-define-baseline-modal.show', function (event, data) {
@@ -677,6 +680,8 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData', 'ui.s
         if ($scope.data) {
             if ($scope.data.config.baseline.baselineCalculation === 'baseline-duration-before-stimulus') {
                 return $scope.data.config.baseline.durationBeforeStimulus && !isNaN($scope.data.config.baseline.durationBeforeStimulus);
+            } else if ($scope.data.config.baseline.baselineCalculation === 'baseline-scene-trigger') {
+                return $scope.data.config.baseline.baselineStart && $scope.data.config.baseline.baselineEnd;
             }
         }
 
@@ -688,12 +693,23 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData', 'ui.s
         cheetah.showModal($rootScope, "cheetah-define-stimulus-modal", $scope.data);
     };
 
+    function cleanUpBaseline() {
+        if ($scope.data.config.baseline.baselineCalculation === 'baseline-scene-trigger') {
+            delete $scope.data.config.baseline.durationBeforeStimulus;
+        } else if ($scope.data.config.baseline.baselineCalculation === 'baseline-duration-before-stimulus') {
+            delete $scope.data.config.baseline.baselineStart;
+            delete $scope.data.config.baseline.baselineEnd;
+        }
+    }
+
     $scope.showLoadCalculations = function () {
         cheetah.hideModal($rootScope, "cheetah-define-baseline-modal");
         cheetah.showModal($rootScope, "cheetah-progress-modal", {
             title: 'Preparing Overview',
             message: 'CEP-Web is preparing an overview of your trial configuration. Please stand by, this could take some time.'
         });
+
+        cleanUpBaseline();
 
         var request = {};
         request.config = $scope.data.config;
