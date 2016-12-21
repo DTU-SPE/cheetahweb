@@ -395,10 +395,12 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData', 'ui.s
 
     $scope.updateAnalyzeType = function () {
         var id = $scope.computation.id + "_" + $scope.type.id;
+        var typeFound = false;
         $.each($scope.analyzeTypes, function (index, type) {
             if (type.id === id) {
                 $scope.analyzeType = type;
                 $scope.isAggregatedType = true;
+                typeFound = true;
                 return false;
             }
         });
@@ -408,9 +410,15 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData', 'ui.s
             if (type.id === $scope.computation.id) {
                 $scope.analyzeType = type;
                 $scope.isAggregatedType = false;
+                typeFound = true;
                 return false;
             }
         });
+
+        //cross check to make sure types are found. see #655
+        if (!typeFound) {
+            throw "Unknown analysis type: " + id;
+        }
     };
 }).controller('EditDataProcessingModalController', function ($scope, $http) {
     $scope.$on('cheetah-edit-data-processing-modal.show', function (event, dataProcessing) {
