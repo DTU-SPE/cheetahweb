@@ -234,7 +234,7 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData', 'ui.s
                 computationType = 'Absolute';
             } else if (type.indexOf('relative_divided') != -1) {
                 computationType = 'Relative, Divided by Baseline';
-            } else if (type.indexOf('absolute_subtracted') != -1) {
+            } else if (type.indexOf('relative_subtracted') != -1) {
                 computationType = 'Relative, with Baseline Subtracted';
             }
 
