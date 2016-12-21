@@ -13,7 +13,7 @@ public class AnalyzeStepType {
 			"Mean: Relative Subtracted",
 			"Computes the relative mean value of the pupil sizes within the stimulus by subtracting the baseline: mean(value - mean(baseline value))");
 
-	public static final AnalyzeStepType STANDARD_DEVIATION_ABSOLUTE = new AnalyzeStepType("standard_deviation_deviation_absolute",
+	public static final AnalyzeStepType STANDARD_DEVIATION_ABSOLUTE = new AnalyzeStepType("standard_deviation_absolute",
 			"Standard Deviation: Absolute",
 			"Computes the standard deviation of the pupil sizes within the stimulus: standard_deviation(value)");
 	public static final AnalyzeStepType STANDARD_DEVIATION_RELATIVE_DIVIDED = new AnalyzeStepType("standard_deviation_relative_divided",
