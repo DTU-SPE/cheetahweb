@@ -387,8 +387,8 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData', 'ui.s
         };
 
         cheetah.hideModal($scope, 'cheetah-add-analyze-step-modal');
-        $http.post('../../private/addDataProcessingStep', step).then(function (id) {
-            step.id = id;
+        $http.post('../../private/addDataProcessingStep', step).then(function (result) {
+            step.id = parseInt(result.data, 10);
             $scope.dataProcessing.steps.push(step);
         });
     };
