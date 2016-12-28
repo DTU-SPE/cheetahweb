@@ -3,6 +3,7 @@ package org.cheetahplatform.web.eyetracking.analysis;
 import static org.cheetahplatform.web.eyetracking.cleaning.CleanPupillometryDataWorkItem.STUDIO_EVENT_DATA;
 
 import java.util.List;
+import java.util.ListIterator;
 
 import org.cheetahplatform.web.eyetracking.cleaning.CleanPupillometryDataWorkItem;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFile;
@@ -35,6 +36,22 @@ public class StimulusDetector extends AbstractPupillopmetryFileDetector {
 		PupillometryFileColumn relativeTimeColumn = initializeColumn(pupillometryFile, TIME_SINCE_STIMULUS_START);
 
 		Stimulus stimulus = null;
+		// handle the case that trial and stimulus are the same: since the markings are always applied to the previous line, the stimulus
+		// cannot be detected, since it lies outside the trial, #651
+		if (!trial.getLines().isEmpty()) {
+			ListIterator<PupillometryFileLine> iterator = pupillometryFile
+					.getIteratorStartingAt(trial.getLines().get(0).getLong(timeStampColumn), timeStampColumn);
+			// previous() needs to called twice to get the previous element: the first invocation will return the same element (see javadoc
+			// of ListIterator)
+			iterator.previous();
+			if (iterator.hasPrevious()) {
+				PupillometryFileLine previousLine = iterator.previous();
+				if (stimulusIdentifier.isStart(previousLine, studioEventDataColumn)) {
+					stimulus = new Stimulus();
+				}
+			}
+		}
+
 		boolean stimulusComplete = false;
 		for (PupillometryFileLine line : trial.getLines()) {
 			// the marking with studio event is always added to the previous line --> for start event, add the lines to the next trial, for

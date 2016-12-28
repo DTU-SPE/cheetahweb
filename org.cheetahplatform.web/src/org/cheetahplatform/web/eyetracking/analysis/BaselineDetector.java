@@ -3,6 +3,7 @@ package org.cheetahplatform.web.eyetracking.analysis;
 import static org.cheetahplatform.web.eyetracking.cleaning.CleanPupillometryDataWorkItem.STUDIO_EVENT_DATA;
 
 import java.io.IOException;
+import java.util.ListIterator;
 
 import org.cheetahplatform.web.eyetracking.cleaning.IPupillometryFileLine;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFile;
@@ -36,6 +37,20 @@ public class BaselineDetector extends AbstractPupillopmetryFileDetector {
 
 		PupillometryFileColumn baseLineColumn = initializeColumn(pupillometryFile, BASELINE_COLUMN_NAME);
 		PupillometryFileColumn relativeTimeColumn = initializeColumn(pupillometryFile, TIME_SINCE_BASELINE_START);
+
+		// handle the case that trial and stimulus are the same: since the markings are always applied to the previous line, the stimulus
+		// cannot be detected, since it lies outside the trial, #651
+		if (!trial.getLines().isEmpty()) {
+			ListIterator<PupillometryFileLine> iterator = pupillometryFile
+					.getIteratorStartingAt(trial.getLines().get(0).getLong(timestampColumn), timestampColumn);
+			// previous() needs to called twice to get the previous element: the first invocation will return the same element (see javadoc
+			// of ListIterator)
+			iterator.previous();
+			if (iterator.hasPrevious()) {
+				PupillometryFileLine previousLine = iterator.previous();
+				baselineIdentifier.isWithinRange(previousLine);
+			}
+		}
 
 		Baseline baseline = null;
 		for (PupillometryFileLine line : trial.getLines()) {

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.apache.commons.io.input.BOMInputStream;
 
@@ -310,7 +311,7 @@ public class PupillometryFile {
 		return header;
 	}
 
-	public Iterator<PupillometryFileLine> getIteratorStartingAt(long timestamp, PupillometryFileColumn timestampColumn) {
+	public ListIterator<PupillometryFileLine> getIteratorStartingAt(long timestamp, PupillometryFileColumn timestampColumn) {
 		int index = 0;
 		for (PupillometryFileLine line : content) {
 			long currentTimestamp = line.getLong(timestampColumn);

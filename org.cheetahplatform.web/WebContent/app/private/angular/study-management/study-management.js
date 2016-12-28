@@ -638,6 +638,14 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData', 'ui.s
     };
 
     $scope.previewStimulus = function () {
+        if (!$scope.validateInput()) {
+            BootstrapDialog.alert({
+                title: 'Invalid Configuration',
+                message: 'The configuration is invalid - therefore the stimulus cannot be previewed.'
+            });
+            return;
+        }
+
         cheetah.hideModal($scope, 'cheetah-define-stimulus-modal');
         cheetah.showModal($rootScope, 'cheetah-progress-modal', {
             title: 'Computing the Stimulus Preview',
