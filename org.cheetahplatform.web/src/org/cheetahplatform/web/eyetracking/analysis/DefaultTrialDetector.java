@@ -12,8 +12,9 @@ import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileColumn;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileHeader;
 
 public class DefaultTrialDetector extends AbstractTrialDetector {
-	public DefaultTrialDetector(long fileId, TrialConfiguration config, String decimalSeparator, String timestampColumn) {
-		super(fileId, config, decimalSeparator, timestampColumn);
+	public DefaultTrialDetector(long fileId, DataProcessing dataProcessing, TrialConfiguration config, String decimalSeparator,
+			String timestampColumn) {
+		super(fileId, dataProcessing, config, decimalSeparator, timestampColumn);
 	}
 
 	/**

@@ -62,8 +62,8 @@ public class ExecuteDataProcessingServlet extends AbstractCheetahServlet {
 						String trialComputationConfiguration = processing.getTrialComputationConfiguration();
 						TrialConfiguration trialConfiguration = readJson(trialComputationConfiguration, TrialConfiguration.class);
 
-						ComputeTrialsWorkItem computeTrialsWorkItem = new ComputeTrialsWorkItem(userId, fileId, trialConfiguration,
-								processing.getDecimalSeparator(), processing.getTimestampColumn());
+						ComputeTrialsWorkItem computeTrialsWorkItem = new ComputeTrialsWorkItem(userId, fileId, processing,
+								trialConfiguration, processing.getDecimalSeparator(), processing.getTimestampColumn());
 						dataProcessingWorkItem.addDataProcessingWorkItem(computeTrialsWorkItem);
 					}
 

@@ -1,6 +1,7 @@
 package org.cheetahplatform.web.eyetracking.cleaning;
 
 import org.cheetahplatform.web.AbstractCheetahWorkItem;
+import org.cheetahplatform.web.eyetracking.analysis.DataProcessing;
 import org.cheetahplatform.web.eyetracking.analysis.DataProcessingTrialDetector;
 import org.cheetahplatform.web.eyetracking.analysis.TrialConfiguration;
 import org.cheetahplatform.web.eyetracking.analysis.TrialEvaluation;
@@ -10,10 +11,12 @@ public class ComputeTrialsWorkItem extends AbstractCheetahWorkItem implements ID
 	private String decimalSeparator;
 	private String timestampColumn;
 	private TrialConfiguration trialConfiguration;
+	private DataProcessing dataProcessing;
 
-	public ComputeTrialsWorkItem(long userId, Long fileId, TrialConfiguration trialConfiguration, String decimalSeparator,
-			String timestampColumn) {
+	public ComputeTrialsWorkItem(long userId, Long fileId, DataProcessing dataProcessing, TrialConfiguration trialConfiguration,
+			String decimalSeparator, String timestampColumn) {
 		super(userId, fileId, "Computing trials.");
+		this.dataProcessing = dataProcessing;
 		this.trialConfiguration = trialConfiguration;
 		this.decimalSeparator = decimalSeparator;
 		this.timestampColumn = timestampColumn;
@@ -26,7 +29,7 @@ public class ComputeTrialsWorkItem extends AbstractCheetahWorkItem implements ID
 
 	@Override
 	public boolean doWork(PupillometryFile file, DataProcessingContext context) throws Exception {
-		DataProcessingTrialDetector detector = new DataProcessingTrialDetector(fileId, trialConfiguration, decimalSeparator,
+		DataProcessingTrialDetector detector = new DataProcessingTrialDetector(fileId, dataProcessing, trialConfiguration, decimalSeparator,
 				timestampColumn, file);
 
 		TrialEvaluation trialEvaluation = detector.detectTrials();

@@ -12,8 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.cheetahplatform.web.dto.ComputeTrialsRequest;
 import org.cheetahplatform.web.dto.PreviewBaselineDto;
 import org.cheetahplatform.web.dto.PreviewBaselineResponse;
-import org.cheetahplatform.web.eyetracking.analysis.Trial;
 import org.cheetahplatform.web.eyetracking.analysis.DefaultTrialDetector;
+import org.cheetahplatform.web.eyetracking.analysis.Trial;
 import org.cheetahplatform.web.eyetracking.analysis.TrialEvaluation;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFile;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileColumn;
@@ -26,14 +26,14 @@ public class PreviewBaselineServlet extends AbstractCheetahServlet {
 	protected void doPostWithDatabaseConnection(Connection connection, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		ComputeTrialsRequest trialRequest = readJson(request, ComputeTrialsRequest.class);
-		DefaultTrialDetector trialDetector = new DefaultTrialDetector(trialRequest.getFileId(), trialRequest.getConfig(),
+		DefaultTrialDetector trialDetector = new DefaultTrialDetector(trialRequest.getFileId(), null, trialRequest.getConfig(),
 				trialRequest.getDecimalSeparator(), trialRequest.getTimestampColumn());
 
 		PupillometryFile pupillometryFile = trialDetector.loadPupillometryFile();
 		PupillometryFileColumn studioEventDataColumn = pupillometryFile.getHeader().getColumn(STUDIO_EVENT_DATA);
 		PupillometryFileColumn studioEventColumn = pupillometryFile.getHeader().getColumn(STUDIO_EVENT);
 
-		TrialEvaluation trialEvaluation = trialDetector.detectTrials();
+		TrialEvaluation trialEvaluation = trialDetector.detectTrials(true, true, false);
 		int baselineCount = 0;
 		int stimulusCount = 0;
 		List<Trial> trials = trialEvaluation.getTrials();

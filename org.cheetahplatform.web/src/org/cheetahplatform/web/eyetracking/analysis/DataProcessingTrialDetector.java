@@ -9,9 +9,9 @@ import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFile;
 public class DataProcessingTrialDetector extends AbstractTrialDetector {
 	private PupillometryFile pupillometryFile;
 
-	public DataProcessingTrialDetector(long fileId, TrialConfiguration config, String decimalSeparator, String timestampColumn,
-			PupillometryFile pupillometryFile) {
-		super(fileId, config, decimalSeparator, timestampColumn);
+	public DataProcessingTrialDetector(long fileId, DataProcessing dataProcessing, TrialConfiguration config, String decimalSeparator,
+			String timestampColumn, PupillometryFile pupillometryFile) {
+		super(fileId, dataProcessing, config, decimalSeparator, timestampColumn);
 		this.pupillometryFile = pupillometryFile;
 	}
 

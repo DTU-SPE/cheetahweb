@@ -46,6 +46,10 @@ public class PupillometryFileLine implements IPupillometryFileLine {
 
 	public Double getDouble(PupillometryFileColumn column) {
 		String value = get(column).replaceAll(",", ".");
+		if (value == null || value.isEmpty()) {
+			return null;
+		}
+
 		return Double.parseDouble(value);
 	}
 

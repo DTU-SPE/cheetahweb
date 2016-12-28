@@ -12,7 +12,7 @@ import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileLine;
 
 public class BaselineDetector extends AbstractPupillopmetryFileDetector {
 
-	private static final String BASELINE_COLUMN_NAME = "Baseline";
+	public static final String BASELINE_COLUMN_NAME = "Baseline";
 	private static final String TIME_SINCE_BASELINE_START = "Time_since_baseline_start";
 
 	private Trial trial;
