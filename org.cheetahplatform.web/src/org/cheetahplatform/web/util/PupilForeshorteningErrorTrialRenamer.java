@@ -11,13 +11,12 @@ import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileLine;
  * Small utility class for renaming the StudioEventData of the experiment to evaluate the pupil foreshortening error for Tobii TX300.
  *
  * @author Jakob
- *
  */
-public class PupilForeshorteningErrorTrailRenamer {
+public class PupilForeshorteningErrorTrialRenamer {
 	private static final String STIMULUS = "Stimulus";
 	private static final String TRIAL_START = "TrialStart";
 	private static final String STUDIO_EVENT_DATA_COLUMN = "StudioEventData";
-	public static final String FILE = "C:\\Forshortening_selected.tsv";
+	public static final String FILE = "F:\\PupilForeshorteningError\\Forshortening_artificial_light_selected_12122016.tsv";
 
 	public static void main(String[] args) throws Exception {
 		File file = new File(FILE);
@@ -55,7 +54,7 @@ public class PupilForeshorteningErrorTrailRenamer {
 
 		int separatorIndex = FILE.lastIndexOf(".");
 		String prefix = FILE.substring(0, separatorIndex);
-		String newFileName = prefix + "_processed" + FILE.substring(separatorIndex);
+		String newFileName = prefix + "_trials_renamed" + FILE.substring(separatorIndex);
 		System.out.println("Writing output to '" + newFileName + "'...");
 		pupillometryFile.writeToFile(new File(newFileName));
 		System.out.println("Done");
