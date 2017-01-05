@@ -83,7 +83,7 @@ public class PupillometryFile {
 		this.decimalSeparator = decimalSeparator;
 	}
 
-	public PupillometryFile(InputStream input, String decimalSeparator) {
+	public PupillometryFile(InputStream input, String separator) {
 		this(input, SEPARATOR_TABULATOR, false);
 	}
 
@@ -94,8 +94,8 @@ public class PupillometryFile {
 		this.decimalSeparator = SEPARATOR_COMMA;
 	}
 
-	public PupillometryFile(String decimalSeparator) throws IOException {
-		this(new ByteArrayInputStream("".getBytes()), decimalSeparator);
+	public PupillometryFile(String separator) throws IOException {
+		this(new ByteArrayInputStream("".getBytes()), separator);
 
 		header = new PupillometryFileHeader();
 		content = new LinkedList<>();
@@ -283,6 +283,10 @@ public class PupillometryFile {
 		return column;
 	}
 
+	public PupillometryFileColumn getColumn(String columnName) {
+		return header.getColumn(columnName);
+	}
+
 	public int getColumnCount() throws IOException {
 		if (content == null) {
 			read();
@@ -301,6 +305,10 @@ public class PupillometryFile {
 		}
 
 		return new LinkedList<>(content);
+	}
+
+	public String getDecimalSeparator() {
+		return decimalSeparator;
 	}
 
 	public PupillometryFileHeader getHeader() throws IOException {
@@ -329,6 +337,10 @@ public class PupillometryFile {
 		lines.add(header);
 		lines.addAll(content);
 		return lines;
+	}
+
+	public String getSeparator() {
+		return separator;
 	}
 
 	public boolean hasColumn(String column) {
