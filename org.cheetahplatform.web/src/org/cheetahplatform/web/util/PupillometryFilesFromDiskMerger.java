@@ -9,12 +9,12 @@ import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFile;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileMerger;
 
 public class PupillometryFilesFromDiskMerger {
-	private static final String TARGET = "C:\\Users\\Jakob\\Desktop\\thomas_merged.tsv";
+	private static final String TARGET = "C:\\Users\\Jakob\\Desktop\\Pupillometrie_Studie_Thomas_05012016\\Processed\\Studie_Thomas_Merged.tsv";
 	public static List<File> FOLDERS;
 
 	static {
 		FOLDERS = new ArrayList<>();
-		FOLDERS.add(new File("C:\\Users\\Jakob\\Desktop\\E-Clip"));
+		FOLDERS.add(new File("C:\\Users\\Jakob\\Desktop\\Pupillometrie_Studie_Thomas_05012016\\Processed"));
 	}
 
 	public static void main(String[] args) {
