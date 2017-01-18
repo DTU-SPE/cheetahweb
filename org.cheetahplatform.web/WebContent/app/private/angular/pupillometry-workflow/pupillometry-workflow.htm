@@ -27,102 +27,142 @@
 
     <div class="dropdown">
         <button class="btn btn-default dropdown-toggle" type="button"
-                id="cheetah-interactions-dropdown"
+                id="cheetah-pupillometry-selectedLines-dropdown"
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-            Show elements <span class="caret"></span>
+            Available Lines <span class="caret"></span>
         </button>
-        <ul class="dropdown-menu  cancel-click"
-            aria-labelledby="cheetah-pupillometry-visualization-dropdown">
-            <li><label><input type="checkbox" ng-model="interactionTempObject.AND"
-                              id="andCheckbox" ng-change="getInteractions()">
-                AND
-            </label>
-                <div></div>
-            </li>
-            <li><label><input type="checkbox" ng-model="interactionTempObject.XOR"
-                              id="xorCheckbox" ng-change="getInteractions()">
-                XOR
-            </label>
-                <div></div>
-            </li>
-            <li><label><input type="checkbox" ng-model="interactionTempObject.ACTIVITY"
-                              id="activityCheckbox" ng-change="getInteractions()">
-                Activities
-            </label>
-                <div></div>
-            </li>
-            <li><label><input type="checkbox" ng-model="interactionTempObject.SEQUENCE_FLOW"
-                              id="sequenceFlowCheckbox" ng-change="getInteractions()">
-                Sequence Flow
-            </label>
-                <div></div>
-            </li>
-            <li><label><input type="checkbox" ng-model="interactionTempObject.START_EVENT"
-                              id="startEventCheckbox" ng-change="getInteractions()">
+        <ul class="dropdown-menu">
+              <li ng-repeat="line in pupillometryLines">
+                <div class="cheetah-nowrap">
+                    <input type="checkbox" ng-model="line.selected" id="{{'idforlabel'+line.id}}" ng-change="setSelection(line)">
+                    <label class="{{line.color}}" for="{{'idforlabel'+line.id}}">{{line.label}}</label>
+                </div>
+              </li>
+            </ul>
+     </div>
 
-                Start Point
-            </label>
-                <div></div>
+     <div class="dropdown">
+         <button class="btn btn-default dropdown-toggle" type="button"
+                 id="cheetah-interactions-dropdown"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+             Show elements <span class="caret"></span>
+         </button>
+         <ul class="dropdown-menu  cancel-click"
+             aria-labelledby="cheetah-pupillometry-visualization-dropdown">
+             <li><label><input type="checkbox" ng-model="interactionTempObject.AND"
+                               id="andCheckbox" ng-change="getInteractions()">
+                 AND
+             </label>
+                 <div></div>
+             </li>
+             <li><label><input type="checkbox" ng-model="interactionTempObject.XOR"
+                               id="xorCheckbox" ng-change="getInteractions()">
+                 XOR
+             </label>
+                 <div></div>
+             </li>
+             <li><label><input type="checkbox" ng-model="interactionTempObject.ACTIVITY"
+                               id="activityCheckbox" ng-change="getInteractions()">
+                 Activities
+             </label>
+                 <div></div>
+             </li>
+             <li><label><input type="checkbox" ng-model="interactionTempObject.SEQUENCE_FLOW"
+                               id="sequenceFlowCheckbox" ng-change="getInteractions()">
+                 Sequence Flow
+             </label>
+                 <div></div>
+             </li>
+             <li><label><input type="checkbox" ng-model="interactionTempObject.START_EVENT"
+                               id="startEventCheckbox" ng-change="getInteractions()">
 
-            </li>
-            <li>
-                <label><input type="checkbox" ng-model="interactionTempObject.END_EVENT"
-                              id="endEventCheckbox" ng-change="getInteractions()">
-                    End Point
-                </label>
-                <div></div>
-            </li>
-        </ul>
-    </div>
+                 Start Point
+             </label>
+                 <div></div>
 
-    <div class="check">
-        <label><input type="checkbox" ng-model="showDuration.show" id="checkBoxShowDuration"
-                      ng-change="showDurationOnOff()">
-            Show duration of naming-process
-        </label>
-        <div></div>
-    </div>
+             </li>
+             <li>
+                 <label><input type="checkbox" ng-model="interactionTempObject.END_EVENT"
+                               id="endEventCheckbox" ng-change="getInteractions()">
+                     End Point
+                 </label>
+                 <div></div>
+             </li>
+         </ul>
+     </div>
+
+     <div class="check">
+         <label><input type="checkbox" ng-model="showDuration.show" id="checkBoxShowDuration"
+                       ng-change="showDurationOnOff()">
+             Show duration of naming-process
+         </label>
+         <div></div>
+     </div>
+
+     <div>
+         <button type="button" class="btn btn-default btn-md"
+                 ng-click="jumpToPreviousTimeframe()">
+             <span class=" icon-cheetah-arrow-left" aria-hidden="true"></span>
+             Previous Timeframe
+         </button>
+         <button type="button" class="btn btn-default btn-md"
+                 ng-click="jumpToNextTimeframe()">
+             Next Timeframe <span class="icon-cheetah-arrow-right"
+                                  aria-hidden="true"></span>
+         </button>
+     </div>
+
+     <div>
+         <select class="form-control" id="zoom" ng-model="zoomen"
+                 ng-options="element.text for element in zoomFactor" ng-change="zoomIn()">
+             <option value="Choose"></option>
+         </select>
+     </div>
+
+     <div>
+         <select class="form-control" id="circleOrLine" ng-model="selectCircleOrLines"
+                 ng-options="element.text for element in selectSymbols" ng-change="selectSymbol()">
+             <option value="Choose"></option>
+         </select>
+     </div>
+
+     <div>
+         <button type="button" ng-click="newWindow()">
+             Video
+         </button>
+     </div>
 
     <div>
-        <button type="button" class="btn btn-default btn-md"
-                ng-click="jumpToPreviousTimeframe()">
-            <span class=" icon-cheetah-arrow-left" aria-hidden="true"></span>
-            Previous Timeframe
-        </button>
-        <button type="button" class="btn btn-default btn-md"
-                ng-click="jumpToNextTimeframe()">
-            Next Timeframe <span class="icon-cheetah-arrow-right"
-                                 aria-hidden="true"></span>
-        </button>
-    </div>
-
-    <div>
-        <select class="form-control" id="zoom" ng-model="zoomen"
-                ng-options="element.text for element in zoomFactor" ng-change="zoomIn()">
+        <select class="form-control"ng-model="percentileSelection" ng-change="renderData()"  id="numberOfPercentiles"
+                ng-options="x.name for x in displayHight">
             <option value="Choose"></option>
         </select>
     </div>
 
-    <div>
-        <select class="form-control" id="circleOrLine" ng-model="selectCircleOrLines"
-                ng-options="element.text for element in selectSymbols" ng-change="selectSymbol()">
-            <option value="Choose"></option>
-        </select>
-    </div>
+ </div>
 
-    <div>
-        <button type="button"   ng-click="newWindow()">
-            OpenWindow
-        </button>
-    </div>
+ <div id="pupillometry" class="aGraph"></div>
+ <div id="pupillometry-no-data">No eyetracking data available for
+     this timeslot.
+ </div>
 
-</div>
+ <div class="modal" data-backdrop="static" id="pupillometry-workflow-video">
+     <div class="modal-dialog">
+         <div class="modal-content">
+             <div class="modal-header">
+                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                         aria-hidden="true">×</span></button>
+                 <h4 class="modal-title">Video</h4>
+             </div>
+             <div class="modal-body container-fluid">
+                 <div>
+                     <video id="workflow-video_container" width="100%" height="100%" controls>
+                         <source ng-repeat="video in videos" src="{{video.url}}" type="{{video.type}}">
+                     </video>
+                 </div>
+             </div>
+         </div>
+     </div>
+ </div>
 
-<div id="pupillometry" class="aGraph"></div>
-<div id="pupillometry-no-data">No eyetracking data available for
-    this timeslot.
-</div>
-
-</div>
-</div>
 

@@ -278,11 +278,7 @@ angular
                 line.selected = !line.selected;
             }
 
-            if (!line.selected) {
-                $('#pupillometry').find("#" + line.id).remove();
-            } else {
-                drawLine(line);
-            }
+            $scope.renderData();
         };
 
         $scope.jumpToNextTimeframe = function () {

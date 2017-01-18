@@ -174,7 +174,7 @@ myApp.controller('SubjCtrl', function ($scope, $http, $q, $timeout) {
     };
 
     $scope.showUpload = function () {
-        $("#cheetah-load-csv-dialog").modal('show');
+        $(".modal-video").modal('show');
     };
 
 

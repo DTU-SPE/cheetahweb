@@ -16,25 +16,14 @@ angular
         $scope.instersectCheck = [];
         $scope.useCircles = true;
         $scope.showDurationTime = false;
-
-
-
-        $('.cancel-click label').on('click', function(e) {
-            e.stopPropagation();
-        });
-
-        var div = d3.select("body").append("div")
-            .attr("class", "tooltip")
-            .style("opacity", 0);
-        $('.cheetah-pupillometry-visualization input').on('click', function (event) {
-            event.stopPropagation();
-        });
-
-        $scope.selectSymbols = [
-            {text: "Use Symbols for Events", value: true},
-            {text: "Use Lines for Events", value: false}
-        ];
-
+        $scope.redline = {
+            x: undefined,
+            y: undefined
+        };
+        $scope.mouseTime = undefined;
+        $scope.marginLeftWorkflow = 60;
+        $scope.margins = [0, 30, 30, $scope.marginLeftWorkflow];
+        $scope.oldZoom=undefined;
         $scope.zoomFactor = [
             {text: "10 seconds", value: 1},
             {text: "20 seconds", value: 2},
@@ -54,12 +43,35 @@ angular
             {text: "10 minuntes", value: 60},
             {text: "20 minuntes", value: 120}
         ];
-
-
         $scope.showDurationTime = true;
-        $scope.showDuration={
-            "show":true
-        }
+        $scope.showDuration = {
+            "show": true
+        };
+
+        $scope.displayHight = [
+            {name : "Pupil diameter: normal ",  "numberUp":99, "lowerBound" : true},
+            {name : "Pupil diameter: all tops", "numberUp":100,"lowerBound" : true},
+            {name : "Pupil diameter: full ", "numberUp":100, "lowerBound" : false}
+        ];
+
+        $scope.percentileSelection = $scope.displayHight[0];
+        
+        $scope.selectSymbols = [
+            {text: "Use Symbols for Events", value: true},
+            {text: "Use Lines for Events", value: false}
+        ];
+
+
+        $('.cancel-click label').on('click', function (e) {
+            e.stopPropagation();
+        });
+
+        var div = d3.select("body").append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0);
+        $('.cheetah-pupillometry-visualization input').on('click', function (event) {
+            event.stopPropagation();
+        });
 
         if (localStorage.getItem("circleOrLine") === undefined || localStorage.getItem("circleOrLine") === "true") {
             $scope.selectCircleOrLines = $scope.selectSymbols[0];
@@ -71,25 +83,31 @@ angular
 
         if (localStorage.getItem("showDuration") === undefined || localStorage.getItem("showDuration") === "false") {
             $scope.showDurationTime = false;
-            $scope.showDuration={
-                "show":false
+            $scope.showDuration = {
+                "show": false
             }
         } else {
             $scope.showDurationTime = true;
-            $scope.showDuration={
-                "show":true
+            $scope.showDuration = {
+                "show": true
             }
         }
 
         if (localStorage.getItem("zoomFactorStored") === undefined || localStorage.getItem("zoomFactorStored") === null) {
             $scope.zoomen = $scope.zoomFactor[0];
             $scope.zoomFactorForServer = 1;
+            if($scope.oldZoom===undefined){
+                $scope.oldZoom=1;
+            }
         } else {
             var tempZoomFactorOutOfStorage = JSON.parse(localStorage.getItem("zoomFactorStored"));
             $scope.zoomen = $scope.zoomFactor.filter(function (factor) {
                 return factor.value === tempZoomFactorOutOfStorage.value;
             })[0];
             $scope.zoomFactorForServer = JSON.parse(localStorage.getItem("zoomFactorStored")).value;
+            if($scope.oldZoom===undefined){
+                $scope.oldZoom=$scope.zoomFactorForServer;
+            }
         }
 
         if (localStorage.getItem("interactionList") !== undefined) {
@@ -111,10 +129,56 @@ angular
         }
 
         $scope.showDurationOnOff = function () {
-            $scope.showDurationTime=$scope.showDuration.show;
+            $scope.showDurationTime = $scope.showDuration.show;
             localStorage.setItem("showDuration", $scope.showDuration.show);
             $scope.renderData();
-        }
+        };
+
+        $scope.newWindow = function () {
+            var postFix = 'processInstance=' + cheetah.processInstance;
+            $http.get('../../private/movie?' + postFix).success(function (videos) {
+                $scope.videos = videos;
+                $("#pupillometry-workflow-video").modal('show');
+                $("#pupillometry-workflow-video .modal-backdrop").click(function (event) {
+                    var position = [];
+                    position[0] = event.pageX - 20;
+                    position[1] = event.pageY;
+                    $scope.jumpToMousePosition(position)
+                });
+                if ($scope.mouseTime != undefined) {
+                    document.getElementById('workflow-video_container').currentTime = $scope.mouseTime;
+                } else {
+                    document.getElementById('workflow-video_container').currentTime = ( $scope.startTime - $scope.sessionStartTimestamp) / (1000 * 1000);
+                }
+                $('#pupillometry-workflow-video .modal-content').draggable();
+
+                if (!cheetah.processInstance) {
+                    $('.loading').hide();
+                }
+            });
+        };
+
+        setInterval(function () {
+            var isOpen = $("#pupillometry-workflow-video").is(':visible');
+            if (isOpen) {
+                var currentVideoTime = document.getElementById('workflow-video_container').currentTime;
+                $scope.redline.x = $scope.x(currentVideoTime * 1000 * 1000);
+
+                var $redline = $('#cheetah-workload-redline');
+
+                if ((currentVideoTime +1)> (($scope.endTime- $scope.sessionStartTimestamp) / (1000 * 1000))) {
+                    refreshData(currentVideoTime*1000*1000+ $scope.sessionStartTimestamp);
+                }else if((currentVideoTime)+1<(($scope.startTime - $scope.sessionStartTimestamp) / (1000 * 1000))){
+                    refreshData(currentVideoTime*1000*1000+ $scope.sessionStartTimestamp);                }
+                if ($redline.length === 0) {
+                    $scope.renderData();
+                } else {
+                    $redline.attr('x1', $scope.redline.x).attr('x2', $scope.redline.x);
+                }
+                $scope.mouseTime=currentVideoTime;
+            }
+        }, 100);
+
 
         $scope.getInteractions = function () {
             $scope.interactionList = [];
@@ -158,7 +222,16 @@ angular
         $scope.zoomIn = function () {
             $scope.zoomFactorForServer = $scope.zoomen.value;
             localStorage.setItem("zoomFactorStored", JSON.stringify($scope.zoomen));
-            refreshData($scope.startTime);
+            refreshData($scope.startTime, function () {
+                if( $scope.zoomFactorForServer>=$scope.oldZoom && $scope.redline.x !==undefined){
+                    $scope.redline.x = $scope.x($scope.mouseTime * 1000 * 1000);
+                    $('#cheetah-workload-redline').attr('x1', $scope.redline.x).attr('x2', $scope.redline.x);
+                }else{
+                    $('#cheetah-workload-redline').remove();
+                    $scope.redline.x = undefined;
+                }
+                $scope.oldZoom = $scope.zoomFactorForServer;
+            });
         };
 
         $scope.selectSymbol = function () {
@@ -175,6 +248,26 @@ angular
                     break;
                 }
             }
+            var percentileNumber=$scope.percentileSelection.numberUp;
+            var yMax=0;
+            for (var k = 0; k < $scope.pupillometryData.length; k++) {
+                if(yMax<$scope.pupillometryData[k].percentiles[percentileNumber]){
+                    yMax = $scope.pupillometryData[k].percentiles[percentileNumber];
+                }
+            }
+
+            var yMin = 2;
+            for (var k = 0; k < $scope.pupillometryData.length; k++) {
+                if(yMin<$scope.pupillometryData[k].percentiles[1]){
+                    yMin = $scope.pupillometryData[k].percentiles[1];
+                }
+            }
+            //yMin = $scope.pupillometryData[1].percentiles[50]-1;
+            yMin=yMin-.1;
+            if(!$scope.percentileSelection.lowerBound){
+                yMin=0;
+            }
+
 
             if (data === undefined || $scope.pupillometryData[0].percentiles === undefined) {
                 $("#pupillometry").hide();
@@ -198,18 +291,16 @@ angular
 
                 var availableWidth = $('#pupillometry').width();
                 var availableHeight = $('#pupillometry').parent().height() - $('#pupillometry-controls').height() - $('.cheetah-pupillometry-visualization').height() - 40;
-                $scope.marginLeft = 60;
 
-                var margins = [0, 30, 30, $scope.marginLeft];
-                var width = availableWidth - margins[1] - margins[3];
-                var height = availableHeight - margins[0] - margins[2];
+                var width = availableWidth - $scope.margins[1] - $scope.margins[3];
+                var height = availableHeight - $scope.margins[0] - $scope.margins[2];
 
                 $scope.diagramWidth = width;
 
                 var x = d3.scale.linear().domain([startTime - sessionStartTimestamp, endTime - sessionStartTimestamp]).range([0, width]);
                 $scope.x = x;
-                var yMax = data.percentiles[99];
-                var yMin = yMax - 1;
+                //var yMax = data.percentiles[100];
+                //var yMin = yMax - 1.5;
                 var y = d3.scale.linear().domain([yMin, yMax]).range([height, 0]);
                 $scope.y = y;
                 $scope.yMin = yMin;
@@ -227,13 +318,13 @@ angular
                 $("#pupillometry").html('');
                 // Add an SVG element with the desired dimensions and margin.
                 var graph = d3.select("#pupillometry").append("svg:svg")
-                    .attr("width", width + margins[1] + margins[3])
-                    .attr("height", height + margins[0] + margins[2]).on("click", function () {
+                    .attr("width", width + $scope.margins[1] + $scope.margins[3])
+                    .attr("height", height + $scope.margins[0] + $scope.margins[2]).on("click", function () {
                         var position = d3.mouse(this);
-                        jumpToMousePosition(position);
+                        $scope.jumpToMousePosition(position);
                     })
                     .append("svg:g")
-                    .attr("transform", "translate(" + margins[3] + "," + margins[0] + ")");
+                    .attr("transform", "translate(" + $scope.margins[3] + "," + $scope.margins[0] + ")");
                 $scope.graph = graph;
 
                 var formatTime = d3.time.format("%M:%S");
@@ -318,19 +409,19 @@ angular
                         workflowElement: interaction.workflowElement,
                         type: interaction.type,
                         text: interaction.typeToDisplay + " " + interaction.workflowElement,
-                        duration: (interaction.timestamp-interaction.startTime)/1000/1000
+                        duration: (interaction.timestamp - interaction.startTime) / 1000 / 1000
                     });
                 });
                 $scope.intersectCheck = [];
 
-                var textDummy =$("<div>").css('display','inline').appendTo($(document.body)).text(" 010000 sec");
-                var textWidth=textDummy.width();
+                var textDummy = $("<div>").css('display', 'inline').appendTo($(document.body)).text(" 010000 sec");
+                var textWidth = textDummy.width();
                 textDummy.remove();
                 if ($scope.useCircles === true) {
                     $.each(points, function (t, point) {
                         var yActPos = height - 34;
                         var listLength = $scope.intersectCheck.length;
-                        if(point.xPos>=0) {
+                        if (point.xPos >= 0) {
                             while (true) {
                                 if (listLength === 0) {
                                     break;
@@ -349,6 +440,9 @@ angular
 
                             $scope.intersectCheck.push({onX: point.xPos, onY: yActPos});
                             var containerSize = 2 * $scope.radius;
+                            if ($scope.redline.x !== undefined  && $('#cheetah-workload-redline').length === 0) {
+                                graph.append("line").attr("x1", $scope.redline.x).attr("y1", (height - $scope.radius)).attr("x2", $scope.redline.x).attr("y2", 0).attr("stroke-width", 1).attr("stroke", "red").attr("id", "cheetah-workload-redline");
+                            }
                             var container = graph.append('g').attr('transform', 'translate(' + point.xPos + ',' + yActPos + ')').attr("width", containerSize).attr("height", containerSize).on("mouseover", function (d) {
                                     div.transition()
                                         .duration(200)
@@ -373,25 +467,30 @@ angular
                     $.each(points, function (t, point) {
                         if (point.xPos > 0) {
                             graph.append("line").attr("x1", point.xPos).attr("y1", (height - $scope.radius)).attr("x2", point.xPos).attr("y2", 0).attr("stroke-width", 2).attr("stroke", "black");
+
+                            if ($scope.redline.x !== undefined && $('#cheetah-workload-redline').length === 0) {
+                                graph.append("line").attr("x1", $scope.redline.x).attr("y1", (height - $scope.radius)).attr("x2", $scope.redline.x).attr("y2", 0).attr("stroke-width", 1).attr("stroke", "red").attr("id", "cheetah-workload-redline");
+                            }
+
                             var shift = point.xPos + 12;
-                            if ($scope.showDurationTime === true &&point.xStartPos != null) {
+                            if ($scope.showDurationTime === true && point.xStartPos != null) {
                                 var startCreate = point.xStartPos;
                                 if (startCreate < 0) {
                                     startCreate = 0;
-                                }else{
+                                } else {
                                     graph.append("line").attr("x1", startCreate).attr("y1", (height - $scope.radius)).attr("x2", startCreate).attr("y2", 0).attr("stroke-width", 2).attr("stroke", "black");
                                 }
 
                                 graph.append("rect").attr("x", startCreate).attr("y", 0).attr("width", point.xPos - startCreate).attr("height", (height - $scope.radius)).attr("fill", "yellow").attr("opacity", 0.25);
 
 
-                                if(point.xPos - startCreate<textWidth){
-                                    graph.append('text').text("Duration: " + point.duration.toFixed(2) + "sec").attr('fill', "blue").attr("transform", "translate(" + (startCreate +  (point.xPos - startCreate)/2) + "," + (height - 100) + ") rotate(-90)");
-                                }else {
-                                    var textContainer = graph.append('g').attr("transform", "translate("+ (startCreate + 5)+","+(height - 100)+")");
-                                    var text =  textContainer.append('text');
+                                if (point.xPos - startCreate < textWidth) {
+                                    graph.append('text').text("Duration: " + point.duration.toFixed(2) + "sec").attr('fill', "blue").attr("transform", "translate(" + (startCreate + (point.xPos - startCreate) / 2) + "," + (height - 100) + ") rotate(-90)");
+                                } else {
+                                    var textContainer = graph.append('g').attr("transform", "translate(" + (startCreate + 5) + "," + (height - 100) + ")");
+                                    var text = textContainer.append('text');
                                     text.append("tspan").text("Duration: ").attr('fill', "blue");
-                                    text.append("tspan").attr("dy", 1 + "em").attr("x", 0).text(point.duration.toFixed(2)+ " sec").attr('fill', "blue");
+                                    text.append("tspan").attr("dy", 1 + "em").attr("x", 0).text(point.duration.toFixed(2) + " sec").attr('fill', "blue");
                                 }
                             }
 
@@ -442,7 +541,6 @@ angular
             }
         };
 
-
         function refreshData(time, calllback) {
             if ($scope.updatingData === true) {
                 return;
@@ -459,7 +557,6 @@ angular
                 slidingWindowDuration = tmpWindow * 1000;
             }
             $scope.updatingData = true;
-
             //assemble url depending on whether we are analyzing a ppm instance or files
             var url = '../../private/pupillometry?';
             if (cheetah.processInstance) {
@@ -494,26 +591,26 @@ angular
             });
         }
 
-        function drawLine(pupillometryLine) {
-            $scope.graph.append("svg:path").attr("d", $scope.createLine(pupillometryLine.entries, 'average')).attr("class", pupillometryLine.color).attr("id", pupillometryLine.id);
-        }
 
-        $scope.setSelection = function (line, event) {
-            //prevent multiple calls when clicking on check box
-            var target = event.target;
-            if (target.type !== 'checkbox') {
-                line.selected = !line.selected;
-            }
+        $scope.setSelection = function (line) {
+            $scope.renderData();
+        };
 
-            if (!line.selected) {
-                $('#pupillometry').find("#" + line.id).remove();
-            } else {
-                drawLine(line);
-            }
+        $scope.jumpToMousePosition = function (position) {
+            var mousePositionRelatveToChart = $scope.redline.x = position[0] - $scope.marginLeftWorkflow;
+            $scope.redline.y = position[1];
+            var frameDuration = ($scope.endTime - $scope.startTime);
+            var percent = mousePositionRelatveToChart / $scope.diagramWidth;
+            $scope.mouseTime = (percent * frameDuration + $scope.startTime - $scope.sessionStartTimestamp) / (1000 * 1000);
+            console.log($scope.redline.x + "  " + $scope.mouseTime);
+            document.getElementById('workflow-video_container').currentTime = $scope.mouseTime;
+            $scope.renderData();
         };
 
         $scope.jumpToNextTimeframe = function () {
-            jumpToMousePosition([Number.MAX_VALUE, 0]);
+            $('#cheetah-workload-redline').remove();
+            $scope.redline.x = undefined;
+            jumpToPosition([Number.MAX_VALUE, 0]);
         };
 
         $scope.jumpToPreviousTimeframe = function () {
@@ -523,12 +620,14 @@ angular
                     message: 'You have already reached the start of the session.'
                 });
             } else {
-                jumpToMousePosition([0, 0]);
+                $('#cheetah-workload-redline').remove();
+                $scope.redline.x = undefined;
+                jumpToPosition([0, 0]);
             }
         };
 
-        function jumpToMousePosition(position) {
-            var relativeToChart = position[0] - $scope.marginLeft;
+        function jumpToPosition(position) {
+            var relativeToChart = position[0] - $scope.marginLeftWorkflow;
             var frameDuration = ($scope.endTime - $scope.startTime);
             var newTime = 0;
             if (($scope.endTime + frameDuration) > $scope.sessionEndTimeStamp && position[0] !== 0) {

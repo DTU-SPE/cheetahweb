@@ -562,3 +562,16 @@ div.check {
   border-radius: 4px;
   padding: 5px;
 }
+
+.cheetah-nowrap{
+  display: inline-block;
+  white-space: nowrap;
+}
+
+#pupillometry-workflow-video .modal-backdrop.in {
+  opacity: 0;
+}
+
+#pupillometry-workflow-video .modal-content{
+  width: 800px;
+}
