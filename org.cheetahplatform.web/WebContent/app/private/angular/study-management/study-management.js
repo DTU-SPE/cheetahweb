@@ -201,17 +201,22 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData', 'ui.s
     };
 
     $scope.assembleStepName = function (step) {
+        var name = "";
+        if (step.name && step.name.length > 0) {
+            name = step.name + ' - ';
+        }
+
         if (step.type === 'analyze') {
             var configuration = JSON.parse(step.configuration);
             var type = configuration.type;
             if (type === 'blinks') {
-                return 'Blinks';
+                return name + 'Blinks';
             }
             if (type === 'missing_total') {
-                return "Missing - Total";
+                return name + "Missing - Total";
             }
             if (type === 'missing_percent') {
-                return 'Missing - Percentage';
+                return name + 'Missing - Percentage';
             }
 
             var computation = '';
@@ -238,7 +243,7 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData', 'ui.s
                 computationType = 'Relative, with Baseline Subtracted';
             }
 
-            return computation + ' - ' + computationType;
+            return name + computation + ' - ' + computationType;
         }
 
         return step.name;

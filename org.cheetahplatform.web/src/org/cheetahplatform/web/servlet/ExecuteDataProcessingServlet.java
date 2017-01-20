@@ -75,7 +75,7 @@ public class ExecuteDataProcessingServlet extends AbstractCheetahServlet {
 
 					CheetahWorkItemGuard cheetahWorkItemGuard = resultCollector.get(dataProcessingStep);
 					AnalyzeTrialsWorkItem analyzeTrialsWorkItem = new AnalyzeTrialsWorkItem(userId, fileId, config, cheetahWorkItemGuard,
-							processing);
+							processing, dataProcessingStep);
 					dataProcessingWorkItem.addDataProcessingWorkItem(analyzeTrialsWorkItem);
 				} else {
 					throw new IllegalArgumentException("Unsupported data processing step of type " + dataProcessingStep.getType());

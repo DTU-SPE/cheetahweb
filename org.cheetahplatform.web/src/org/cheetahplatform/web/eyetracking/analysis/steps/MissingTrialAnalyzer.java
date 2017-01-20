@@ -14,6 +14,7 @@ import org.cheetahplatform.web.dto.ReportableResultEntry;
 import org.cheetahplatform.web.dto.TrialAnalysisReportableResultEntry;
 import org.cheetahplatform.web.eyetracking.analysis.AbstractTrialAnalyzer;
 import org.cheetahplatform.web.eyetracking.analysis.DataProcessing;
+import org.cheetahplatform.web.eyetracking.analysis.DataProcessingStep;
 import org.cheetahplatform.web.eyetracking.analysis.Trial;
 import org.cheetahplatform.web.eyetracking.analysis.TrialDetectionNotification;
 import org.cheetahplatform.web.eyetracking.analysis.TrialEvaluation;
@@ -23,8 +24,9 @@ import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileLine;
 
 public class MissingTrialAnalyzer extends AbstractTrialAnalyzer {
 
-	public MissingTrialAnalyzer(AnalyzeConfiguration config, DataProcessing processing, AnalyzeStepType type) {
-		super(config, processing, type);
+	public MissingTrialAnalyzer(AnalyzeConfiguration config, DataProcessing processing, AnalyzeStepType type,
+			DataProcessingStep dataProcessingStep) {
+		super(config, processing, type, dataProcessingStep);
 	}
 
 	@Override

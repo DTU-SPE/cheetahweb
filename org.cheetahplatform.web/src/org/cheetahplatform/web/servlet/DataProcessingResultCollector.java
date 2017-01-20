@@ -27,7 +27,6 @@ public class DataProcessingResultCollector {
 	}
 
 	public synchronized void addResults(CheetahDataProcessingWorkItemGuard guard, Map<String, ReportableResult> collectedResults) {
-
 		for (Entry<String, ReportableResult> entry : collectedResults.entrySet()) {
 			if (!resultsForSubject.containsKey(entry.getKey())) {
 				resultsForSubject.put(entry.getKey(), entry.getValue());

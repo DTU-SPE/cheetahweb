@@ -23,8 +23,8 @@ public abstract class AbstractPupilTrialAnalyzer extends AbstractTrialAnalyzer {
 	private long endTime;
 
 	public AbstractPupilTrialAnalyzer(AnalyzeConfiguration config, DataProcessing processing, AnalyzeStepType analyzeStep, long startTime,
-			long endTime) {
-		super(config, processing, analyzeStep);
+			long endTime, DataProcessingStep dataProcessingStep) {
+		super(config, processing, analyzeStep, dataProcessingStep);
 
 		this.startTime = startTime;
 		this.endTime = endTime;

@@ -14,6 +14,7 @@ import org.cheetahplatform.web.dto.ReportableResultEntry;
 import org.cheetahplatform.web.dto.TrialAnalysisReportableResultEntry;
 import org.cheetahplatform.web.eyetracking.analysis.AbstractTrialAnalyzer;
 import org.cheetahplatform.web.eyetracking.analysis.DataProcessing;
+import org.cheetahplatform.web.eyetracking.analysis.DataProcessingStep;
 import org.cheetahplatform.web.eyetracking.analysis.Trial;
 import org.cheetahplatform.web.eyetracking.analysis.TrialDetectionNotification;
 import org.cheetahplatform.web.eyetracking.analysis.TrialEvaluation;
@@ -23,8 +24,8 @@ import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileLine;
 
 public class BlinkTrialAnalyzer extends AbstractTrialAnalyzer {
 
-	public BlinkTrialAnalyzer(AnalyzeConfiguration config, DataProcessing processing) {
-		super(config, processing, AnalyzeStepType.BLINKS);
+	public BlinkTrialAnalyzer(AnalyzeConfiguration config, DataProcessing processing, DataProcessingStep dataProcessingStep) {
+		super(config, processing, AnalyzeStepType.BLINKS, dataProcessingStep);
 	}
 
 	@Override

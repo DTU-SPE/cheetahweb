@@ -8,6 +8,7 @@ import org.cheetahplatform.web.dto.ReportableResultEntry;
 import org.cheetahplatform.web.eyetracking.analysis.AbstractPupilTrialAnalyzer;
 import org.cheetahplatform.web.eyetracking.analysis.Baseline;
 import org.cheetahplatform.web.eyetracking.analysis.DataProcessing;
+import org.cheetahplatform.web.eyetracking.analysis.DataProcessingStep;
 import org.cheetahplatform.web.eyetracking.analysis.Stimulus;
 import org.cheetahplatform.web.eyetracking.analysis.Trial;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFile;
@@ -19,8 +20,8 @@ public class RelativeSubtractedTrialAnalyzer extends AbstractPupilTrialAnalyzer 
 	private UnivariateStatistic statistic;
 
 	public RelativeSubtractedTrialAnalyzer(AnalyzeConfiguration config, DataProcessing processing, AnalyzeStepType type,
-			UnivariateStatistic statistic, long startTime, long endTime) {
-		super(config, processing, type, startTime, endTime);
+			UnivariateStatistic statistic, long startTime, long endTime, DataProcessingStep dataProcessingStep) {
+		super(config, processing, type, startTime, endTime, dataProcessingStep);
 
 		this.statistic = statistic;
 	}

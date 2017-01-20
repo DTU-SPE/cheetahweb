@@ -12,6 +12,7 @@ import org.cheetahplatform.web.dto.SubjectDto;
 import org.cheetahplatform.web.dto.UserFileDto;
 import org.cheetahplatform.web.eyetracking.CheetahWorkItemGuard;
 import org.cheetahplatform.web.eyetracking.analysis.DataProcessing;
+import org.cheetahplatform.web.eyetracking.analysis.DataProcessingStep;
 import org.cheetahplatform.web.eyetracking.analysis.ITrialAnalyzer;
 import org.cheetahplatform.web.eyetracking.analysis.steps.AnalyzeConfiguration;
 import org.cheetahplatform.web.eyetracking.analysis.steps.TrialAnalyzerFactory;
@@ -22,13 +23,15 @@ import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFile;
 public class AnalyzeTrialsWorkItem extends AbstractCheetahWorkItem implements IDataProcessingWorkItem {
 	private ITrialAnalyzer analyzer;
 	private CheetahWorkItemGuard guard;
+	private DataProcessingStep dataProcessingStep;
 
 	public AnalyzeTrialsWorkItem(long userId, long fileId, AnalyzeConfiguration config, CheetahWorkItemGuard guard,
-			DataProcessing processing) {
+			DataProcessing processing, DataProcessingStep dataProcessingStep) {
 		super(userId, fileId, "Analyzing trials.");
 		this.guard = guard;
+		this.dataProcessingStep = dataProcessingStep;
 
-		analyzer = TrialAnalyzerFactory.createAnalyzer(config, processing);
+		analyzer = TrialAnalyzerFactory.createAnalyzer(config, processing, dataProcessingStep);
 	}
 
 	@Override

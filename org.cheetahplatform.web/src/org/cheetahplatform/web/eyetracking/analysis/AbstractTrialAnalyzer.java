@@ -20,14 +20,18 @@ public abstract class AbstractTrialAnalyzer implements ITrialAnalyzer {
 	private String name;
 	protected DataProcessing dataProcessing;
 	protected AnalyzeStepType analyzeStep;
+	private DataProcessingStep dataProcessingStep;
 
-	public AbstractTrialAnalyzer(AnalyzeConfiguration config, DataProcessing processing, AnalyzeStepType analyzeStep) {
-		this.analyzeStep = analyzeStep;
+	public AbstractTrialAnalyzer(AnalyzeConfiguration config, DataProcessing processing, AnalyzeStepType analyzeStep,
+			DataProcessingStep dataProcessingStep) {
+		Assert.isNotNull(dataProcessingStep);
 		Assert.isNotNull(config);
 		Assert.isNotNull(analyzeStep);
 		Assert.isLegal(!analyzeStep.getName().trim().isEmpty());
 		Assert.isNotNull(processing);
 		this.config = config;
+		this.analyzeStep = analyzeStep;
+		this.dataProcessingStep = dataProcessingStep;
 		this.dataProcessing = processing;
 		this.name = analyzeStep.getName();
 	}
@@ -40,7 +44,12 @@ public abstract class AbstractTrialAnalyzer implements ITrialAnalyzer {
 	}
 
 	protected void addResult(Map<String, List<ReportableResultEntry>> results, Trial trial, double value, String operation) {
-		String key = analyzeStep.getId() + RESULT_SEPARATOR + operation;
+		String key = "";
+		if (dataProcessingStep.getName() != null) {
+			key = dataProcessingStep.getName();
+		}
+
+		key = key + RESULT_SEPARATOR + analyzeStep.getId() + RESULT_SEPARATOR + operation;
 		TrialAnalysisReportableResultEntry entry = new TrialAnalysisReportableResultEntry(trial.getTrialNumber(), String.valueOf(value));
 		addResult(results, key, entry);
 	}
