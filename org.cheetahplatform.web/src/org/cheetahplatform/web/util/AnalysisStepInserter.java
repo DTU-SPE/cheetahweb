@@ -12,7 +12,7 @@ import org.cheetahplatform.web.eyetracking.analysis.steps.AnalyzeStepType;
 public class AnalysisStepInserter {
 	private static final int PORT = 3306;
 	private static final String HOST = "localhost";
-	private static final String PASSWORD = "konami";
+	private static final String PASSWORD = "XXX";
 	private static final String USER = "root";
 	private static final String SCHEMA = "cheetah_web";
 
