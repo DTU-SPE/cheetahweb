@@ -16,7 +16,7 @@ angular
 
         $scope.formatTimestamp = function (timestamp) {
             //if the timestamp is not available yet, defer the update
-            if (cheetah.sessionStartTimestamp === undefined) {
+            if (cheetah.sessionStartTimestamp === undefined || cheetah.sessionStartTimestamp === 0) {
                 $interval($scope.apply, 25);
                 return;
             }

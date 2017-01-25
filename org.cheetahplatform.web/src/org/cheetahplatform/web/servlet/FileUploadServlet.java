@@ -17,6 +17,7 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.cheetahplatform.web.dao.StudyDao;
 import org.cheetahplatform.web.dao.SubjectDao;
+import org.cheetahplatform.web.dao.UserDao;
 import org.cheetahplatform.web.dto.CreateSubjectRequest;
 import org.cheetahplatform.web.dto.CreateSubjectResponse;
 import org.cheetahplatform.web.dto.StudyDto;
@@ -54,7 +55,8 @@ public class FileUploadServlet extends AbstractCheetahServlet {
 		ServletFileUpload upload = new ServletFileUpload(new DiskFileItemFactory());
 		List<FileItem> file = null;
 		List<CreateSubjectRequest> listOfNewSubjects = new ArrayList<>();
-		List<StudyDto> studies = new StudyDao().getStudies(connection);
+		long userId = new UserDao().getUserId(connection, req);
+		List<StudyDto> studies = new StudyDao().getStudiesForUser(connection, userId);
 		SubjectDao subjectDao = new SubjectDao();
 		List<CreateSubjectResponse> subjectResponseList = new ArrayList<>();
 
@@ -77,10 +79,10 @@ public class FileUploadServlet extends AbstractCheetahServlet {
 			return;
 		}
 		for (CreateSubjectRequest createSubjecRequest : listOfNewSubjects) {
-			if (subjectDao.subjectExists(connection, createSubjecRequest.getEmail())) {
+			if (subjectDao.subjectIDExistsInStudy(connection, createSubjecRequest.getSubjectId(), createSubjecRequest.getStudyId())) {
 
-				writeJson(resp, new FileUploadRespone(
-						"There is already a subject with the email adress n" + createSubjecRequest.toString() + " in the database."));
+				writeJson(resp,
+						new FileUploadRespone("There is already a subject with " + createSubjecRequest.toString() + " in the database."));
 				return;
 			}
 		}

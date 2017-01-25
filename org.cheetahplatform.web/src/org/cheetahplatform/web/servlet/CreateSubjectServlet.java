@@ -28,9 +28,6 @@ public class CreateSubjectServlet extends AbstractCheetahServlet {
 			if (subjectDao.subjectIDExistsInStudy(connection, createSubjecRequest.getSubjectId(), createSubjecRequest.getStudyId())) {
 				error = "idInStudy";
 				writeJson(response, new CreateSubjectResponse(error));
-			} else if (subjectDao.subjectExists(connection, createSubjecRequest.getEmail())) {
-				error = "email";
-				writeJson(response, new CreateSubjectResponse(error));
 			} else {
 				CreateSubjectResponse createSubject = subjectDao.createSubject(connection, createSubjecRequest);
 				writeJson(response, createSubject);

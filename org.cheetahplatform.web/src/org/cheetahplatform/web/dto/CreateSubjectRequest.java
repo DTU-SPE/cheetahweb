@@ -57,7 +57,8 @@ public class CreateSubjectRequest {
 
 	@Override
 	public String toString() {
-		return "email=" + email + ", subjectId=" + subjectId + ", studyId=" + studyId + ", comment=" + comment;
+		return "email = \"" + email + "\", subjectId =\"" + subjectId + "\", studyId= \"" + studyId + "\" and comment = \"" + comment
+				+ "\"";
 	}
 
 }

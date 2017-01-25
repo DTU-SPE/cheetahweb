@@ -230,9 +230,10 @@ public class SubjectDao extends AbstractCheetahDao {
 				synchronizedFrom.getId());
 	}
 
-	public boolean subjectExists(Connection connection, String email) throws SQLException {
-		PreparedStatement statement = connection.prepareStatement("select count(*) from subject where email = ?");
+	public boolean subjectExists(Connection connection, String email, long study) throws SQLException {
+		PreparedStatement statement = connection.prepareStatement("select count(*) from subject where email = ?  AND fk_study = ? ");
 		statement.setString(1, email);
+		statement.setLong(2, study);
 		ResultSet resultSet = statement.executeQuery();
 		resultSet.next();
 		int existingStudyCount = resultSet.getInt(1);
