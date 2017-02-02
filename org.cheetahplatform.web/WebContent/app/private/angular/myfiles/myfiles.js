@@ -144,7 +144,13 @@ angular.module('cheetah.MyFiles', ['ngRoute', 'cheetah.CleanData']).controller('
     $scope.downloadFiles = function () {
         $.each($scope.files, function (index, value) {
             if (value.selection) {
-                window.open(value.url, '_blank');
+                var link = document.createElement("a");
+                link.download = value.filename;
+                link.href = value.url;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                delete link;
             }
         })
     };
