@@ -378,8 +378,24 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData', 'ui.s
             }
         }
 
+        if ($scope.dataProcessing.steps) {
+            $.each($scope.dataProcessing.steps, function (index, step) {
+                if (step.type !== 'analyze') {
+                    return;
+                }
+
+                var stepConfiguration = angular.fromJson(step.configuration);
+                if (stepConfiguration.type === $scope.analyzeType.id) {
+                    if ($.trim(step.name) === $.trim($scope.name)) {
+                        error = 'There is another analysis step with the same computation and the same name. Please change the name of the analysis step.';
+                        return false;
+                    }
+                }
+            });
+        }
+
         if (error) {
-            BootstrapDialog.alert({title: 'Invalid Input', messag: error});
+            BootstrapDialog.alert({title: 'Invalid Input', message: error});
             return;
         }
 
