@@ -575,3 +575,9 @@ div.check {
 #pupillometry-workflow-video .modal-content{
   width: 800px;
 }
+
+.td-break-long-word{
+  word-wrap: break-word;
+  word-break: break-all;
+  white-space: normal;
+}

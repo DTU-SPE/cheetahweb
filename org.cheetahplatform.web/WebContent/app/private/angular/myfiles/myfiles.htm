@@ -115,7 +115,7 @@
                     <tr ng-repeat="file in filteredFiles() | orderBy : 'filename'"
                         ng-click="setSelection(file, $event)">
                         <td><input type="checkbox" ng-model="file.selection"></td>
-                        <td>{{file.filename}}</td>
+                        <td class="td-break-long-word">{{file.filename}}</td>
                         <td>{{file.type}}</td>
                         <td>{{file.comment}}</td>
                         <td>
