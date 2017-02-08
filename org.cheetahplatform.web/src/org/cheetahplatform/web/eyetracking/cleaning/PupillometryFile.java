@@ -17,10 +17,9 @@ import java.util.List;
 import java.util.ListIterator;
 
 import org.apache.commons.io.input.BOMInputStream;
+import org.cheetahplatform.web.CheetahWebConstants;
 
 public class PupillometryFile {
-	private static final String SCENE_COLUMN = "Scene";
-	public static final String SCENE = SCENE_COLUMN;
 	public static final String SEPARATOR_SEMICOLON = ";";
 	public static final String SEPARATOR_TABULATOR = "\t";
 	public static final String SEPARATOR_COMMA = ",";
@@ -135,11 +134,12 @@ public class PupillometryFile {
 			read();
 		}
 
-		String columnName = SCENE_COLUMN;
 		PupillometryFileColumn column = null;
 		PupillometryFileHeader header = getHeader();
-		if (!header.hasColumn(columnName)) {
-			column = appendColumn(columnName);
+		if (!header.hasColumn(CheetahWebConstants.PUPILLOMETRY_FILE_COLUMN_SCENE)) {
+			column = appendColumn(CheetahWebConstants.PUPILLOMETRY_FILE_COLUMN_SCENE);
+		} else {
+			column = header.getColumn(CheetahWebConstants.PUPILLOMETRY_FILE_COLUMN_SCENE);
 		}
 
 		String scene = null;
@@ -147,6 +147,8 @@ public class PupillometryFile {
 			scene = processScene(sceneDataColumn, scene, line);
 			if (scene != null) {
 				line.setValue(column, scene);
+			} else {
+				line.setValue(column, "");
 			}
 
 			List<PupillometryFileLine> collapsed = (List<PupillometryFileLine>) line.getMarking(COLLAPSED_COLUMNS);
@@ -195,6 +197,20 @@ public class PupillometryFile {
 		}
 
 		content.add(toAppend.copy());
+	}
+
+	/**
+	 * This method removes all content from the provided column.
+	 *
+	 * @param column
+	 *            the column to remove all content from.
+	 * @throws IOException
+	 *             if the pupillometry file could not be read.
+	 */
+	public void clearColumn(PupillometryFileColumn column) throws IOException {
+		for (PupillometryFileLine pupillometryFileLine : getContent()) {
+			pupillometryFileLine.setValue(column, "");
+		}
 	}
 
 	/**
@@ -378,7 +394,7 @@ public class PupillometryFile {
 			read();
 		}
 
-		PupillometryFileColumn sceneColumn = appendColumn(SCENE);
+		PupillometryFileColumn sceneColumn = appendColumn(CheetahWebConstants.PUPILLOMETRY_FILE_COLUMN_SCENE);
 		PupillometryFileColumn eventColumn = header.getColumn("StudioEvent");
 		PupillometryFileColumn eventDataColumn = header.getColumn("StudioEventData");
 		contributor.processSceneColumns(content, sceneColumn, eventColumn, eventDataColumn);

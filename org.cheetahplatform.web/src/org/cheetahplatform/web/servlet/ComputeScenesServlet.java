@@ -1,8 +1,5 @@
 package org.cheetahplatform.web.servlet;
 
-import static org.cheetahplatform.web.eyetracking.cleaning.CleanPupillometryDataWorkItem.STUDIO_EVENT_DATA;
-
-import java.io.File;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +7,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.cheetahplatform.web.dao.UserFileDao;
+import org.cheetahplatform.web.CheetahWebConstants;
+import org.cheetahplatform.web.eyetracking.analysis.PupillometryFileCache;
 import org.cheetahplatform.web.eyetracking.cleaning.IPupillometryFileLine;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFile;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileColumn;
@@ -55,16 +53,12 @@ public class ComputeScenesServlet extends AbstractCheetahServlet {
 			throws Exception {
 		ComputeScenesRequest computeRequest = readJson(request, ComputeScenesRequest.class);
 
-		UserFileDao userFileDao = new UserFileDao();
-		String path = userFileDao.getPath(computeRequest.getFileId());
-		File rawFile = userFileDao.getUserFile(path);
-
-		PupillometryFile pupillometryFile = new PupillometryFile(rawFile, PupillometryFile.SEPARATOR_TABULATOR, true, ".");
+		PupillometryFile pupillometryFile = PupillometryFileCache.INSTANCE.get(computeRequest.getFileId());
 		PupillometryFileHeader header = pupillometryFile.getHeader();
 		PupillometryFileColumn timestampColumn = header.getColumn(computeRequest.getTimestampColumn());
 		pupillometryFile.collapseEmptyLines(timestampColumn);
 
-		PupillometryFileColumn studioEventDataColumn = header.getColumn(STUDIO_EVENT_DATA);
+		PupillometryFileColumn studioEventDataColumn = header.getColumn(CheetahWebConstants.PUPILLOMETRY_FILE_COLUMN_STUDIO_EVENT_DATA);
 		List<String> scenes = new ArrayList<>();
 		String previousScene = null;
 

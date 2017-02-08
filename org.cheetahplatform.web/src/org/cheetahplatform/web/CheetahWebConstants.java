@@ -14,4 +14,8 @@ public class CheetahWebConstants {
 	public static final String BLINK_DETECTION_TIME_THRESHOLD = "predrotti_blink_threshold";
 	public static final String FILENAME_PATTERN_SEPARATOR = "@";
 
+	public static final String PUPILLOMETRY_FILE_COLUMN_STUDIO_EVENT_DATA = "StudioEventData";
+	public static final String PUPILLOMETRY_FILE_COLUMN_STUDIO_EVENT = "StudioEvent";
+	public static final String PUPILLOMETRY_FILE_COLUMN_TRIAL_ID = "TrialId";
+	public static final String PUPILLOMETRY_FILE_COLUMN_SCENE = "Scene";
 }

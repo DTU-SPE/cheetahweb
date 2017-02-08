@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+import org.cheetahplatform.web.CheetahWebConstants;
+
 /**
  * Experiment contributor for Thomas Marans first experiment.
  *
@@ -47,7 +49,7 @@ public class ThomasMaran1Contributor implements IAnalysisContributor {
 	@SuppressWarnings("unchecked")
 	private boolean isSceneOfType(PupillometryFile file, PupillometryFileLine line, String type) throws IOException {
 		List<PupillometryFileLine> collapsed = (List<PupillometryFileLine>) line.getMarking(PupillometryFile.COLLAPSED_COLUMNS);
-		PupillometryFileColumn studioEventColumn = file.getHeader().getColumn(CleanPupillometryDataWorkItem.STUDIO_EVENT);
+		PupillometryFileColumn studioEventColumn = file.getHeader().getColumn(CheetahWebConstants.PUPILLOMETRY_FILE_COLUMN_STUDIO_EVENT);
 
 		if (collapsed != null) {
 			for (IPupillometryFileLine collapsedLine : collapsed) {

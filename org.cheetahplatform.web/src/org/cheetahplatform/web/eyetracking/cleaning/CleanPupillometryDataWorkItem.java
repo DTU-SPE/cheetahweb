@@ -23,9 +23,6 @@ import org.cheetahplatform.web.util.FileUtils;
  */
 public class CleanPupillometryDataWorkItem extends AbstractCheetahWorkItem implements IDataProcessingWorkItem {
 
-	public static final String STUDIO_EVENT_DATA = "StudioEventData";
-	public static final String STUDIO_EVENT = "StudioEvent";
-	public static final String TRIAL_ID = "TrialId";
 	/**
 	 * The filter request to be processed.
 	 */
@@ -54,7 +51,7 @@ public class CleanPupillometryDataWorkItem extends AbstractCheetahWorkItem imple
 	private void analyzeData(PupillometryFile file, FilterRequest request, long userId, UserFileDto originalFileDto,
 			IAnalysisContributor contributor) throws IOException, SQLException {
 		// compute trial column if necessary (Tobii output does not provide the trial id)
-		if (!file.hasColumn(TRIAL_ID)) {
+		if (!file.hasColumn(CheetahWebConstants.PUPILLOMETRY_FILE_COLUMN_TRIAL_ID)) {
 			computeTrialColumn(file, contributor);
 		}
 
@@ -78,8 +75,8 @@ public class CleanPupillometryDataWorkItem extends AbstractCheetahWorkItem imple
 		PupillometryFileColumn timestampColumn = header.getColumn(request.getTimestampColumn());
 		PupillometryFileColumn leftPupilColumn = header.getColumn(request.getLeftPupilColumn());
 		PupillometryFileColumn rightPupilColumn = header.getColumn(request.getRightPupilColumn());
-		PupillometryFileColumn trialIdColumn = header.getColumn(TRIAL_ID);
-		PupillometryFileColumn sceneColumn = header.getColumn(PupillometryFile.SCENE);
+		PupillometryFileColumn trialIdColumn = header.getColumn(CheetahWebConstants.PUPILLOMETRY_FILE_COLUMN_TRIAL_ID);
+		PupillometryFileColumn sceneColumn = header.getColumn(CheetahWebConstants.PUPILLOMETRY_FILE_COLUMN_SCENE);
 		PupillometryFileColumn relativeTrialTimestampColumn = file.appendColumn("Timestamp (Trial)");
 		PupillometryFileColumn relativeEventTimestampColumn = file.appendColumn("Timestamp (Event)");
 		PupillometryFileColumn leftRelativePupilColumn = file.appendColumn("Left Pupil (Relative)");
@@ -237,10 +234,10 @@ public class CleanPupillometryDataWorkItem extends AbstractCheetahWorkItem imple
 	}
 
 	private void computeTrialColumn(PupillometryFile file, IAnalysisContributor contributor) throws IOException {
-		PupillometryFileColumn trialColumn = file.appendColumn(TRIAL_ID);
+		PupillometryFileColumn trialColumn = file.appendColumn(CheetahWebConstants.PUPILLOMETRY_FILE_COLUMN_TRIAL_ID);
 		PupillometryFileHeader header = file.getHeader();
-		PupillometryFileColumn studioEventColumn = header.getColumn(STUDIO_EVENT);
-		PupillometryFileColumn studioEventDataColumn = header.getColumn(STUDIO_EVENT_DATA);
+		PupillometryFileColumn studioEventColumn = header.getColumn(CheetahWebConstants.PUPILLOMETRY_FILE_COLUMN_STUDIO_EVENT);
+		PupillometryFileColumn studioEventDataColumn = header.getColumn(CheetahWebConstants.PUPILLOMETRY_FILE_COLUMN_STUDIO_EVENT_DATA);
 
 		contributor.computeTrialColumn(file, trialColumn, studioEventColumn, studioEventDataColumn);
 	}
@@ -352,8 +349,8 @@ public class CleanPupillometryDataWorkItem extends AbstractCheetahWorkItem imple
 		pupillometryFile.removeNullValues("-1");
 		pupillometryFile.adaptTimestamps(timestampColumn);
 
-		if (header.hasColumn(CleanPupillometryDataWorkItem.STUDIO_EVENT_DATA)) {
-			PupillometryFileColumn studioEventDataColumn = header.getColumn(CleanPupillometryDataWorkItem.STUDIO_EVENT_DATA);
+		if (header.hasColumn(CheetahWebConstants.PUPILLOMETRY_FILE_COLUMN_STUDIO_EVENT_DATA)) {
+			PupillometryFileColumn studioEventDataColumn = header.getColumn(CheetahWebConstants.PUPILLOMETRY_FILE_COLUMN_STUDIO_EVENT_DATA);
 			pupillometryFile.addSceneColumn(studioEventDataColumn);
 		}
 	}

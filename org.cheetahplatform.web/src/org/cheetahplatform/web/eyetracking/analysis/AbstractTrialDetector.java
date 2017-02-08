@@ -1,19 +1,22 @@
 package org.cheetahplatform.web.eyetracking.analysis;
 
-import static org.cheetahplatform.web.eyetracking.cleaning.CleanPupillometryDataWorkItem.STUDIO_EVENT_DATA;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.cheetahplatform.web.CheetahWebConstants;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFile;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileColumn;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileHeader;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileLine;
 
 public abstract class AbstractTrialDetector extends AbstractPupillopmetryFileDetector {
+	private static final String PUPIL_RIGHT_RELATIVE_SUBTRACTED = "pupil_right_relative_subtracted";
+	private static final String PUPIL_LEFT_RELATIVE_SUBTRACTED = "pupil_left_relative_subtracted";
+	private static final String PUPIL_RIGHT_RELATIVE_DIVIDED = "pupil_right_relative_divided";
+	private static final String PUPIL_LEFT_RELATIVE_DIVIDED = "pupil_left_relative_divided";
 	private static final String TRIAL_NUMBER_COLUMN = "Trial_number";
 	private static final String TIME_SINCE_TRIAL_START = "Time_since_trial_start";
 
@@ -76,13 +79,14 @@ public abstract class AbstractTrialDetector extends AbstractPupillopmetryFileDet
 			return;
 		}
 
-		PupillometryFileColumn leftRelativeDivided = pupillometryFile.appendColumn("pupil_left_relative_divided");
-		PupillometryFileColumn rightRelativeDivided = pupillometryFile.appendColumn("pupil_right_relative_divided");
+		PupillometryFileColumn leftRelativeDivided = initializeColumn(pupillometryFile, PUPIL_LEFT_RELATIVE_DIVIDED);
+		PupillometryFileColumn rightRelativeDivided = initializeColumn(pupillometryFile, PUPIL_RIGHT_RELATIVE_DIVIDED);
+
 		addRelativeValues(trials, leftPupilColumn, leftRelativeDivided, true);
 		addRelativeValues(trials, rightPupilColumn, rightRelativeDivided, true);
 
-		PupillometryFileColumn leftRelativeSubtracted = pupillometryFile.appendColumn("pupil_left_relative_subtracted");
-		PupillometryFileColumn rightRelativeSubtracted = pupillometryFile.appendColumn("pupil_right_relative_subtracted");
+		PupillometryFileColumn leftRelativeSubtracted = initializeColumn(pupillometryFile, PUPIL_LEFT_RELATIVE_SUBTRACTED);
+		PupillometryFileColumn rightRelativeSubtracted = initializeColumn(pupillometryFile, PUPIL_RIGHT_RELATIVE_SUBTRACTED);
 		addRelativeValues(trials, leftPupilColumn, leftRelativeSubtracted, false);
 		addRelativeValues(trials, rightPupilColumn, rightRelativeSubtracted, false);
 	}
@@ -157,7 +161,7 @@ public abstract class AbstractTrialDetector extends AbstractPupillopmetryFileDet
 		PupillometryFileColumn relativeTimeColumn = initializeColumn(pupillometryFile, TIME_SINCE_TRIAL_START);
 
 		PupillometryFileHeader header = pupillometryFile.getHeader();
-		PupillometryFileColumn studioEventDataColumn = header.getColumn(STUDIO_EVENT_DATA);
+		PupillometryFileColumn studioEventDataColumn = header.getColumn(CheetahWebConstants.PUPILLOMETRY_FILE_COLUMN_STUDIO_EVENT_DATA);
 		PupillometryFileColumn timeStampColumn = header.getColumn(timestampColumn);
 
 		List<PupillometryFileLine> lines = pupillometryFile.getContent();

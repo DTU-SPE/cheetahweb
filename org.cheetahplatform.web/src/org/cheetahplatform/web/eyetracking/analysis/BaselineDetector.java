@@ -1,10 +1,9 @@
 package org.cheetahplatform.web.eyetracking.analysis;
 
-import static org.cheetahplatform.web.eyetracking.cleaning.CleanPupillometryDataWorkItem.STUDIO_EVENT_DATA;
-
 import java.io.IOException;
 import java.util.ListIterator;
 
+import org.cheetahplatform.web.CheetahWebConstants;
 import org.cheetahplatform.web.eyetracking.cleaning.IPupillometryFileLine;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFile;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileColumn;
@@ -93,7 +92,7 @@ public class BaselineDetector extends AbstractPupillopmetryFileDetector {
 					durationBeforeStimulus, timestampColumn);
 		} else if (baselineConfiguration instanceof BaselineTriggeredBySceneConfiguration) {
 			BaselineTriggeredBySceneConfiguration castedConfiguration = (BaselineTriggeredBySceneConfiguration) baselineConfiguration;
-			PupillometryFileColumn studioEventDataColumn = pupillometryFile.getHeader().getColumn(STUDIO_EVENT_DATA);
+			PupillometryFileColumn studioEventDataColumn = pupillometryFile.getHeader().getColumn(CheetahWebConstants.PUPILLOMETRY_FILE_COLUMN_STUDIO_EVENT_DATA);
 
 			baselineIdentifier = new StartAndEndBaselineIdentifier(castedConfiguration.getBaselineStart(),
 					castedConfiguration.getBaselineEnd(), studioEventDataColumn);

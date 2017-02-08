@@ -91,8 +91,8 @@ public class ExecuteDataProcessingWorkItem extends AbstractCheetahWorkItem {
 		pupillometryFile.removeNullValues("-1");
 		pupillometryFile.adaptTimestamps(timestampColumn);
 
-		if (header.hasColumn(CleanPupillometryDataWorkItem.STUDIO_EVENT_DATA)) {
-			PupillometryFileColumn studioEventDataColumn = header.getColumn(CleanPupillometryDataWorkItem.STUDIO_EVENT_DATA);
+		if (header.hasColumn(CheetahWebConstants.PUPILLOMETRY_FILE_COLUMN_STUDIO_EVENT_DATA)) {
+			PupillometryFileColumn studioEventDataColumn = header.getColumn(CheetahWebConstants.PUPILLOMETRY_FILE_COLUMN_STUDIO_EVENT_DATA);
 			pupillometryFile.addSceneColumn(studioEventDataColumn);
 		}
 

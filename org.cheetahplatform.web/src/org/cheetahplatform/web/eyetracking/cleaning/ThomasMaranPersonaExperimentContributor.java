@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+import org.cheetahplatform.web.CheetahWebConstants;
+
 /**
  * Experiment contributor for Thomas Marans Persona Experiment (see #311)
  *
@@ -22,7 +24,7 @@ public class ThomasMaranPersonaExperimentContributor implements IAnalysisContrib
 			PupillometryFileColumn studioEventDataColumn) throws IOException {
 		int trialId = 0;
 		String previousScene = null;
-		PupillometryFileColumn sceneColumn = file.getHeader().getColumn(PupillometryFile.SCENE);
+		PupillometryFileColumn sceneColumn = file.getHeader().getColumn(CheetahWebConstants.PUPILLOMETRY_FILE_COLUMN_SCENE);
 
 		for (PupillometryFileLine line : file.getContent()) {
 			String currentScene = line.get(sceneColumn);
@@ -45,7 +47,7 @@ public class ThomasMaranPersonaExperimentContributor implements IAnalysisContrib
 	@Override
 	public boolean isSceneEnd(PupillometryFile file, ListIterator<PupillometryFileLine> iterator, PupillometryFileLine line)
 			throws IOException {
-		PupillometryFileColumn sceneColumn = file.getHeader().getColumn(PupillometryFile.SCENE);
+		PupillometryFileColumn sceneColumn = file.getHeader().getColumn(CheetahWebConstants.PUPILLOMETRY_FILE_COLUMN_SCENE);
 		if (!iterator.hasNext()) {
 			return false;
 		}
@@ -59,7 +61,7 @@ public class ThomasMaranPersonaExperimentContributor implements IAnalysisContrib
 	@Override
 	public boolean isSceneStart(PupillometryFile file, ListIterator<PupillometryFileLine> iterator, PupillometryFileLine line)
 			throws IOException {
-		PupillometryFileColumn sceneColumn = file.getHeader().getColumn(PupillometryFile.SCENE);
+		PupillometryFileColumn sceneColumn = file.getHeader().getColumn(CheetahWebConstants.PUPILLOMETRY_FILE_COLUMN_SCENE);
 		if (iterator.previousIndex() <= 0) {
 			return false;
 		}
