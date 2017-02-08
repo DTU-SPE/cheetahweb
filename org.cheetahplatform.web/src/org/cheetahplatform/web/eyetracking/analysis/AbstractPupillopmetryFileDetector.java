@@ -1,6 +1,8 @@
 package org.cheetahplatform.web.eyetracking.analysis;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -12,6 +14,8 @@ import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileHeader;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileLine;
 
 public abstract class AbstractPupillopmetryFileDetector {
+
+	private static NumberFormat TIME_FORMAT = new DecimalFormat("0.000");
 
 	private List<TrialDetectionNotification> notifications;
 
@@ -26,14 +30,15 @@ public abstract class AbstractPupillopmetryFileDetector {
 
 	protected void addRelativeTime(PupillometryFileColumn relativeTimeColumn, PupillometryFileColumn timeStampColumn,
 			List<PupillometryFileLine> linesInSegment, PupillometryFileLine lineToAddRelativetime) {
-		long relativeTime = 0;
+		double relativeTime = 0;
 		if (!linesInSegment.isEmpty()) {
 			long timestamp = lineToAddRelativetime.getLong(timeStampColumn);
 			long startTimeStamp = linesInSegment.get(0).getLong(timeStampColumn);
-			relativeTime = timestamp - startTimeStamp;
+			// convert nanoseconds to milliseconds for #671
+			relativeTime = ((double) (timestamp - startTimeStamp)) / 1000;
 		}
 
-		lineToAddRelativetime.setValue(relativeTimeColumn, relativeTime);
+		lineToAddRelativetime.setValue(relativeTimeColumn, TIME_FORMAT.format(relativeTime));
 	}
 
 	@SuppressWarnings("unchecked")
