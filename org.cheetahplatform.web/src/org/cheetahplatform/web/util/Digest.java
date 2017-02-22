@@ -34,6 +34,7 @@ public class Digest {
 		sha1hash = md.digest();
 		String hashed = org.apache.tomcat.util.buf.HexUtils.convert(sha1hash);
 
+		System.out.println("Password hash");
 		System.out.println(hashed);
 	}
 }
