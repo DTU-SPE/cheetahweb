@@ -59,7 +59,7 @@ public class TrimWorkItem extends AbstractActivityBasedWorkItem {
 		String absolutePath = userFileDao.getAbsolutePath(relativePath);
 		trimmed.writeToFile(new File(absolutePath));
 		String message = "Proband: " + subjectName + "; Activity: " + activityId + "; Lines added: " + addedLineCount;
-		long trimmedFileId = userFileDao.insertUserFile(userId, newName, relativePath, fileDto.getType(), message);
+		long trimmedFileId = userFileDao.insertUserFile(userId, newName, relativePath, fileDto.getType(), message, fileDto.getSubjectId());
 		userFileDao.addTags(trimmedFileId, UserFileDao.TAG_TRIMMED);
 
 		logSuccessNotification("Created trimmed file " + newName + "; " + message);
