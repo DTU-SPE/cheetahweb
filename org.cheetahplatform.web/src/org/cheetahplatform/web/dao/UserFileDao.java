@@ -209,7 +209,7 @@ public class UserFileDao extends AbstractCheetahDao {
 	 * @throws SQLException
 	 */
 	public List<UserFileDto> findConnectCandidates(Connection connection, long subjectId) throws SQLException {
-		String query = "select * from user_data where fk_derived_from is null and fk_subject = ? and hidden = ? and not exists (select fk_derived_from from user_data user_data_sub where user_data_sub.fk_derived_from = user_data.pk_user_data union select fk_user_file from eyetracking_movie where fk_user_file = user_data.pk_user_data)";
+		String query = "select * from user_data left outer join subject on user_data.fk_subject=subject.pk_subject where fk_derived_from is null and fk_subject = ? and hidden = ? and not exists (select fk_derived_from from user_data user_data_sub where user_data_sub.fk_derived_from = user_data.pk_user_data union select fk_user_file from eyetracking_movie where fk_user_file = user_data.pk_user_data)";
 		PreparedStatement statement = connection.prepareStatement(query);
 		statement.setLong(1, subjectId);
 		statement.setBoolean(2, false);
@@ -289,11 +289,15 @@ public class UserFileDao extends AbstractCheetahDao {
 	 * @throws SQLException
 	 */
 	public List<UserFileDto> getFileByName(Connection connection, String expectedName) throws SQLException {
-		return internalGetFile(connection, "select * from user_data where filename = ?;", expectedName);
+		return internalGetFile(connection,
+				"select * from user_data left outer join subject on user_data.fk_subject=subject.pk_subject where hidden=false and filename = ?;",
+				expectedName);
 	}
 
 	public List<UserFileDto> getFileWithNameLike(Connection connection, String pattern) throws SQLException {
-		return internalGetFile(connection, "select * from user_data where filename like ?;", pattern);
+		return internalGetFile(connection,
+				"select * from user_data left outer join subject on user_data.fk_subject=subject.pk_subject where hidden=false and filename like ?;",
+				pattern);
 	}
 
 	public String getPath(long fileId) throws SQLException {
@@ -371,7 +375,7 @@ public class UserFileDao extends AbstractCheetahDao {
 	public List<UserFileDto> getUserFiles(long userid) throws SQLException {
 		Connection connection = AbstractCheetahServlet.getDatabaseConnection();
 		PreparedStatement statement = connection.prepareStatement(
-				"select * from user_data  left outer join subject on user_data.fk_subject=subject.pk_subject where fk_user=? and hidden=false");
+				"select * from user_data left outer join subject on user_data.fk_subject=subject.pk_subject where fk_user=? and hidden=false");
 		statement.setLong(1, userid);
 		ResultSet result = statement.executeQuery();
 
