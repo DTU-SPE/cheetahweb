@@ -14,6 +14,7 @@ public class UserFileDto {
 	private String processInstanceName;
 	private Long subjectId = null;
 	private Long studyId;
+	private String idOfSubject;
 
 	public UserFileDto() {
 		// JSON
@@ -21,7 +22,7 @@ public class UserFileDto {
 		processInstanceId = -1;
 	}
 
-	public UserFileDto(long id, String filename, String type, String url, String comment, Long subjectId) {
+	public UserFileDto(long id, String filename, String type, String url, String comment, Long subjectId, String idOfSubject) {
 		this();
 
 		this.id = id;
@@ -30,6 +31,7 @@ public class UserFileDto {
 		this.url = url;
 		this.comment = comment;
 		this.subjectId = subjectId;
+		this.idOfSubject = idOfSubject;
 	}
 
 	public void addTag(UserFileTagDto tag) {
@@ -46,6 +48,10 @@ public class UserFileDto {
 
 	public long getId() {
 		return id;
+	}
+
+	public String getIdOfSubject() {
+		return idOfSubject;
 	}
 
 	public long getProcessInstanceId() {
@@ -97,6 +103,10 @@ public class UserFileDto {
 
 	public void setId(long id) {
 		this.id = id;
+	}
+
+	public void setIdOfSubject(String idOfSubject) {
+		this.idOfSubject = idOfSubject;
 	}
 
 	public void setProcessInstanceId(long processInstanceId) {

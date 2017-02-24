@@ -107,6 +107,7 @@
                         <th></th>
                         <th>Filename</th>
                         <th>Type</th>
+                        <th>Subject</th>
                         <th>Comment</th>
                         <th>Tags</th>
                     </tr>
@@ -117,7 +118,8 @@
                         <td><input type="checkbox" ng-model="file.selection"></td>
                         <td class="td-break-long-word">{{file.filename}}</td>
                         <td>{{file.type}}</td>
-                        <td>{{file.comment}}</td>
+                        <td>{{file.idOfSubject}}</td>
+                        <td class="td-break-long-word">{{file.comment}}</td>
                         <td>
                             <div><span ng-repeat="tag in file.tags" class="cheetah-files-tag"
                                        style="{{getTagColors(tag)}}">{{tag.tag}}</span></div>
@@ -205,6 +207,7 @@
                     </div>
                 </form>
             </div>
+
         </div>
     </div>
 </div>
