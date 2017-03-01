@@ -13,6 +13,7 @@ import org.cheetahplatform.web.CheetahWorker;
 import org.cheetahplatform.web.ICheetahWorkItem;
 import org.cheetahplatform.web.TrimVideoWorkItem;
 import org.cheetahplatform.web.TrimWorkItem;
+import org.cheetahplatform.web.dao.NotificationDao;
 import org.cheetahplatform.web.dao.UserDao;
 import org.cheetahplatform.web.dao.UserFileDao;
 import org.cheetahplatform.web.dto.TrimToPpmInstanceRequest;
@@ -36,15 +37,18 @@ public class TrimToPpmInstanceServlet extends AbstractCheetahServlet {
 				UserFileDto file = userFileDao.getFile(fileId);
 				String filename = file.getFilename();
 				if (filename.endsWith("tsv")) {
-					ICheetahWorkItem workItem = new TrimWorkItem(userId, fileId, request.getTimestampColumn(),
-							request.getActivities());
+					ICheetahWorkItem workItem = new TrimWorkItem(userId, fileId, request.getTimestampColumn(), request.getActivities());
 					CheetahWorker.schedule(workItem);
 				} else if (filename.endsWith("webm")) {
 					TrimVideoWorkItem workItem = new TrimVideoWorkItem(userId, fileId, request.getActivities(),
 							request.getTimestampColumn());
 					CheetahWorker.schedule(workItem);
 				} else {
-					throw new RuntimeException("Cannot handle the following file: " + filename);
+					NotificationDao notificationDao = new NotificationDao();
+					notificationDao.insertNotification(
+							"Cannot handle the following file: " + filename
+									+ ". The file should be \"*.tsv\" or \"*.wbm\", please convert the file.",
+							NotificationDao.NOTIFICATION_ERROR, userId);
 				}
 			}
 		} catch (JsonParseException e) {
