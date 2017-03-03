@@ -292,6 +292,10 @@ public class CleanPupillometryDataWorkItem extends AbstractCheetahWorkItem imple
 				&& fileName.contains(CheetahWebConstants.FILENAME_PATTERN_SEPARATOR)) {
 
 			newName = subjectName + fileNamePostFix + FileUtils.getFileExtension(fileName);
+		} else if (fileName.startsWith(subjectName)) {
+			int position = fileName.lastIndexOf(".");
+			newName = fileName.substring(0, position) + CheetahWebConstants.FILENAME_PATTERN_SEPARATOR + "filtered"
+					+ fileName.substring(position);
 		} else {
 			int position = fileName.lastIndexOf(".");
 			newName = subjectName + fileName.substring(0, position) + CheetahWebConstants.FILENAME_PATTERN_SEPARATOR + "filtered"
