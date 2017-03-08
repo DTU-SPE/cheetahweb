@@ -29,9 +29,24 @@ public class FileUtils {
 	}
 
 	public static SubjectDto getSubjectForFileName(long userId, String fileName) throws SQLException {
-		String subjectName = extractSubjectName(fileName);
+		String fileNameWithoutExtension = FileUtils.getFileNameWithoutExtension(fileName);
+		String[] splittedFilename = fileNameWithoutExtension.split(CheetahWebConstants.FILENAME_PATTERN_SEPARATOR);
+		String subjectName = splittedFilename[0];
+
+		// can't identify the study -> can't map to a subject
+		if (splittedFilename.length < 2) {
+			return null;
+		}
+
 		try (Connection connection = AbstractCheetahServlet.getDatabaseConnection()) {
-			return new SubjectDao().getSubjectWithName(connection, userId, subjectName);
+			SubjectDto subjectWithName = new SubjectDao().getSubjectWithName(connection, userId, subjectName);
+			String study = subjectWithName.getStudy();
+
+			// the subject needs to be in the study with the filename
+			if (splittedFilename[1].equals(study)) {
+				return subjectWithName;
+			}
+			return null;
 		}
 	}
 

@@ -55,7 +55,7 @@ angular.module('cheetah.UploadData', ['ngRoute', 'ui.select'])
                             $scope.unmappedFiles.push(data);
                             if (!($("#cheetah-map-files-to-subjects-dialog").data('bs.modal') || {isShown: false}).isShown) {
                                 $http.get('../../private/listSubjects').success(function (data) {
-                                    data.unshift({id: -1, subjectId: "   "});
+                                    data.unshift({id: -1, subjectId: "No subject selected", study: {name: "No study"}});
                                     $scope.subjects = data;
                                     $("#cheetah-map-files-to-subjects-dialog").modal('show');
                                 });

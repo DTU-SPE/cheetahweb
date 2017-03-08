@@ -58,7 +58,7 @@
 
 
 <div class="modal" id="cheetah-map-files-to-subjects-dialog">
-    <div class="modal-dialog">
+    <div class="modal-dialog" style="min-width: 1000px">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
@@ -88,13 +88,16 @@
                         <td>
                             <ui-select ng-model="file.subject" id="cheetah-file-id-{{file.id}}"
                                        theme="select2"
-                                       style="width: 100%; min-width: 150px"
+                                       style="width: 100%; min-width: 300px"
                                        title="Select the subject">
                                 <ui-select-match placeholder="Select the subject">{{$select.selected.subjectId}}
                                 </ui-select-match>
                                 <ui-select-choices
                                         repeat="subject in subjects | filter: {subjectId: $select.search}">
                                     <div ng-bind="subject.subjectId"></div>
+                                    <small>
+                                        Study: {{subject.study.name}}
+                                    </small>
                                 </ui-select-choices>
                             </ui-select>
                         </td>
