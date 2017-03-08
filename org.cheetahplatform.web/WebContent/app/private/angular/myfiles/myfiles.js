@@ -294,6 +294,10 @@ angular.module('cheetah.MyFiles', ['ngRoute', 'cheetah.CleanData']).controller('
         }
 
         var filtered = $.grep($scope.files, function (file, index) {
+            if (!matchesStudy(file)) {
+                return false;
+            }
+            
             var searchString = $scope.search.toLowerCase();
             var splitted = searchString.split(" ");
             var tagFound = true;
@@ -306,10 +310,6 @@ angular.module('cheetah.MyFiles', ['ngRoute', 'cheetah.CleanData']).controller('
 
             if (tagFound) {
                 return true;
-            }
-
-            if (!matchesStudy(file)) {
-                return false;
             }
 
             return filter(file.filename) || filter(file.type) || filter(file.comment);
