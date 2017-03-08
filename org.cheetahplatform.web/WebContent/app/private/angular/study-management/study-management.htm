@@ -428,14 +428,12 @@
                     <p>To help with the definition of the data processing, CEP-Web will parse one of your data files to
                         support the selection of the proper trial computation. Please select the file below that you
                         want to parse.</p>
-                    <div class="form-group">
-                        <div ng-repeat="file in files">
-                            <label>
-                                <input type="radio" name="selectedFile"
-                                       ng-model="$parent.selectedFile.id"
-                                       value="{{file.id}}"/>
-                                {{file.name}}
-                            </label>
+                    <div class="form-group container-fluid">
+                        <div ng-repeat="file in files" class="row">
+                            <input type="radio" name="selectedFile"
+                                   ng-model="$parent.selectedFile.id"
+                                   value="{{file.id}}" id="cheetah-select-pupillometry-file-modal-radio-{{file.id}}" style="float: left"/>
+                            <label for="cheetah-select-pupillometry-file-modal-radio-{{file.id}}" class="cheetah-define-data-processing-select-file-label" title="{{file.name}}">{{file.name}}</label>
                         </div>
                     </div>
 

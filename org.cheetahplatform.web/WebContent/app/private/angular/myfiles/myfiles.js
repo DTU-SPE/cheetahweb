@@ -297,7 +297,7 @@ angular.module('cheetah.MyFiles', ['ngRoute', 'cheetah.CleanData']).controller('
             if (!matchesStudy(file)) {
                 return false;
             }
-            
+
             var searchString = $scope.search.toLowerCase();
             var splitted = searchString.split(" ");
             var tagFound = true;

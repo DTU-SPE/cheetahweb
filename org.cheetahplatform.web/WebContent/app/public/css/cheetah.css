@@ -563,7 +563,7 @@ div.check {
   padding: 5px;
 }
 
-.cheetah-nowrap{
+.cheetah-nowrap {
   display: inline-block;
   white-space: nowrap;
 }
@@ -572,12 +572,20 @@ div.check {
   opacity: 0;
 }
 
-#pupillometry-workflow-video .modal-content{
+#pupillometry-workflow-video .modal-content {
   width: 800px;
 }
 
-.td-break-long-word{
+.td-break-long-word {
   word-wrap: break-word;
   word-break: break-all;
   white-space: normal;
+}
+
+.cheetah-define-data-processing-select-file-label {
+  float: left;
+  overflow: hidden;
+  max-width: 95%;
+  padding-left: 5px;
+  text-overflow: ellipsis;
 }
