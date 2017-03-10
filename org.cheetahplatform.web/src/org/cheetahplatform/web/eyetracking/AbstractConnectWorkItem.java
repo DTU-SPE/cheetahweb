@@ -1,10 +1,5 @@
 package org.cheetahplatform.web.eyetracking;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import org.cheetahplatform.web.AbstractCheetahWorkItem;
 import org.cheetahplatform.web.dto.ConnectRequest;
 
