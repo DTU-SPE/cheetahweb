@@ -86,10 +86,10 @@ public abstract class AbstractActivityBasedWorkItem extends AbstractCheetahWorkI
 			return;
 		}
 
-		PupillometryFileColumn localTimestampColumn = header.getColumn(LOCAL_TIMESTAMP_COLUMN_HEADER);
+		PupillometryFileColumn localTimestampColumn = header.getColumn(CheetahWebConstants.PUPILLOMETRY_FILE_COLUMN_LOCAL_TIMESTAMP);
 		if (localTimestampColumn == null) {
 			logErrorNotification(
-					"Could not find local timestamp column '" + LOCAL_TIMESTAMP_COLUMN_HEADER + "' in file " + file.getFilename());
+					"Could not find local timestamp column '" + CheetahWebConstants.PUPILLOMETRY_FILE_COLUMN_LOCAL_TIMESTAMP + "' in file " + file.getFilename());
 			return;
 		}
 

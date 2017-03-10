@@ -66,7 +66,6 @@ public class AverageLoadForPpmInstanceAnalyzer extends AbstractAverageLoadAnalyz
 					if (rightPupil > 0) {
 						sumRightPupil += rightPupil;
 						countRightPupil++;
-
 					}
 				}
 			}

@@ -75,7 +75,7 @@ public class ButterworthFilter extends AbstractPupillometryFilter {
 	}
 
 	@Override
-	public String run(FilterRequest request, PupillometryFile file) throws Exception {
+	public String run(FilterRequest request, PupillometryFile file, long fileId) throws Exception {
 		String hertzRaw = request.getParameter(BUTTERWORTH_HERTZ);
 		double hertz = Double.parseDouble(hertzRaw);
 		String sampleRateRaw = request.getParameter(BUTTERWORTH_SAMPLE_RATE);

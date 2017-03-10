@@ -17,6 +17,7 @@ public class PupillometryDataFilterRegistry {
 		AVAILABLE_FIlTERS.put(6l, new SubstituteGazePointFilter(6));
 		AVAILABLE_FIlTERS.put(2l, new StandardDeviatonFilter(2));
 		AVAILABLE_FIlTERS.put(3l, new BlinkDetectionFilter(3));
+		AVAILABLE_FIlTERS.put(7l, new CommandPromptPpmActivityFilter(7));
 		AVAILABLE_FIlTERS.put(4l, new LinearInterpolationFilter(4));
 		AVAILABLE_FIlTERS.put(5l, new ButterworthFilter(5));
 	}

@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.apache.commons.io.input.BOMInputStream;
 import org.cheetahplatform.common.eyetracking.EyeTrackerDateCorrection;
+import org.cheetahplatform.web.CheetahWebConstants;
 import org.cheetahplatform.web.dao.PpmInstanceDao;
 import org.cheetahplatform.web.dao.SubjectDao;
 import org.cheetahplatform.web.dao.UserFileDao;
@@ -66,7 +67,7 @@ public class ConnectPupillometricDataWorkItem extends AbstractConnectWorkItem {
 					rightIndex = i;
 				} else if (column.equals(request.getTimestampColumn())) {
 					timestampIndex = i;
-				} else if (column.equals(LOCAL_TIMESTAMP_COLUMN_HEADER)) {
+				} else if (column.equals(CheetahWebConstants.PUPILLOMETRY_FILE_COLUMN_LOCAL_TIMESTAMP)) {
 					localTimestampColumnIndex = i;
 				}
 			}

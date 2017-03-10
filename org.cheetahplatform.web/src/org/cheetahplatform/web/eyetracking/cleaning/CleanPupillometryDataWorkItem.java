@@ -381,7 +381,7 @@ public class CleanPupillometryDataWorkItem extends AbstractCheetahWorkItem imple
 			DataProcessingResult dataProcessingResult = new DataProcessingResult(filter.getName());
 			results.add(dataProcessingResult);
 			try {
-				String result = filter.run(request, pupillometryFile);
+				String result = filter.run(request, pupillometryFile, fileId);
 				dataProcessingResult.setAdditionalInformation(result);
 			} catch (Exception e) {
 				e.printStackTrace();

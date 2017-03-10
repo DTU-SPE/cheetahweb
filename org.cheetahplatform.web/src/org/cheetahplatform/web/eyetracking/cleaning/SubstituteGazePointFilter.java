@@ -35,7 +35,7 @@ public class SubstituteGazePointFilter extends AbstractPupillometryFilter {
 	}
 
 	@Override
-	public String run(FilterRequest request, PupillometryFile file) throws Exception {
+	public String run(FilterRequest request, PupillometryFile file, long fileId) throws Exception {
 		PupillometryFileColumn leftPupilGazeX = file.getHeader().getColumn(request.getParameter(CheetahWebConstants.LEFT_PUPIL_GAZE_X_PX));
 		PupillometryFileColumn leftPupilGazeY = file.getHeader().getColumn(request.getParameter(CheetahWebConstants.LEFT_PUPIL_GAZE_Y_PX));
 		PupillometryFileColumn rightPupilGazeX = file.getHeader()

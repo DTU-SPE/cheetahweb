@@ -72,7 +72,7 @@ public abstract class AbstractCheetahServlet extends HttpServlet {
 		return createReplayer(instance);
 	}
 
-	public static CommandReplayer createReplayer(int id, Connection connection) throws SQLException {
+	public static CommandReplayer createReplayer(long id, Connection connection) throws SQLException {
 		ProcessInstance instance = DatabasePromReader.readProcessInstance(id, connection);
 		return createReplayer(instance);
 	}

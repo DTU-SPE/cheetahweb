@@ -40,6 +40,10 @@ public class FileUtils {
 
 		try (Connection connection = AbstractCheetahServlet.getDatabaseConnection()) {
 			SubjectDto subjectWithName = new SubjectDao().getSubjectWithName(connection, userId, subjectName);
+			if (subjectWithName == null) {
+				return null;
+			}
+
 			String study = subjectWithName.getStudy();
 
 			// the subject needs to be in the study with the filename
