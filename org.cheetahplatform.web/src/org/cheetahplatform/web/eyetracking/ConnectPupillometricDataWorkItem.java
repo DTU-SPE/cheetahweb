@@ -139,7 +139,17 @@ public class ConnectPupillometricDataWorkItem extends AbstractConnectWorkItem {
 				}
 			}
 
-			Long processInstanceId = getProcessInstanceId(connection, subjectName, experimentTask);
+			List<PpmInstanceDto> ppmInstanceDtoList = new PpmInstanceDao().selectProcessInstancesForSubjectAndTask(connection,
+					subject.getSubjectId(), experimentTask);
+			PpmInstanceDto ppmInstanceDto = null;
+			Long processInstanceId = null;
+			if (ppmInstanceDtoList.size() == 1) {
+				ppmInstanceDto = ppmInstanceDtoList.get(0);
+				processInstanceId = ppmInstanceDto.getProcessInstanceId();
+			} else if (ppmInstanceDtoList.size() > 1) {
+				return;
+			}
+
 			String newFilename = fileNameWithoutExtension + ".csv";
 			if (processInstanceId != null) {
 				PpmInstanceDto ppmInstance = new PpmInstanceDao().selectPpmInstance(processInstanceId);

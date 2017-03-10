@@ -11,9 +11,11 @@ import java.util.List;
 
 import org.cheetahplatform.common.eyetracking.EyeTrackerDateCorrection;
 import org.cheetahplatform.web.dao.MovieDao;
+import org.cheetahplatform.web.dao.PpmInstanceDao;
 import org.cheetahplatform.web.dao.SubjectDao;
 import org.cheetahplatform.web.dao.UserFileDao;
 import org.cheetahplatform.web.dto.ConnectRequest;
+import org.cheetahplatform.web.dto.PpmInstanceDto;
 import org.cheetahplatform.web.dto.SubjectDto;
 import org.cheetahplatform.web.dto.UserFileDto;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFile;
@@ -84,7 +86,16 @@ public class ConnectVideoWorkItem extends AbstractConnectWorkItem {
 				SubjectDto subject = new SubjectDao().getSubjectWithName(connection, userId, subjectName);
 
 				// process instance id is null if no process instance id exists
-				Long processInstanceId = getProcessInstanceId(connection, subjectName, experimentTaskId);
+				List<PpmInstanceDto> ppmInstanceDtoList = new PpmInstanceDao().selectProcessInstancesForSubjectAndTask(connection,
+						subject.getSubjectId(), experimentTaskId);
+				PpmInstanceDto ppmInstanceDto = null;
+				Long processInstanceId = null;
+				if (ppmInstanceDtoList.size() == 1) {
+					ppmInstanceDto = ppmInstanceDtoList.get(0);
+					processInstanceId = ppmInstanceDto.getProcessInstanceId();
+				} else if (ppmInstanceDtoList.size() > 1) {
+					return;
+				}
 
 				File videoFile = userFileDao.getUserFile(userFileDao.getPath(fileId));
 				movieDao.insertMovie(videoFile, userId, movieFile.getFilename(), movieFile.getType(), processInstanceId,
