@@ -13,11 +13,9 @@ import org.cheetahplatform.common.eyetracking.EyeTrackerDateCorrection;
 import org.cheetahplatform.web.CheetahWebConstants;
 import org.cheetahplatform.web.dao.MovieDao;
 import org.cheetahplatform.web.dao.PpmInstanceDao;
-import org.cheetahplatform.web.dao.SubjectDao;
 import org.cheetahplatform.web.dao.UserFileDao;
 import org.cheetahplatform.web.dto.ConnectRequest;
 import org.cheetahplatform.web.dto.PpmInstanceDto;
-import org.cheetahplatform.web.dto.SubjectDto;
 import org.cheetahplatform.web.dto.UserFileDto;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFile;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileColumn;
@@ -42,7 +40,6 @@ public class ConnectVideoWorkItem extends AbstractConnectWorkItem {
 		UserFileDao userFileDao = new UserFileDao();
 		UserFileDto movieFile = userFileDao.getFile(fileId);
 		String[] splittedFilename = splitFileName(movieFile.getFilename());
-		String subjectName = splittedFilename[0];
 		String experimentTaskId = splittedFilename[1];
 
 		try (Connection connection = AbstractCheetahServlet.getDatabaseConnection()) {
@@ -70,10 +67,11 @@ public class ConnectVideoWorkItem extends AbstractConnectWorkItem {
 							+ movieFile.getFilename() + "'.");
 					return;
 				}
-				PupillometryFileColumn localTimestampColumn = header.getColumn(CheetahWebConstants.PUPILLOMETRY_FILE_COLUMN_LOCAL_TIMESTAMP);
+				PupillometryFileColumn localTimestampColumn = header
+						.getColumn(CheetahWebConstants.PUPILLOMETRY_FILE_COLUMN_LOCAL_TIMESTAMP);
 				if (localTimestampColumn == null) {
-					logErrorNotification("Could not find local timestamp column '" + CheetahWebConstants.PUPILLOMETRY_FILE_COLUMN_LOCAL_TIMESTAMP + "' in file "
-							+ movieFile.getFilename());
+					logErrorNotification("Could not find local timestamp column '"
+							+ CheetahWebConstants.PUPILLOMETRY_FILE_COLUMN_LOCAL_TIMESTAMP + "' in file " + movieFile.getFilename());
 					return;
 				}
 
@@ -84,11 +82,9 @@ public class ConnectVideoWorkItem extends AbstractConnectWorkItem {
 				String localTimestamp = firstLine.get(localTimestampColumn);
 				Date startTime = EyeTrackerDateCorrection.correctDate(localTimestamp, timestamp);
 
-				SubjectDto subject = new SubjectDao().getSubjectWithName(connection, userId, subjectName);
-
 				// process instance id is null if no process instance id exists
 				List<PpmInstanceDto> ppmInstanceDtoList = new PpmInstanceDao().selectProcessInstancesForSubjectAndTask(connection,
-						subject.getSubjectId(), experimentTaskId);
+						movieFile.getSubjectId(), experimentTaskId);
 				PpmInstanceDto ppmInstanceDto = null;
 				Long processInstanceId = null;
 				if (ppmInstanceDtoList.size() == 1) {
@@ -100,10 +96,11 @@ public class ConnectVideoWorkItem extends AbstractConnectWorkItem {
 
 				File videoFile = userFileDao.getUserFile(userFileDao.getPath(fileId));
 				movieDao.insertMovie(videoFile, userId, movieFile.getFilename(), movieFile.getType(), processInstanceId,
-						startTime.getTime() * 1000, subject.getSubjectId(), fileId);
+						startTime.getTime() * 1000, movieFile.getSubjectId(), fileId);
 
-				userFileDao.updateSubject(connection, movieFile.getId(), subject.getSubjectId());
-				logSuccessNotification("Connected video '" + movieFile.getFilename() + "' to subject '" + subjectName + "'.");
+				userFileDao.updateSubject(connection, movieFile.getId(), movieFile.getSubjectId());
+				logSuccessNotification(
+						"Connected video '" + movieFile.getFilename() + "' to subject '" + movieFile.getIdOfSubject() + "'.");
 			}
 		}
 	}

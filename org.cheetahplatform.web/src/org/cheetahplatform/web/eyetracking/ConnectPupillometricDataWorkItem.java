@@ -17,11 +17,9 @@ import org.apache.commons.io.input.BOMInputStream;
 import org.cheetahplatform.common.eyetracking.EyeTrackerDateCorrection;
 import org.cheetahplatform.web.CheetahWebConstants;
 import org.cheetahplatform.web.dao.PpmInstanceDao;
-import org.cheetahplatform.web.dao.SubjectDao;
 import org.cheetahplatform.web.dao.UserFileDao;
 import org.cheetahplatform.web.dto.ConnectRequest;
 import org.cheetahplatform.web.dto.PpmInstanceDto;
-import org.cheetahplatform.web.dto.SubjectDto;
 import org.cheetahplatform.web.dto.UserFileDto;
 import org.cheetahplatform.web.servlet.AbstractCheetahServlet;
 import org.cheetahplatform.web.util.FileUtils;
@@ -92,12 +90,8 @@ public class ConnectPupillometricDataWorkItem extends AbstractConnectWorkItem {
 			if (splitted == null) {
 				return;
 			}
-			String subjectName = splitted[0];
+
 			String experimentTask = splitted[1];
-			SubjectDto subject = new SubjectDao().getSubjectWithName(connection, userId, subjectName);
-			if (subject == null) {
-				return;
-			}
 
 			String fileNameWithoutExtension = FileUtils.getFileNameWithoutExtension(file.getFilename());
 			String newName = fileNameWithoutExtension + ".csv";
@@ -141,7 +135,7 @@ public class ConnectPupillometricDataWorkItem extends AbstractConnectWorkItem {
 			}
 
 			List<PpmInstanceDto> ppmInstanceDtoList = new PpmInstanceDao().selectProcessInstancesForSubjectAndTask(connection,
-					subject.getSubjectId(), experimentTask);
+					file.getSubjectId(), experimentTask);
 			PpmInstanceDto ppmInstanceDto = null;
 			Long processInstanceId = null;
 			if (ppmInstanceDtoList.size() == 1) {
@@ -156,14 +150,14 @@ public class ConnectPupillometricDataWorkItem extends AbstractConnectWorkItem {
 				PpmInstanceDto ppmInstance = new PpmInstanceDao().selectPpmInstance(processInstanceId);
 				String comment = "Connected to PPM instance with id '" + ppmInstance.getProcessInstanceId() + "'.";
 				userFileDao.insertUserFile(userId, newFilename, relativePath, file.getType(), comment, ppmInstance.getProcessInstanceId(),
-						subject.getSubjectId(), true, fileId);
+						file.getSubjectId(), true, fileId);
 				EyeTrackingCache.INSTANCE.invalidateCache(ppmInstance.getProcessInstanceId());
 				logSuccessNotification(
 						"Connected '" + file.getFilename() + "' to PPM instance with id '" + ppmInstance.getProcessInstanceId() + "'.");
 			} else {
 				userFileDao.insertUserFile(userId, newFilename, relativePath, file.getType(), "Compressed and added to subject.", null,
-						subject.getSubjectId(), true, fileId);
-				logSuccessNotification("Connected '" + file.getFilename() + "' with subject '" + subjectName + "'.");
+						file.getSubjectId(), true, fileId);
+				logSuccessNotification("Connected '" + file.getFilename() + "' with subject '" + file.getIdOfSubject() + "'.");
 			}
 		}
 	}
