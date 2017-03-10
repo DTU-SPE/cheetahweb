@@ -18,4 +18,5 @@ public class CheetahWebConstants {
 	public static final String PUPILLOMETRY_FILE_COLUMN_STUDIO_EVENT = "StudioEvent";
 	public static final String PUPILLOMETRY_FILE_COLUMN_TRIAL_ID = "TrialId";
 	public static final String PUPILLOMETRY_FILE_COLUMN_SCENE = "Scene";
+	public static final String PUPILLOMETRY_FILE_COLUMN_LOCAL_TIMESTAMP = "LocalTimeStamp";
 }

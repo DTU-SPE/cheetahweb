@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.cheetahplatform.common.eyetracking.EyeTrackerDateCorrection;
+import org.cheetahplatform.web.CheetahWebConstants;
 import org.cheetahplatform.web.dao.MovieDao;
 import org.cheetahplatform.web.dao.PpmInstanceDao;
 import org.cheetahplatform.web.dao.SubjectDao;
@@ -69,9 +70,9 @@ public class ConnectVideoWorkItem extends AbstractConnectWorkItem {
 							+ movieFile.getFilename() + "'.");
 					return;
 				}
-				PupillometryFileColumn localTimestampColumn = header.getColumn(LOCAL_TIMESTAMP_COLUMN_HEADER);
+				PupillometryFileColumn localTimestampColumn = header.getColumn(CheetahWebConstants.PUPILLOMETRY_FILE_COLUMN_LOCAL_TIMESTAMP);
 				if (localTimestampColumn == null) {
-					logErrorNotification("Could not find local timestamp column '" + LOCAL_TIMESTAMP_COLUMN_HEADER + "' in file "
+					logErrorNotification("Could not find local timestamp column '" + CheetahWebConstants.PUPILLOMETRY_FILE_COLUMN_LOCAL_TIMESTAMP + "' in file "
 							+ movieFile.getFilename());
 					return;
 				}

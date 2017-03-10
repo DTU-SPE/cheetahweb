@@ -20,7 +20,7 @@ public class SubstitutePupilFilter extends AbstractPupillometryFilter {
 	}
 
 	@Override
-	public String run(FilterRequest request, PupillometryFile file) throws Exception {
+	public String run(FilterRequest request, PupillometryFile file, long fileId) throws Exception {
 		PupillometryFileColumn leftPupil = file.getHeader().getColumn(request.getLeftPupilColumn());
 		PupillometryFileColumn rightPupil = file.getHeader().getColumn(request.getRightPupilColumn());
 

@@ -31,7 +31,6 @@ public abstract class AbstractCheetahWorkItem implements ICheetahWorkItem {
 		}
 	}
 
-	protected static final String LOCAL_TIMESTAMP_COLUMN_HEADER = "LocalTimeStamp";
 	private static NotificationDao notificationDao = new NotificationDao();
 
 	private long id;

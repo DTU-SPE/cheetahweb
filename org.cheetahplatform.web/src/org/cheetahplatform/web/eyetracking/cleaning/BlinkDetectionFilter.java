@@ -262,7 +262,7 @@ public class BlinkDetectionFilter extends AbstractPupillometryFilter {
 	}
 
 	@Override
-	public String run(FilterRequest request, PupillometryFile file) throws Exception {
+	public String run(FilterRequest request, PupillometryFile file, long fileId) throws Exception {
 		PupillometryFileHeader header = file.getHeader();
 		PupillometryFileColumn leftPupilColumn = getLeftPupilColumn(request, header);
 		PupillometryFileColumn rightPupilColumn = getRightPupilColumn(request, header);
