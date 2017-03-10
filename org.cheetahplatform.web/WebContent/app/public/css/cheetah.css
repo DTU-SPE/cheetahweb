@@ -580,6 +580,7 @@ div.check {
   word-wrap: break-word;
   word-break: break-all;
   white-space: normal;
+  min-width: 300px;
 }
 
 .cheetah-define-data-processing-select-file-label {
