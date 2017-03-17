@@ -37,20 +37,28 @@ public class SubjectDao extends AbstractCheetahDao {
 	public CreateSubjectResponse createSubject(Connection connection, CreateSubjectRequest createSubjecRequest) throws SQLException {
 		PreparedStatement statement = connection.prepareStatement(
 				"insert into subject (email, subject_id, fk_study, comment) values (?, ?, ?, ?)", PreparedStatement.RETURN_GENERATED_KEYS);
-		statement.setString(1, createSubjecRequest.getEmail());
+		String email = null;
+		if (createSubjecRequest.getEmail() != null && !createSubjecRequest.getEmail().trim().equals("")) {
+			statement.setString(1, createSubjecRequest.getEmail());
+			email = createSubjecRequest.getEmail();
+
+		} else {
+			String defaultMail = "no_email.available";
+			statement.setString(1, defaultMail);
+			email = defaultMail;
+		}
 		statement.setString(2, createSubjecRequest.getSubjectId());
 		statement.setLong(3, createSubjecRequest.getStudyId());
 		statement.setString(4, createSubjecRequest.getComment());
 
 		statement.execute();
-
 		ResultSet keys = statement.getGeneratedKeys();
 		keys.next();
 		long id = keys.getLong(1);
 		statement.close();
 
-		return new CreateSubjectResponse(id, createSubjecRequest.getEmail(), createSubjecRequest.getSubjectId(),
-				createSubjecRequest.getStudyId(), createSubjecRequest.getComment());
+		return new CreateSubjectResponse(id, email, createSubjecRequest.getSubjectId(), createSubjecRequest.getStudyId(),
+				createSubjecRequest.getComment());
 
 	}
 
@@ -228,16 +236,6 @@ public class SubjectDao extends AbstractCheetahDao {
 
 		return new PlainSubjectDto(id, synchronizedFrom.getEmail(), synchronizedFrom.getSubjectId(), studyId, synchronizedFrom.getComment(),
 				synchronizedFrom.getId());
-	}
-
-	public boolean subjectExists(Connection connection, String email, long study) throws SQLException {
-		PreparedStatement statement = connection.prepareStatement("select count(*) from subject where email = ?  AND fk_study = ? ");
-		statement.setString(1, email);
-		statement.setLong(2, study);
-		ResultSet resultSet = statement.executeQuery();
-		resultSet.next();
-		int existingStudyCount = resultSet.getInt(1);
-		return existingStudyCount > 0;
 	}
 
 	public boolean subjectIDExistsInStudy(Connection connection, String subjectID, long study) throws SQLException {

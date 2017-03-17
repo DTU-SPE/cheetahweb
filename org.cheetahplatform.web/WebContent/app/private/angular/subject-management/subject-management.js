@@ -213,52 +213,7 @@ myApp.controller('SubjCtrl', function ($scope, $http, $q, $timeout) {
             allowDouble: false
         };
         $http.post('../../private/createSubject', createdSubject).then(function (response) {
-            if (response.data.error === "email") {
-                BootstrapDialog.show({
-                    title: 'Subject already exists',
-                    message: 'There is already a subject in the database with the email address "' + createdSubject.email + '".\n Do you really want to add another subject with the same email address?',
-                    buttons: [{
-                        label: 'Yes',
-                        action: function (dialogSelf) {
-                            var createdSubject = {
-                                email: $scope.mail,
-                                subjectId: $scope.subjectID,
-                                studyId: $scope.selectedStudy.id,
-                                comment: $scope.comment,
-                                allowDouble: true
-                            };
-                            $http.post('../../private/createSubject', createdSubject).then(function (response) {
-                                if (response.data.error == undefined) {
-                                    BootstrapDialog.alert({
-                                        title: 'Subject created successfully',
-                                        message: 'The subject with the email address "' + createdSubject.email + '" was created successfully.'
-                                    });
-
-                                    var createdSubjectWithPK = {
-                                        id: response.data.id,
-                                        email: response.data.email,
-                                        subjectId: response.data.subjectId,
-                                        study: $scope.selectedStudy,
-                                        comment: response.data.comment
-                                    };
-                                    $scope.subjects.push(createdSubjectWithPK);
-                                    $scope.highLighted[createdSubjectWithPK.id] = true;
-                                    $timeout(function () {
-                                        $scope.highLighted = {};
-                                    }, 5000);
-                                    sortSubjectList();
-                                }
-                            });
-                            dialogSelf.close();
-                        }
-                    }, {
-                        label: 'No',
-                        action: function (dialogSelf) {
-                            dialogSelf.close();
-                        }
-                    }]
-                });
-            }else if (response.data.error==="idInStudy"){
+            if (response.data.error==="idInStudy"){
                 BootstrapDialog.alert({
                     title: 'Subject already exists',
                     message: 'There is already a subject in the study "'+ $scope.selectedStudy.name + '" with the ID "' + $scope.subjectID + '".'
@@ -266,7 +221,7 @@ myApp.controller('SubjCtrl', function ($scope, $http, $q, $timeout) {
             } else {
                 BootstrapDialog.alert({
                     title: 'Subject created successfully',
-                    message: 'The subject "' + createdSubject.email + '" was created successfully.'
+                    message: 'The subject "' + createdSubject.subjectId + '" was created successfully.'
                 });
                 var createdSubjectWithPK = {
                     id: response.data.id,
@@ -327,7 +282,7 @@ myApp.controller('SubjCtrl', function ($scope, $http, $q, $timeout) {
                     study: studyForSubject,
                     comment: newCreatedSubject.comment
                 };
-                $scope.subjects.splice(0, 0, createdSubjectWithPK);
+                $scope.subjects.push(createdSubjectWithPK);
                 $scope.highLighted[createdSubjectWithPK.id] = true;
             });
 

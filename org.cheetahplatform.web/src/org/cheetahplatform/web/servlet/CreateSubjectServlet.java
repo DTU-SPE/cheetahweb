@@ -20,18 +20,12 @@ public class CreateSubjectServlet extends AbstractCheetahServlet {
 		SubjectDao subjectDao = new SubjectDao();
 		String error = null;
 
-		if (createSubjecRequest.getAllowDouble()) {
+		if (subjectDao.subjectIDExistsInStudy(connection, createSubjecRequest.getSubjectId(), createSubjecRequest.getStudyId())) {
+			error = "idInStudy";
+			writeJson(response, new CreateSubjectResponse(error));
+		} else {
 			CreateSubjectResponse createSubject = subjectDao.createSubject(connection, createSubjecRequest);
 			writeJson(response, createSubject);
-		} else {
-
-			if (subjectDao.subjectIDExistsInStudy(connection, createSubjecRequest.getSubjectId(), createSubjecRequest.getStudyId())) {
-				error = "idInStudy";
-				writeJson(response, new CreateSubjectResponse(error));
-			} else {
-				CreateSubjectResponse createSubject = subjectDao.createSubject(connection, createSubjecRequest);
-				writeJson(response, createSubject);
-			}
 		}
 	}
 }
