@@ -122,7 +122,12 @@ public class TrimVideoWorkItem extends AbstractActivityBasedWorkItem {
 		}
 
 		if (ffmpegExecutable == null) {
-			logErrorNotification("Could not find the ffmpeg-executable, checked the following locations: " + FFMPEG_LOCATIONS
+			String ffmpgLocations = "";
+			for (String location : FFMPEG_LOCATIONS) {
+				ffmpgLocations = ffmpgLocations + location + ", ";
+			}
+			ffmpgLocations = ffmpgLocations.substring(0, ffmpgLocations.length() - 2);
+			logErrorNotification("Could not find the ffmpeg-executable, checked the following locations: " + ffmpgLocations
 					+ ". If you have ffmpeg installed, you may want to add your path to " + TrimVideoWorkItem.class.getName()
 					+ ".FFMPEG_LOCATIONS.");
 			return;
