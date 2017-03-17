@@ -32,6 +32,7 @@ public class FileUtils {
 		String fileNameWithoutExtension = FileUtils.getFileNameWithoutExtension(fileName);
 		String[] splittedFilename = fileNameWithoutExtension.split(CheetahWebConstants.FILENAME_PATTERN_SEPARATOR);
 		String subjectName = splittedFilename[0];
+		String studyName = splittedFilename[1];
 
 		// can't identify the study -> can't map to a subject
 		if (splittedFilename.length < 2) {
@@ -39,19 +40,14 @@ public class FileUtils {
 		}
 
 		try (Connection connection = AbstractCheetahServlet.getDatabaseConnection()) {
-			SubjectDto subjectWithName = new SubjectDao().getSubjectWithName(connection, userId, subjectName);
-			if (subjectWithName == null) {
-				return null;
-			}
-
-			String study = subjectWithName.getStudy();
-
-			// the subject needs to be in the study with the filename
-			if (splittedFilename[1].equals(study)) {
+			SubjectDto subjectWithName = new SubjectDao().getSubjectWithName(connection, userId, subjectName, studyName);
+			if (subjectWithName != null) {
 				return subjectWithName;
+
 			}
-			return null;
 		}
+		return null;
+
 	}
 
 	/**

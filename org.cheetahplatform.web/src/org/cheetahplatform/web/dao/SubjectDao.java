@@ -197,11 +197,12 @@ public class SubjectDao extends AbstractCheetahDao {
 		return subjects.get(0);
 	}
 
-	public SubjectDto getSubjectWithName(Connection connection, long userId, String subjectName) throws SQLException {
+	public SubjectDto getSubjectWithName(Connection connection, long userId, String subjectName, String studyName) throws SQLException {
 		PreparedStatement statement = connection.prepareStatement(
-				"SELECT sub.pk_subject, sub.subject_id, st.name FROM subject sub, study st, studies_to_user sttu WHERE sub.fk_study = st.pk_study AND sttu.fk_study = st.pk_study AND sttu.fk_user = ? AND sub.subject_id = ?;");
+				"SELECT sub.pk_subject, sub.subject_id, st.name FROM subject sub, study st, studies_to_user sttu WHERE sub.fk_study = st.pk_study AND sttu.fk_study = st.pk_study AND sttu.fk_user = ? AND sub.subject_id = ? AND st.name = ?;");
 		statement.setLong(1, userId);
 		statement.setString(2, subjectName);
+		statement.setString(3, studyName);
 		ResultSet result = statement.executeQuery();
 		List<SubjectDto> subjects = extractSubjects(result);
 		result.close();
