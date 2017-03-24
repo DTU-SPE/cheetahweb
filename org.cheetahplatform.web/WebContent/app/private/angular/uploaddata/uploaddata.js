@@ -67,8 +67,7 @@ angular.module('cheetah.UploadData', ['ngRoute', 'ui.select'])
                         uploadQueuedeFiles(fileQueueToSend);
                     }
                 );
-            }else{
-                            }
+            }
         }
 
         var startUpload = function (files) {
