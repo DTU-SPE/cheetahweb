@@ -342,9 +342,12 @@ angular
                 var tokens = property.split('.');
                 propertyToMatch = value[tokens[0]][tokens[1]];
             }
-
-            propertyToMatch = propertyToMatch.toLowerCase();
-            return propertyToMatch.indexOf(search.toLowerCase()) > -1;
+            if (property === "study.name") {
+                return propertyToMatch === search;
+            } else {
+                propertyToMatch = propertyToMatch.toLowerCase();
+                return propertyToMatch.indexOf(search.toLowerCase()) > -1;
+            }
         }
 
         function uniqueProperties(subjects, property) {

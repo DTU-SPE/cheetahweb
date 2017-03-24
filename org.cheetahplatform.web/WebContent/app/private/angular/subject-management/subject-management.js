@@ -123,7 +123,7 @@ myApp.controller('SubjCtrl', function ($scope, $http, $q, $timeout) {
                             });
                             var messageString = notDeleteAbleSubjects.map(function (input) {
                                 return input.subjectId;
-                            })
+                            });
                             BootstrapDialog.alert({
                                 title: 'Could not delete',
                                 message: "Could not delete " + messageString + ". The subjects have already attached files."
@@ -213,10 +213,10 @@ myApp.controller('SubjCtrl', function ($scope, $http, $q, $timeout) {
             allowDouble: false
         };
         $http.post('../../private/createSubject', createdSubject).then(function (response) {
-            if (response.data.error==="idInStudy"){
+            if (response.data.error === "idInStudy") {
                 BootstrapDialog.alert({
                     title: 'Subject already exists',
-                    message: 'There is already a subject in the study "'+ $scope.selectedStudy.name + '" with the ID "' + $scope.subjectID + '".'
+                    message: 'There is already a subject in the study "' + $scope.selectedStudy.name + '" with the ID "' + $scope.subjectID + '".'
                 });
             } else {
                 BootstrapDialog.alert({
@@ -262,43 +262,44 @@ myApp.controller('SubjCtrl', function ($scope, $http, $q, $timeout) {
             },
             transformRequest: angular.identity
         }).then(function (response) {
-            if(response.data.message==null){
-            BootstrapDialog.alert({
-                title: 'Successfully uploaded',
-                message: 'Successfully uploaded.'
-            });
-            $.each(response.data.subjectList, function (index, newCreatedSubject) {
-                var studyForSubject = {};
-                $.each($scope.fullStudies, function (index, studyInFullStudies) {
-                    if (studyInFullStudies.id === newCreatedSubject.studyId) {
-                        studyForSubject = studyInFullStudies;
-                        return;
-                    }
+            if (response.data.message == null) {
+                BootstrapDialog.alert({
+                    title: 'Successfully uploaded',
+                    message: 'Successfully uploaded.'
                 });
-                var createdSubjectWithPK = {
-                    id: newCreatedSubject.id,
-                    email: newCreatedSubject.email,
-                    subjectId: newCreatedSubject.subjectId,
-                    study: studyForSubject,
-                    comment: newCreatedSubject.comment
-                };
-                $scope.subjects.push(createdSubjectWithPK);
-                $scope.highLighted[createdSubjectWithPK.id] = true;
-            });
+                $.each(response.data.subjectList, function (index, newCreatedSubject) {
+                    var studyForSubject = {};
+                    $.each($scope.fullStudies, function (index, studyInFullStudies) {
+                        if (studyInFullStudies.id === newCreatedSubject.studyId) {
+                            studyForSubject = studyInFullStudies;
+                            return;
+                        }
+                    });
+                    var createdSubjectWithPK = {
+                        id: newCreatedSubject.id,
+                        email: newCreatedSubject.email,
+                        subjectId: newCreatedSubject.subjectId,
+                        study: studyForSubject,
+                        comment: newCreatedSubject.comment
+                    };
+                    $scope.subjects.push(createdSubjectWithPK);
+                    $scope.highLighted[createdSubjectWithPK.id] = true;
+                });
 
-            $timeout(function () {
-                $scope.highLighted = {};
-            }, 5000);
-            sortSubjectList();
-            $scope.myFile = null;
-            document.getElementById("uploadField").value = null;
-            $("#cheetah-load-csv-dialog").modal('hide');
-        }else {
+                $timeout(function () {
+                    $scope.highLighted = {};
+                }, 5000);
+                sortSubjectList();
+                $scope.myFile = null;
+                document.getElementById("uploadField").value = null;
+                $("#cheetah-load-csv-dialog").modal('hide');
+            } else {
                 BootstrapDialog.alert({
                     title: 'Error',
                     message: response.data.message
                 });
-            }});
+            }
+        });
     };
 
 
@@ -308,9 +309,9 @@ myApp.controller('SubjCtrl', function ($scope, $http, $q, $timeout) {
             var tokens = property.split('.');
             propertyToMatch = value[tokens[0]][tokens[1]];
         }
-        if(property=="study.name"){
-            return (propertyToMatch==search)
-        }else {
+        if (property === "study.name") {
+            return propertyToMatch === search;
+        } else {
             propertyToMatch = propertyToMatch.toLowerCase();
             return propertyToMatch.indexOf(search.toLowerCase()) > -1;
         }
