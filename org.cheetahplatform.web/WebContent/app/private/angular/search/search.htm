@@ -75,7 +75,7 @@
                         <li role="presentation" id="cheetah-visualize-custom-tab">
                             <a href="#cheetah-visualize-custom" aria-controls="cheetah-visualize-custom" role="tab"
                                data-toggle="tab">Custom Visualization</a></li>
-                        <li role="presentation" id="cheetah-visualize-workload-tab">
+                        <li role="presentation" ng-show="processInstancesToVisualize.length > 0" id="cheetah-visualize-workload-tab">
                             <a href="#cheetah-visualize-workload" aria-controls="cheetah-visualize-workload" role="tab"
                                data-toggle="tab">Visualize Workload</a></li>
                     </ul>
@@ -137,11 +137,10 @@
                                 </div>
                             </div>
                         </div>
-                        <div role="tabpanel" class="tab-pane active" id="cheetah-visualize-workload"
-                             ng-show="processInstancesToVisualize.length > 0">
+                        <div role="tabpanel" class="tab-pane active" id="cheetah-visualize-workload">
                             <div class="panel panel-default">
                                 <div class="panel-body">
-                                    <p>Please select a process to visualize the workload:</p>
+                                    <p  >Please select a process to visualize the workload:</p>
                                     <div ng-repeat="processInstance in processInstancesToVisualize">
                                         <label>
                                             <input type="radio" name="selectedProcessInstance"
