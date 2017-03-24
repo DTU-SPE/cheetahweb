@@ -26,24 +26,21 @@ angular.module('cheetah.UploadData', ['ngRoute', 'ui.select'])
             file.selection = !file.selection;
         };
 
-        var startUpload = function (files) {
-            for (var i = 0; i < files.length; i++) {
-                var formData = new FormData();
-                formData.append("pupilData", files[i]);
-                $scope.filesToUpload++;
-                updateProgress();
-
-                $http.post('../../private/uploaddata', formData, {
+        function uploadQueuedeFiles(fileQueueToSend) {
+            if(fileQueueToSend.length>0) {
+                var itemToSend =fileQueueToSend.pop();
+                $http.post('../../private/uploaddata', itemToSend.formData, {
                     withCredentials: true,
                     headers: {'Content-Type': undefined},
                     transformRequest: angular.identity,
-                    filename: files[i].name
+                    filename: itemToSend.name
                 }).success(function (data, status, headers, config) {
                         var status = {
                             fileId: data.id, filename: config.filename, status: "success"
                         };
                         $scope.uploadedFiles.push(status);
                         updateProgress();
+                        uploadQueuedeFiles(fileQueueToSend);
                     }
                 ).error(
                     function (data, status, headers, config) {
@@ -67,9 +64,26 @@ angular.module('cheetah.UploadData', ['ngRoute', 'ui.select'])
                         };
                         $scope.uploadedFiles.push(status);
                         updateProgress();
+                        uploadQueuedeFiles(fileQueueToSend);
                     }
                 );
+            }else{
+                            }
+        }
+
+        var startUpload = function (files) {
+            var fileQueueToSend=[];
+            for (var i = 0; i < files.length; i++) {
+                var itemToSend={};
+                var formData = new FormData();
+                formData.append("pupilData", files[i]);
+                $scope.filesToUpload++;
+                itemToSend.formData=formData;
+                itemToSend.name=files[i].name;
+                fileQueueToSend.push(itemToSend);
+                updateProgress();
             }
+            uploadQueuedeFiles(fileQueueToSend);
         };
 
         $scope.mapFilesToSubject = function () {
