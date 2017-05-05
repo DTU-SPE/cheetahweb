@@ -25,7 +25,7 @@ public abstract class AbstractTrialDetector extends AbstractPupillopmetryFileDet
 	protected String decimalSeparator;
 	private IPupillometryFileSectionIdentifier trialIdentifier;
 	protected String timestampColumn;
-	private DataProcessing dataProcessing;
+	protected DataProcessing dataProcessing;
 
 	public AbstractTrialDetector(long fileId, DataProcessing dataProcessing, TrialConfiguration config, String decimalSeparator,
 			String timestampColumn) {
