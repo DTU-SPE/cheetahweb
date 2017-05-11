@@ -92,6 +92,10 @@ public abstract class AbstractTrialDetector extends AbstractPupillopmetryFileDet
 	}
 
 	private void detectBaseline(PupillometryFileColumn timeStamp, List<Trial> trials, PupillometryFile pupillometryFile) throws Exception {
+		// clear columns
+		initializeColumn(pupillometryFile, BaselineDetector.BASELINE_COLUMN_NAME);
+		initializeColumn(pupillometryFile, BaselineDetector.TIME_SINCE_BASELINE_START);
+
 		for (Trial trial : trials) {
 			BaselineDetector baselineDetector = new BaselineDetector(trial, config, timeStamp, pupillometryFile);
 			baselineDetector.detectBaseline();
@@ -100,6 +104,8 @@ public abstract class AbstractTrialDetector extends AbstractPupillopmetryFileDet
 
 	private void detectStimulus(PupillometryFile pupillometryFile, List<Trial> trials) throws Exception {
 		PupillometryFileColumn timestamp = pupillometryFile.getHeader().getColumn(timestampColumn);
+		initializeColumn(pupillometryFile, StimulusDetector.STIMULUS_COLUMN_NAME);
+		initializeColumn(pupillometryFile, StimulusDetector.TIME_SINCE_STIMULUS_START);
 
 		for (Trial trial : trials) {
 			StimulusDetector stimulusDetector = new StimulusDetector(trial, config, pupillometryFile, timestamp);

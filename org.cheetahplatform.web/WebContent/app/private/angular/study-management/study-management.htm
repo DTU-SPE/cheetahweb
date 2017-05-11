@@ -432,8 +432,10 @@
                         <div ng-repeat="file in files" class="row">
                             <input type="radio" name="selectedFile"
                                    ng-model="$parent.selectedFile.id"
-                                   value="{{file.id}}" id="cheetah-select-pupillometry-file-modal-radio-{{file.id}}" style="float: left"/>
-                            <label for="cheetah-select-pupillometry-file-modal-radio-{{file.id}}" class="cheetah-define-data-processing-select-file-label" title="{{file.name}}">{{file.name}}</label>
+                                   value="{{file.id}}" id="cheetah-select-pupillometry-file-modal-radio-{{file.id}}"
+                                   style="float: left"/>
+                            <label for="cheetah-select-pupillometry-file-modal-radio-{{file.id}}"
+                                   class="cheetah-define-data-processing-select-file-label" title="{{file.name}}">{{file.name}}</label>
                         </div>
                     </div>
 
@@ -762,6 +764,17 @@
                                         </small>
                                     </ui-select-choices>
                                 </ui-select>
+                            </div>
+                            <div class="form-group">
+                                <label for="cheetah-baseline-start-offset">Start milliseconds after baseline
+                                    onset (leave blank to only use marker): </label>
+                                <input type="text" id="cheetah-baseline-start-offset" class="form-control"
+                                       ng-model="data.config.baseline.startOffset"></div>
+                            <div class="form-group">
+                                <label for="cheetah-baseline-end-offset">End milliseconds after baseline onset, i.e., stop before the end marker is reached (leave blank to only use marker):
+                                </label>
+                                <input type="text" id="cheetah-baseline-end-offset" class="form-control"
+                                       ng-model="data.config.baseline.endOffset">
                             </div>
                         </div>
                     </div>

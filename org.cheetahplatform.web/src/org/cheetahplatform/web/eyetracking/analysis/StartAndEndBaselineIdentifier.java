@@ -10,10 +10,47 @@ public class StartAndEndBaselineIdentifier extends StartAndEndPupillometryFileSe
 		implements IPupillometryFileBaselineIdentifier {
 	public static final String BASELINE_TYPE = "baseline-scene-trigger";
 	private PupillometryFileColumn studioEventDataColumn;
+	private BaselineTriggeredBySceneConfiguration configuration;
+	private PupillometryFileColumn timeStampColumn;
+	private long startTimestamp;
 
-	public StartAndEndBaselineIdentifier(String start, String end, PupillometryFileColumn studioEventDataColumn) {
-		super(start, end);
+	public StartAndEndBaselineIdentifier(BaselineTriggeredBySceneConfiguration castedConfiguration,
+			PupillometryFileColumn studioEventDataColumn, PupillometryFileColumn timeStampColumn) {
+		super(castedConfiguration.getBaselineStart(), castedConfiguration.getBaselineEnd());
+		this.configuration = castedConfiguration;
 		this.studioEventDataColumn = studioEventDataColumn;
+		this.timeStampColumn = timeStampColumn;
+	}
+
+	public boolean checkOffset(IPupillometryFileLine line) {
+		long startOffset = configuration.getStartOffset() * 1000;
+		long endOffset = configuration.getEndOffset() * 1000;
+
+		// no adaptations - just return started
+		if (startOffset <= 0 && endOffset <= 0) {
+			return true;
+		}
+
+		// start and end specified
+		long currentTimeStamp = Long.parseLong(line.get(timeStampColumn));
+		if (startOffset > 0 && endOffset > 0) {
+			long start = startTimestamp + startOffset;
+			long end = startTimestamp + endOffset;
+
+			return start <= currentTimeStamp && currentTimeStamp <= end;
+		}
+
+		if (startOffset > 0) {
+			long start = startTimestamp + startOffset;
+			return start <= currentTimeStamp;
+		}
+
+		if (endOffset > 0) {
+			long end = startTimestamp + endOffset;
+			return currentTimeStamp <= end;
+		}
+
+		return false;
 	}
 
 	@Override
@@ -29,14 +66,18 @@ public class StartAndEndBaselineIdentifier extends StartAndEndPupillometryFileSe
 	@Override
 	public boolean isWithinRange(IPupillometryFileLine line) {
 		if (isEnd(line, studioEventDataColumn)) {
-			return true;
+			return checkOffset(line);
 		}
 
 		if (isStart(line, studioEventDataColumn)) {
+			startTimestamp = Long.parseLong(line.get(timeStampColumn));
 			return false;
 		}
 
-		return started;
-	}
+		if (started) {
+			return checkOffset(line);
+		}
 
+		return false;
+	}
 }

@@ -12,7 +12,7 @@ import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileLine;
 public class BaselineDetector extends AbstractPupillopmetryFileDetector {
 
 	public static final String BASELINE_COLUMN_NAME = "Baseline";
-	private static final String TIME_SINCE_BASELINE_START = "Time_since_baseline_start";
+	public static final String TIME_SINCE_BASELINE_START = "Time_since_baseline_start";
 
 	private Trial trial;
 	private TrialConfiguration config;
@@ -34,8 +34,8 @@ public class BaselineDetector extends AbstractPupillopmetryFileDetector {
 			return;
 		}
 
-		PupillometryFileColumn baseLineColumn = initializeColumn(pupillometryFile, BASELINE_COLUMN_NAME);
-		PupillometryFileColumn relativeTimeColumn = initializeColumn(pupillometryFile, TIME_SINCE_BASELINE_START);
+		PupillometryFileColumn baseLineColumn = pupillometryFile.getColumn(BASELINE_COLUMN_NAME);
+		PupillometryFileColumn relativeTimeColumn = pupillometryFile.getColumn(TIME_SINCE_BASELINE_START);
 
 		// handle the case that trial and stimulus are the same: since the markings are always applied to the previous line, the stimulus
 		// cannot be detected, since it lies outside the trial, #651
@@ -92,10 +92,10 @@ public class BaselineDetector extends AbstractPupillopmetryFileDetector {
 					durationBeforeStimulus, timestampColumn);
 		} else if (baselineConfiguration instanceof BaselineTriggeredBySceneConfiguration) {
 			BaselineTriggeredBySceneConfiguration castedConfiguration = (BaselineTriggeredBySceneConfiguration) baselineConfiguration;
-			PupillometryFileColumn studioEventDataColumn = pupillometryFile.getHeader().getColumn(CheetahWebConstants.PUPILLOMETRY_FILE_COLUMN_STUDIO_EVENT_DATA);
+			PupillometryFileColumn studioEventDataColumn = pupillometryFile.getHeader()
+					.getColumn(CheetahWebConstants.PUPILLOMETRY_FILE_COLUMN_STUDIO_EVENT_DATA);
 
-			baselineIdentifier = new StartAndEndBaselineIdentifier(castedConfiguration.getBaselineStart(),
-					castedConfiguration.getBaselineEnd(), studioEventDataColumn);
+			baselineIdentifier = new StartAndEndBaselineIdentifier(castedConfiguration, studioEventDataColumn, timestampColumn);
 		}
 
 	}

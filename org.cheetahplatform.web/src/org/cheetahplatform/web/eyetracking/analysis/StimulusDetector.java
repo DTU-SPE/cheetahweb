@@ -9,8 +9,8 @@ import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileColumn;
 import org.cheetahplatform.web.eyetracking.cleaning.PupillometryFileLine;
 
 public class StimulusDetector extends AbstractPupillopmetryFileDetector {
-	private static final String STIMULUS_COLUMN_NAME = "Stimulus";
-	private static final String TIME_SINCE_STIMULUS_START = "Time_since_stimulus_start";
+	public static final String STIMULUS_COLUMN_NAME = "Stimulus";
+	public static final String TIME_SINCE_STIMULUS_START = "Time_since_stimulus_start";
 	private Trial trial;
 	private TrialConfiguration config;
 	private PupillometryFile pupillometryFile;
@@ -27,11 +27,13 @@ public class StimulusDetector extends AbstractPupillopmetryFileDetector {
 	}
 
 	public Stimulus detectStimulus() throws Exception {
-		PupillometryFileColumn studioEventDataColumn = pupillometryFile.getHeader().getColumn(CheetahWebConstants.PUPILLOMETRY_FILE_COLUMN_STUDIO_EVENT_DATA);
-		PupillometryFileColumn studioEventColumn = pupillometryFile.getHeader().getColumn(CheetahWebConstants.PUPILLOMETRY_FILE_COLUMN_STUDIO_EVENT);
+		PupillometryFileColumn studioEventDataColumn = pupillometryFile.getHeader()
+				.getColumn(CheetahWebConstants.PUPILLOMETRY_FILE_COLUMN_STUDIO_EVENT_DATA);
+		PupillometryFileColumn studioEventColumn = pupillometryFile.getHeader()
+				.getColumn(CheetahWebConstants.PUPILLOMETRY_FILE_COLUMN_STUDIO_EVENT);
 
-		PupillometryFileColumn baseLineColumn = initializeColumn(pupillometryFile, STIMULUS_COLUMN_NAME);
-		PupillometryFileColumn relativeTimeColumn = initializeColumn(pupillometryFile, TIME_SINCE_STIMULUS_START);
+		PupillometryFileColumn baseLineColumn = pupillometryFile.getColumn(STIMULUS_COLUMN_NAME);
+		PupillometryFileColumn relativeTimeColumn = pupillometryFile.getColumn(TIME_SINCE_STIMULUS_START);
 
 		Stimulus stimulus = null;
 		// handle the case that trial and stimulus are the same: since the markings are always applied to the previous line, the stimulus

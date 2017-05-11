@@ -12,11 +12,13 @@ public class PupillometryFileRenamer {
 	/**
 	 * The name of the modeling task.
 	 */
-	private static final String TASK_NAME = "task_modeling_1.0";
+	private static final String TASK_NAME = "Thomas_Validation";
 	/**
 	 * Path to the root directory of the video export.
 	 */
-	private static final String ROOT = "G:/StudieManuel/Pupillometry/Fall15";
+	private static final String ROOT = "D:\\tmp\\Recognition Memory Questionnaire RMQ";
+
+	private static final String NAME_POSTFIX = "_RMQ";
 
 	public static void main(String[] args) {
 		File root = new File(ROOT);
@@ -37,7 +39,7 @@ public class PupillometryFileRenamer {
 
 			String subject = name.substring(0, extensionStartIndex);
 
-			String newName = subject + "@" + TASK_NAME + extension;
+			String newName = subject + NAME_POSTFIX + "@" + TASK_NAME + extension;
 			File newFile = new File(ROOT + "/" + newName);
 			file.renameTo(newFile);
 			System.out.println("Renamed '" + name + "' to '" + newName + "'.");

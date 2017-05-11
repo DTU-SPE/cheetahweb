@@ -710,7 +710,23 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData', 'ui.s
             if ($scope.data.config.baseline.baselineCalculation === 'baseline-duration-before-stimulus') {
                 return $scope.data.config.baseline.durationBeforeStimulus && !isNaN($scope.data.config.baseline.durationBeforeStimulus);
             } else if ($scope.data.config.baseline.baselineCalculation === 'baseline-scene-trigger') {
-                return $scope.data.config.baseline.baselineStart && $scope.data.config.baseline.baselineEnd;
+                if (!($scope.data.config.baseline.baselineStart && $scope.data.config.baseline.baselineEnd)) {
+                    return false;
+                }
+
+                if ($scope.data.config.baseline.startOffset) {
+                    if (!(!isNaN($scope.data.config.baseline.startOffset && $scope.data.config.baseline.startOffset >= 0))){
+                        return false;
+                    }
+                }
+
+                if ($scope.data.config.baseline.endOffset) {
+                    if (!(!isNaN($scope.data.config.baseline.endOffset && $scope.data.config.baseline.endOffset >= 0))){
+                        return false;
+                    }
+                }
+
+                return true;
             }
         }
 
@@ -728,6 +744,8 @@ angular.module('cheetah.StudyManagement', ['ngRoute', 'cheetah.CleanData', 'ui.s
         } else if ($scope.data.config.baseline.baselineCalculation === 'baseline-duration-before-stimulus') {
             delete $scope.data.config.baseline.baselineStart;
             delete $scope.data.config.baseline.baselineEnd;
+            delete $scope.data.config.baseline.endOffset;
+            delete $scope.data.config.baseline.startOffset;
         }
     }
 
