@@ -10,8 +10,8 @@ import java.io.IOException;
 import java.util.List;
 
 public class TsvEventRenamer {
-	private static final String FOLDER = "D:\\tmp\\Recognition Memory Questionnaire RMQ";
-	private static final String OUTPUT_FOLDER = "D:\\tmp\\processed";
+	private static final String FOLDER = "D:\\tmp\\Memory Reactivation Task (MRT)\\Control\\Lösung2";
+	private static final String OUTPUT_FOLDER = "D:\\tmp\\processed_MRT\\Lösung2";
 	private static final String STUDIO_EVENT_DATA = "StudioEventData";
 
 	private static String[] STIMULUS_MARKERS = new String[] { "Intro+NEUTRAL.wmv", "Intro+STRESS_.wmv", "IPT", "MRT", "RT_", "RT5NEU",

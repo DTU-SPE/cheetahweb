@@ -16,9 +16,9 @@ public class PupillometryFileRenamer {
 	/**
 	 * Path to the root directory of the video export.
 	 */
-	private static final String ROOT = "D:\\tmp\\Recognition Memory Questionnaire RMQ";
+	private static final String ROOT = "D:\\tmp\\Memory Reactivation Task (MRT)\\Control\\Lösung2";
 
-	private static final String NAME_POSTFIX = "_RMQ";
+	private static final String NAME_POSTFIX = "_MRT";
 
 	public static void main(String[] args) {
 		File root = new File(ROOT);

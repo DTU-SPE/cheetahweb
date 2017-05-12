@@ -3,7 +3,7 @@ package org.cheetahplatform.web.util;
 import java.io.File;
 
 public class ExtractUserNamesFromFiles {
-	private static final String ROOT = "D:\\tmp\\processed";
+	private static final String ROOT = "D:\\tmp\\processed_MRT\\other";
 
 	public static void main(String[] args) {
 		File root = new File(ROOT);
