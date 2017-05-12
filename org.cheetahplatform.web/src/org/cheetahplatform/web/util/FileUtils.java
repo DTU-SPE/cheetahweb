@@ -31,13 +31,14 @@ public class FileUtils {
 	public static SubjectDto getSubjectForFileName(long userId, String fileName) throws SQLException {
 		String fileNameWithoutExtension = FileUtils.getFileNameWithoutExtension(fileName);
 		String[] splittedFilename = fileNameWithoutExtension.split(CheetahWebConstants.FILENAME_PATTERN_SEPARATOR);
-		String subjectName = splittedFilename[0];
-		String studyName = splittedFilename[1];
 
 		// can't identify the study -> can't map to a subject
 		if (splittedFilename.length < 2) {
 			return null;
 		}
+
+		String subjectName = splittedFilename[0];
+		String studyName = splittedFilename[1];
 
 		try (Connection connection = AbstractCheetahServlet.getDatabaseConnection()) {
 			SubjectDto subjectWithName = new SubjectDao().getSubjectWithName(connection, userId, subjectName, studyName);

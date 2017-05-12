@@ -41,6 +41,10 @@ public abstract class AbstractTrialDetector extends AbstractPupillopmetryFileDet
 	private void addRelativeValues(List<Trial> trials, PupillometryFileColumn source, PupillometryFileColumn target, boolean divide)
 			throws IOException {
 		for (Trial trial : trials) {
+			if (trial.getBaseline() == null) {
+				continue;
+			}
+
 			double baseline = trial.getBaseline().calculateMean(source);
 			if (baseline > 0.0) {
 				Stimulus stimulus = trial.getStimulus();
