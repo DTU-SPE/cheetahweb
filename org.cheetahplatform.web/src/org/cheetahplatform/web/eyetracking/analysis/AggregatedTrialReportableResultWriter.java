@@ -47,7 +47,7 @@ public class AggregatedTrialReportableResultWriter extends AbstractReportableRes
 						builder.append(trialEntry.getKey());
 					} else {
 						TrialAnalysisReportableResultEntry reportableResultEntry = trialEntry.getValue().get(header);
-						if (reportableResult != null) {
+						if (reportableResultEntry != null) {
 							builder.append(reportableResultEntry.getResult());
 						}
 					}
