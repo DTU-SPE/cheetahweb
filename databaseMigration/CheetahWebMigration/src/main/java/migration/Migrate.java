@@ -1,5 +1,9 @@
 package migration;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.Reader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -18,6 +22,7 @@ import org.cheetahplatform.common.ui.dialog.ProcessInstanceDatabaseHandle;
 import com.google.gson.Gson;
 
 import org.apache.commons.lang.math.NumberUtils;
+import org.apache.ibatis.jdbc.ScriptRunner;
 import org.cheetahplatform.common.logging.Attribute;
 import org.cheetahplatform.common.logging.AuditTrailEntry;
 import  org.cheetahplatform.common.logging.Process;
@@ -29,7 +34,7 @@ public class Migrate {
 	private static SimpleDateFormat logDateFormat = new SimpleDateFormat("hh:mm:ss.S");
 	private static Map<String, Class<?>> forcedTypes = new HashMap<String, Class<?>>();
 	
-	public static void main(String[] args) throws SQLException {
+	public static void main(String[] args) throws SQLException, FileNotFoundException {
 		log("=== Starting migration ===");
 		
 		// forced types set up
@@ -38,13 +43,21 @@ public class Migrate {
 		logDone();
 		
 		logStart("Database connection");
+		Connection connectionNoDbSelection = DriverManager.getConnection("jdbc:mysql://localhost:3306/", "cheetah_web", "cheetah_web");
 		Connection connectionOld = DriverManager.getConnection("jdbc:mysql://localhost:3306/cheetah_web_old", "cheetah_web", "cheetah_web");
 		Connection connectionNew = DriverManager.getConnection("jdbc:mysql://localhost:3306/cheetah_web", "cheetah_web", "cheetah_web");
 		logDone();
 		
 		logStart("Truncating old event tables");
-		connectionNew.prepareStatement("delete from event").execute();
-		connectionNew.prepareStatement("delete from time_phase").execute();
+		ScriptRunner sr1 = new ScriptRunner(connectionNew);
+		sr1.runScript(new BufferedReader(new FileReader("resources/cleanup.sql")));
+//		connectionNew.prepareStatement("delete from events").execute();
+//		connectionNew.prepareStatement("delete from time_phases").execute();
+		logDone();
+		
+		logStart("Running SQL import script");
+		ScriptRunner sr2 = new ScriptRunner(connectionNoDbSelection);
+		sr2.runScript(new BufferedReader(new FileReader("resources/from_old_to_new.sql")));
 		logDone();
 		
 		for (ProcessInstanceDatabaseHandle pidh : loadAllProcessInstances(connectionOld)) {
@@ -61,7 +74,7 @@ public class Migrate {
 					List<Attribute> attributes = ate.getAttributes();
 					attributes.addAll(pi.getAttributes());
 					// this audit trail entry is actually a time phase
-					PreparedStatement statement = connectionNew.prepareStatement("insert into time_phase (fk_subject, type, name, time_start, time_end, attributes) values (?, ?, ?, ?, ?, ?)");
+					PreparedStatement statement = connectionNew.prepareStatement("insert into time_phases (fk_subject, type, name, time_start, time_end, attributes) values (?, ?, ?, ?, ?, ?)");
 					statement.setLong(1, fk_subject);
 					statement.setString(2, ate.getEventType());
 					statement.setString(3, ate.getAttributeSafely("experiment_activity_id"));
@@ -70,6 +83,27 @@ public class Migrate {
 					statement.setString(6, attributeListToJSon(attributes));
 					statement.execute();
 					statement.close();
+					logDone();
+					
+					
+					logStart("Add session_videos");
+					long processInstanceId = Long.parseLong(pi.getId());
+					long idLastTimePhases = getIdOfLastTimePhase(connectionNew);
+					
+					PreparedStatement statement2 = connectionOld.prepareStatement("select * from eyetracking_movie where process_instance = ?");
+					statement2.setLong(1, processInstanceId);
+					ResultSet resultSet = statement2.executeQuery();
+					while (resultSet.next()) {
+						PreparedStatement statement3 = connectionNew.prepareStatement("insert into session_videos (fk_subject, fk_time_phase, movie_path, movie_type, start_timestamp) values (?, ?, ?, ?, ?)");
+						statement3.setLong(1, resultSet.getLong("fk_subject"));
+						statement3.setLong(2, idLastTimePhases);
+						statement3.setString(3, resultSet.getString("movie_path"));
+						statement3.setString(4, resultSet.getString("movie_type"));
+						statement3.setLong(5, resultSet.getLong("start_timestamp"));
+						statement3.execute();
+						statement3.close();
+					}
+					statement2.close();
 					logDone();
 					
 				} else {
@@ -106,7 +140,7 @@ public class Migrate {
 						eventName = "\"" + ate.getAttribute("source_node_name") + "\" -> \"" + ate.getAttribute("target_node_name") + "\"";
 					}
 					
-					PreparedStatement statement = connectionNew.prepareStatement("insert into event (time_start, time_end, type, name, attributes, fk_subject) values (?, ?, ?, ?, ?, ?)");
+					PreparedStatement statement = connectionNew.prepareStatement("insert into events (time_start, time_end, type, name, attributes, fk_subject) values (?, ?, ?, ?, ?, ?)");
 					statement.setObject(1, timeStart);
 					statement.setLong(2, timeEnd);
 					statement.setString(3, ate.getEventType());
@@ -120,6 +154,7 @@ public class Migrate {
 		}
 		
 		logStart("Database diconnection");
+		connectionNoDbSelection.close();
 		connectionOld.close();
 		connectionNew.close();
 		logDone();
@@ -219,6 +254,15 @@ public class Migrate {
 		}
 		statement.close();
 		return subject_id;
+	}
+	
+	public static long getIdOfLastTimePhase(Connection connection) throws SQLException {
+		PreparedStatement statement = connection.prepareStatement("SELECT pk_time_phase FROM time_phases WHERE pk_time_phase = LAST_INSERT_ID()");
+		ResultSet resultSet = statement.executeQuery();
+		resultSet.next();
+		long time_phase_id = resultSet.getLong(1);
+		statement.close();
+		return time_phase_id;
 	}
 	
 	private static void log(String message) {
