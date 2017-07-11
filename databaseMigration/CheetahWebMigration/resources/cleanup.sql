@@ -1,3 +1,6 @@
+SET FOREIGN_KEY_CHECKS=0;
+
+
 TRUNCATE `cheetah_web`.`data_processing_steps`;
 TRUNCATE `cheetah_web`.`events`;
 TRUNCATE `cheetah_web`.`notifications`;
@@ -14,3 +17,5 @@ delete from `users` where pk_user > 0;
 delete from `data_processings` where pk_data_processing > 0;
 delete from `subjects` where pk_subject > 0;
 delete from `studies` where pk_study > 0;
+
+SET FOREIGN_KEY_CHECKS=1;

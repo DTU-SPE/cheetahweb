@@ -3,7 +3,6 @@ package migration;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.Reader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -30,7 +29,6 @@ import org.cheetahplatform.common.logging.ProcessInstance;
 
 
 public class Migrate {
-	
 	private static SimpleDateFormat logDateFormat = new SimpleDateFormat("hh:mm:ss.S");
 	private static Map<String, Class<?>> forcedTypes = new HashMap<String, Class<?>>();
 	
@@ -53,13 +51,16 @@ public class Migrate {
 		sr1.runScript(new BufferedReader(new FileReader("resources/cleanup.sql")));
 //		connectionNew.prepareStatement("delete from events").execute();
 //		connectionNew.prepareStatement("delete from time_phases").execute();
+		connectionNew.close();
 		logDone();
 		
 		logStart("Running SQL import script");
 		ScriptRunner sr2 = new ScriptRunner(connectionNoDbSelection);
 		sr2.runScript(new BufferedReader(new FileReader("resources/from_old_to_new.sql")));
+		sr2.closeConnection();
+		connectionNoDbSelection.close();
 		logDone();
-		
+		connectionNew = DriverManager.getConnection("jdbc:mysql://localhost:3306/cheetah_web", "root", "Evilein");
 		for (ProcessInstanceDatabaseHandle pidh : loadAllProcessInstances(connectionOld)) {
 			ProcessInstance pi = DatabasePromReader.readProcessInstance(pidh.getDatabaseId(), connectionOld);
 			// each process instance is actually a time phase
@@ -85,7 +86,7 @@ public class Migrate {
 					statement.close();
 					logDone();
 					
-					
+//can be o
 					logStart("Add session_videos");
 					long processInstanceId = Long.parseLong(pi.getId());
 					long idLastTimePhases = getIdOfLastTimePhase(connectionNew);
@@ -94,12 +95,13 @@ public class Migrate {
 					statement2.setLong(1, processInstanceId);
 					ResultSet resultSet = statement2.executeQuery();
 					while (resultSet.next()) {
-						PreparedStatement statement3 = connectionNew.prepareStatement("insert into session_videos (fk_subject, fk_time_phase, movie_path, movie_type, start_timestamp) values (?, ?, ?, ?, ?)");
+						PreparedStatement statement3 = connectionNew.prepareStatement("insert into session_videos (fk_subject, fk_time_phase, movie_path, movie_type, start_timestamp, user_data) values (?, ?, ?, ?, ?, ?)");
 						statement3.setLong(1, resultSet.getLong("fk_subject"));
 						statement3.setLong(2, idLastTimePhases);
 						statement3.setString(3, resultSet.getString("movie_path"));
 						statement3.setString(4, resultSet.getString("movie_type"));
 						statement3.setLong(5, resultSet.getLong("start_timestamp"));
+						statement3.setLong(6, resultSet.getLong("fk_user_file"));
 						statement3.execute();
 						statement3.close();
 					}
@@ -109,6 +111,7 @@ public class Migrate {
 				} else {
 					
 					// this audit trail entry is actually an event
+					logStart("Add event");
 					Long timeStart = null;
 					Long timeEnd = ate.getTimestamp().getTime();
 					if (!ate.getAttributeSafely("add_node_start_time").isEmpty()) {
@@ -149,9 +152,16 @@ public class Migrate {
 					statement.setLong(6, fk_subject);
 					statement.execute();
 					statement.close();
+					logDone();
 				}
 			}
 		}
+		
+		logStart("Copy use_data");
+		ScriptRunner sr3 = new ScriptRunner(connectionNew);
+		sr3.runScript(new BufferedReader(new FileReader("resources/from_old_to_new_part_two.sql")));
+		sr3.closeConnection();
+		logDone();
 		
 		logStart("Database diconnection");
 		connectionNoDbSelection.close();
@@ -277,3 +287,4 @@ public class Migrate {
 		System.out.println("Done! [" + logDateFormat.format(new Date()) + "]");
 	}
 }
+
