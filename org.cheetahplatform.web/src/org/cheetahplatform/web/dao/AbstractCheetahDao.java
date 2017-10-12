@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collection;
 
-public class AbstractCheetahDao {
+public abstract class AbstractCheetahDao {
 
 	public AbstractCheetahDao() {
 		super();

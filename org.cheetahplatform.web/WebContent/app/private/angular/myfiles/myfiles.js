@@ -1,4 +1,5 @@
-angular.module('cheetah.MyFiles', ['ngRoute', 'cheetah.CleanData']).controller('MyFilesCtrl', function ($rootScope, $scope, $http) {
+myFilesApp=angular.module('cheetah.MyFiles', ['ngRoute', 'cheetah.CleanData']);
+myFilesApp.controller('MyFilesCtrl', function ($rootScope, $scope, $http) {
     $scope.columns = {timestamp: "", leftPupil: "", rightPupil: ""};
     $scope.connectTimestampColumn = "EyeTrackerTimestamp";
     $scope.connectLeftPupilColumnName = "PupilLeft";
@@ -14,6 +15,10 @@ angular.module('cheetah.MyFiles', ['ngRoute', 'cheetah.CleanData']).controller('
     $scope.search = "";
     $scope.studies = [];
     $scope.selectedStudy;
+    $scope.timeslots=[];
+    $scope.labelList=[];
+    $scope.radio ={};
+    $scope.radioLabeled ={};
 
     //include default tags with fixed colors.
     $scope.tagColors = {
@@ -323,10 +328,48 @@ angular.module('cheetah.MyFiles', ['ngRoute', 'cheetah.CleanData']).controller('
     $scope.openConnectToSubjectDialog = function () {
         $("#connectToSubjectDialog").modal();
     };
+    $scope.openCalculationsForPhases = function () {
+        var itemTimeStamp = localStorage.getItem("timestampColumn");
+        if(itemTimeStamp === undefined){
+            timeStampStoredValue=undefined;
+        }else{
+            timeStampStoredValue= itemTimeStamp;
+        }
+        var itemLeftPupil = localStorage.getItem("leftPupilColumn");
+        if(itemLeftPupil === undefined){
+            leftPupilStoredValue=undefined;
+
+        }else{
+            leftPupilStoredValue= itemLeftPupil;
+        }
+        var itemRightPupil = localStorage.getItem("rightPupilColumn");
+        if(itemRightPupil === undefined){
+            rightPupilStoredValue=undefined;
+        }else{
+            rightPupilStoredValue=itemRightPupil
+        }
+
+        $scope.leftPupilColumnForCalculationsForPhases=leftPupilStoredValue;
+        $scope.rightPupilColumnForCalculationsForPhases=rightPupilStoredValue;
+        $scope.timeColumnForCalculationsForPhases=timeStampStoredValue;
+        $("#calculationsForPhasesDialog").modal();
+    };
+
+    $scope.openCalculationsForLabeledPhases = function () {
+
+        $scope.leftPupilColumnForCalculationsForLabeledPhases = localStorage.getItem("leftPupilColumnLabeled");
+        $scope.rightPupilColumnForCalculationsForLabeledPhases = localStorage.getItem("rightPupilColumnLabeled");
+        $scope.labelColumnForCalculationsForLabeledPhases = localStorage.getItem("labelColumnLabeled");
+
+        $("#calculationsForLabeledPhasesDialog").modal();
+    };
+
+
+
     $scope.openCalculateAverageLoadDialog = function () {
         $("#calculateAverageLoadDialog").modal();
     };
-
+	
     $scope.openDeleteDialog = function () {
         $("#deleteConfirmationDialog").modal();
     };
@@ -376,6 +419,170 @@ angular.module('cheetah.MyFiles', ['ngRoute', 'cheetah.CleanData']).controller('
             $("#calculateAverageLoadDialog").modal('hide');
         });
     };
+
+    $scope.addRow = function () {
+        if(isNaN($scope.startTime) ||  isNaN($scope.endTime) ){
+            BootstrapDialog.alert({
+                title: 'Error',
+                message: 'Fields for StartTime and EndTime must contains numbers.'
+            });
+            return;
+        }
+
+        if(isNaN($scope.slotLabel.trim()=="")){
+            BootstrapDialog.alert({
+                title: 'Error',
+                message: 'All fields must contain values.'
+            });
+            return;
+        }
+
+        if($scope.startTime > $scope.endTime){
+            BootstrapDialog.alert({
+                title: 'Error',
+                message: 'First argument must be smaller than second.'
+            });
+            return;
+        }
+
+        if(checkDoubleOccurance($scope.slotLabel.trim())){
+            BootstrapDialog.alert({
+                title: 'Error',
+                message: 'Name for slice already exists.'
+            });
+            return;
+        }
+
+        $scope.timeslots.push({start:$scope.startTime, end:$scope.endTime, slotLabel:$scope.slotLabel});
+        $scope.startTime="";
+        $scope.endTime="";
+        $scope.slotLabel="";
+        var optionValue = $scope.radio;
+        console.log(optionValue);
+    }
+
+    $scope.addLablesRow = function () {
+
+        if(isNaN($scope.label.trim()=="")){
+            BootstrapDialog.alert({
+                title: 'Error',
+                message: 'Field must contain values.'
+            });
+            return;
+        }
+
+
+        $scope.labelList.push({label:$scope.label});
+        $scope.label="";
+        var optionValue = $scope.radio;
+        console.log(optionValue);
+    }
+
+    function checkDoubleOccurance(name){
+        for(enVal in $scope.timeslots){
+            if (name==$scope.timeslots[enVal].slotLabel){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    $scope.delRow = function(elementOne, elementTwo){
+        for(var i = $scope.timeslots.length - 1; i >= 0; i--) {
+            if($scope.timeslots[i][0] === elementOne && $scope.timeslots[i][1] === elementTwo) {
+                $scope.timeslots.splice(i, 1);
+                break;
+            }
+        }
+    }
+
+    $scope.delLablesRow= function(element){
+        for(var i = $scope.labelList.length - 1; i >= 0; i--) {
+        if($scope.labelList[i][0] === element) {
+            $scope.labelList.splice(i, 1);
+            break;
+        }
+    }
+}
+
+
+    $scope.submitCalculationsForPhases = function () {
+        var postData = {};
+        postData.fileIds = [];
+        extractFiles(postData.fileIds);
+        postData.leftPupilColumn = $scope.leftPupilColumnForCalculationsForPhases;
+        postData.rightPupilColumn = $scope.rightPupilColumnForCalculationsForPhases;
+        postData.timeStampsColumn = $scope.timeColumnForCalculationsForPhases;
+        postData.baseline = $scope.radio.baseline;
+        localStorage.setItem("timestampColumn", $scope.timeColumnForCalculationsForPhases);
+        localStorage.setItem("leftPupilColumn", $scope.leftPupilColumnForCalculationsForPhases);
+        localStorage.setItem("rightPupilColumn", $scope.rightPupilColumnForCalculationsForPhases);
+        postData.timeSlots = $scope.timeslots;
+        $http.post("../../private/sequencesOfPupillometry", angular.toJson(postData)).then(function (response) {
+            $("#calculationsForPhasesDialog").modal('hide');
+        });
+    };
+
+
+    $scope.submitCalculationsForLabeledPhases = function () {
+        var postData = {};
+        postData.fileIds = [];
+        extractFiles(postData.fileIds);
+        postData.leftPupilColumn = $scope.leftPupilColumnForCalculationsForLabeledPhases;
+        postData.rightPupilColumn = $scope.rightPupilColumnForCalculationsForLabeledPhases;
+        postData.labelColumn = $scope.labelColumnForCalculationsForLabeledPhases;
+        postData.baseline = $scope.radioLabeled.baseline;
+        localStorage.setItem("labelColumnLabeled", $scope.labelColumnForCalculationsForLabeledPhases);
+        localStorage.setItem("leftPupilColumnLabeled", $scope.leftPupilColumnForCalculationsForLabeledPhases);
+        localStorage.setItem("rightPupilColumnLabeled", $scope.rightPupilColumnForCalculationsForLabeledPhases);
+        postData.labelList = $scope.labelList;
+        $http.post("../../private/sequencesOfPupillometryLabeled", angular.toJson(postData)).then(function (response) {
+            $("#calculationsForLabeledPhasesDialog").modal('hide');
+        });
+    };
+
+    $scope.openCalculationsForPhasesCSV= function () {
+        $("#CalculationsForPhasesCSV").modal('show');
+    };
+    $scope.uploadFile = function () {
+        var file = $scope.myFileCSV;
+        var postData = new FormData();
+        postData.append('file', file);
+
+        $http.post("../../private/sequencesOfPupillometryForCSV", postData, {
+            withCredentials: false,
+            headers: {
+                'Content-Type': undefined
+            },
+            transformRequest: angular.identity
+        }).then(function (response) {
+            if (response.data.message == null) {
+                BootstrapDialog.alert({
+                    title: 'Successfully uploaded',
+                    message: 'Successfully uploaded.'
+                });
+
+                $("#CalculationsForPhasesCSV").modal('hide');
+            } else {
+                BootstrapDialog.alert({
+                    title: 'Error',
+                    message: response.data.message
+                });
+                $("#CalculationsForPhasesCSV").modal('hide');
+            }
+        });
+        console.log(file)
+    };
+    $scope.uncheck = function (event) {
+        if ($scope.radio.baseline == event.target.value)
+            $scope.radio.baseline = false
+    }
+
+    $scope.uncheckLabeled = function (event) {
+        if ($scope.radioLabeled.baseline == event.target.value)
+            $scope.radioLabeled.baseline = false
+    }
+
 
     $scope.trimToPpmInstance = function () {
         var activities = [];
@@ -512,3 +719,19 @@ angular.module('cheetah.MyFiles', ['ngRoute', 'cheetah.CleanData']).controller('
             controller: 'MyFilesCtrl'
         });
 });
+
+myFilesApp.directive('fileModel', ['$parse', function ($parse) {
+    return {
+        restrict: 'A',
+        link: function (scope, element, attrs) {
+            var model = $parse(attrs.fileModel);
+            var modelSetter = model.assign;
+
+            element.bind('change', function () {
+                scope.$apply(function () {
+                    modelSetter(scope, element[0].files[0]);
+                });
+            });
+        }
+    };
+}]);

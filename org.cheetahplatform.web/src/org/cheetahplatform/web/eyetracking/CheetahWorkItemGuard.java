@@ -19,9 +19,9 @@ public class CheetahWorkItemGuard extends Thread {
 
 	private BlockingQueue<ReportableResult> results;
 	private int numberOfExpectedResults;
-	private long userId;
-	private String filePrefix;
-	private String resultFileComment;
+	protected long userId;
+	protected String filePrefix;
+	protected String resultFileComment;
 
 	public CheetahWorkItemGuard(int numberOfExpectedResults, long userId, String filePrefix) {
 		this(numberOfExpectedResults, userId, filePrefix, "");

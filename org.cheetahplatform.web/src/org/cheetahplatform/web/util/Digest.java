@@ -32,7 +32,7 @@ public class Digest {
 		String newPassword = username + ":myrealm:" + password;
 		md.update(newPassword.getBytes("iso-8859-1"), 0, newPassword.length());
 		sha1hash = md.digest();
-		String hashed = org.apache.tomcat.util.buf.HexUtils.convert(sha1hash);
+		String hashed = org.apache.tomcat.util.buf.HexUtils.toHexString(sha1hash);
 
 		System.out.println("Password hash");
 		System.out.println(hashed);

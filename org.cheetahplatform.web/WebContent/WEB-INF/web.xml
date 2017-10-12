@@ -696,4 +696,34 @@
     <servlet-name>ListAnalyzeTypesServlet</servlet-name>
     <url-pattern>/private/listAnalyzeTypes</url-pattern>
   </servlet-mapping>
+    <servlet>
+    <description></description>
+    <display-name>SequencesOfPupillometryServlet</display-name>
+    <servlet-name>SequencesOfPupillometryServlet</servlet-name>
+    <servlet-class>org.cheetahplatform.web.servlet.SequencesOfPupillometryServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SequencesOfPupillometryServlet</servlet-name>
+    <url-pattern>/private/sequencesOfPupillometry</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>SequencesOfPupillometryServletForCSV</display-name>
+    <servlet-name>SequencesOfPupillometryServletForCSV</servlet-name>
+    <servlet-class>org.cheetahplatform.web.servlet.SequencesOfPupillometryServletForCSV</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SequencesOfPupillometryServletForCSV</servlet-name>
+    <url-pattern>/private/sequencesOfPupillometryForCSV</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>SequencesOfPupillometryServletLabeled</display-name>
+    <servlet-name>SequencesOfPupillometryServletLabeled</servlet-name>
+    <servlet-class>org.cheetahplatform.web.servlet.SequencesOfPupillometryServletLabeled</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SequencesOfPupillometryServletLabeled</servlet-name>
+    <url-pattern>/private/sequencesOfPupillometryLabeled</url-pattern>
+  </servlet-mapping>
 </web-app>

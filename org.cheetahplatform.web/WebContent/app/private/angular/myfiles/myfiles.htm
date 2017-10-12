@@ -25,7 +25,8 @@
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="cheetah-files-search-input">Study</label>
                             <div class="col-sm-10">
-                                <select class="form-control" id="study" ng-model="selectedStudy" ng-options="study.id as study.name for study in studies">
+                                <select class="form-control" id="study" ng-model="selectedStudy"
+                                        ng-options="study.id as study.name for study in studies">
                                     <option value=""></option>
                                 </select>
                                 <div id="cheetah-files-status-bar">
@@ -60,6 +61,21 @@
                                 <li role="presentation">
                                     <a role="menuitem" tabindex="-1" ng-click="openCalculateAverageLoadDialog()">Calculate
                                         average load</a>
+                                </li>
+                                <li role="presentation">
+                                    <a role="menuitem" tabindex="-1" ng-click="openCalculationsForPhases()">Calculate
+                                        measures
+                                        for phases</a>
+                                </li>
+                                <li role="presentation">
+                                    <a role="menuitem" tabindex="-1" ng-click="openCalculationsForPhasesCSV()">Calculate
+                                        measures
+                                        for phases via CSV</a>
+                                </li>
+                                <li role="presentation">
+                                    <a role="menuitem" tabindex="-1" ng-click="openCalculationsForLabeledPhases()">Calculate
+                                        measures
+                                        for labeled phases</a>
                                 </li>
                                 <li role="presentation">
                                     <a role="menuitem" tabindex="-1" ng-click="openExecuteDataProcessDialog()">Execute
@@ -106,6 +122,7 @@
                     <tr>
                         <th></th>
                         <th>Filename</th>
+                        <th>Id</th>
                         <th>Type</th>
                         <th>Subject</th>
                         <th>Comment</th>
@@ -117,6 +134,7 @@
                         ng-click="setSelection(file, $event)">
                         <td><input type="checkbox" ng-model="file.selection"></td>
                         <td class="td-break-long-word">{{file.filename}}</td>
+                        <td>{{file.id}}</td>
                         <td>{{file.type}}</td>
                         <td>{{file.idOfSubject}}</td>
                         <td class="td-break-long-word">{{file.comment}}</td>
@@ -230,7 +248,7 @@
                         </div>
                         <div class="panel-body">
                             <div class="form-group">
-                                <label for="leftPupilColumnToConnect">Left Pupil</label>
+                                <label for="leftPupilColumnForCognitiveLoad">Left Pupil</label>
                                 <input type="text" id="leftPupilColumnForCognitiveLoad" class="form-control"
                                        placeholder="left pupil column name..."
                                        ng-model="leftPupilColumnForCognitiveLoad" required>
@@ -238,7 +256,7 @@
                                 <div class="help-block with-errors"></div>
                             </div>
                             <div class="form-group">
-                                <label for="rightPupilColumnToConnect">Right Pupil</label>
+                                <label for="rightPupilColumnForCognitiveLoad">Right Pupil</label>
                                 <input type="text" id="rightPupilColumnForCognitiveLoad" class="form-control"
                                        placeholder="right pupil column name..."
                                        ng-model="rightPupilColumnForCognitiveLoad" required>
@@ -256,6 +274,253 @@
                         </div>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal" id="calculationsForPhasesDialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Calculation for phases</h4>
+            </div>
+            <div class="modal-body container-fluid">
+                <form data-toggle="validator" id="calculationsForPhasesForm" role="form">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Select Phases for calculation</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label for="leftPupilColumnForCalculationsForPhases">Left Pupil</label>
+                                <input type="text" id="leftPupilColumnForCalculationsForPhases" class="form-control"
+                                       placeholder="left pupil column name..."
+                                       ng-model="leftPupilColumnForCalculationsForPhases" required>
+
+                                <div class="help-block with-errors"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="rightPupilColumnForCalculationsForPhases">Right Pupil</label>
+                                <input type="text" id="rightPupilColumnForCalculationsForPhases" class="form-control"
+                                       placeholder="right pupil column name..."
+                                       ng-model="rightPupilColumnForCalculationsForPhases" required>
+
+                                <div class="help-block with-errors"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="timeColumnForCalculationsForPhases">Time Stamps</label>
+                                <input type="text" id="timeColumnForCalculationsForPhases" class="form-control"
+                                       placeholder="timestamp column name..."
+                                       ng-model="timeColumnForCalculationsForPhases" required>
+
+                                <div class="help-block with-errors"></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+                <div class="control-group" id="fields">
+                    <div class="controls">
+                        <form role="form" autocomplete="off">
+                            <div ng-repeat="element in timeslots">
+                                <div class="row">
+                                    <div class="voca">
+                                        <div class="col-md-3">
+                                            <label for=>StartTime</label>
+                                            <input class="form-control" name="start"
+                                                   type="text" ng-model="element.start">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label for=>EndTime</label>
+                                            <input class="form-control" name="start"
+                                                   type="text" ng-model="element.end">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label for=>Name</label>
+                                            <input class="form-control" name="slotLabel"
+                                                   type="text" ng-model="element.slotLabel">
+                                        </div>
+                                        <button type="button" class="btn" ng-click="delRow(element[0],element[1])">
+                                           </span> Remove Entry
+                                        </button>
+                                        <div class="radio">
+                                            <label><input type="radio" name="optradio" ng-model="radio.baseline", ng-value="element.slotLabel" ng-click="uncheck($event)">Baseline</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            <br>
+                            <div class="row">
+                                <div class="voca">
+                                    <div class="col-md-3">
+                                        <label for=>StartTime</label>
+                                        <input class="form-control" name="start"
+                                               type="text" ng-model="startTime">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for=>EndTime</label>
+                                        <input class="form-control" name="start"
+                                               type="text" ng-model="endTime">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for=>Name</label>
+                                        <input class="form-control" name="slotLabel"
+                                               type="text" ng-model="slotLabel">
+                                    </div>
+                                    <button type="button" class="btn" ng-click="addRow()">
+                                      Add to calculation
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                        <br>
+
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="form-group">
+                <div>
+                    <button type="submit" id="submitCalculationsForPhases" class="btn btn-primary" ng-click="submitCalculationsForPhases()">Calculate
+                        Average
+                        Load
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="CalculationsForPhasesCSV" >
+   <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+                <h4 class="modal-title">Add time phases as csv-file you want to calculate</h4>
+                <div>
+                    TO FILL
+                    </p>
+                </div>
+            </div>
+            <div>
+
+            </div>
+            <div class="modal-body container-fluid">
+                <form id="uploadFileCSV" role="form" class="ng-pristine ng-valid" ng-submit="uploadFile()">
+                    <input id="uploadFieldCSV" type="file" file-model="myFileCSV" required>
+                    <div class="form-group">
+
+                    </div>
+                    <button type="submit" id="uploadFileButton" class="btn btn-sm btn-primary" style=" float: right;">
+                        Upload
+                        File NEW
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="calculationsForLabeledPhasesDialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Calculation for labeled phases</h4>
+            </div>
+            <div class="modal-body container-fluid">
+                <form data-toggle="validator" id="calculationsForLabeledPhasesForm" role="form">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Select Labels for calculation</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label for="leftPupilColumnForCalculationsForPhases">Left Pupil</label>
+                                <input type="text" id="leftPupilColumnForCalculationsForLabeledPhases" class="form-control"
+                                       placeholder="left pupil column name..."
+                                       ng-model="leftPupilColumnForCalculationsForLabeledPhases" required>
+
+                                <div class="help-block with-errors"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="rightPupilColumnForCalculationsForPhases">Right Pupil</label>
+                                <input type="text" id="rightPupilColumnForCalculationsForLabeledPhases" class="form-control"
+                                       placeholder="right pupil column name..."
+                                       ng-model="rightPupilColumnForCalculationsForLabeledPhases" required>
+
+                                <div class="help-block with-errors"></div>
+                            </div>
+
+                              <div class="form-group">
+                                <label for="timeColumnForCalculationsForPhases">Label Column</label>
+                                <input type="text" id="labelColumnForCalculationsForLabeledPhases" class="form-control"
+                                       placeholder="label column name..."
+                                       ng-model="labelColumnForCalculationsForLabeledPhases" required>
+
+                                <div class="help-block with-errors"></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+                <div class="control-group" id="fieldsLabeled">
+                    <div class="controls">
+                        <form role="form" autocomplete="off">
+                            <div ng-repeat="element in labelList">
+                                <div class="row">
+                                    <div class="voca">
+                                        <div class="col-md-3">
+                                            <label for=>LabelName</label>
+                                            <input class="form-control" name="labelName"
+                                                   type="text" ng-model="element.label">
+                                        </div>
+                                        <button type="button" class="btn" ng-click="delLablesRow(element[0])">
+                                            </span> Remove Entry
+                                        </button>
+                                        <div class="radio">
+                                            <label><input type="radio" name="optradio" ng-model="radioLabeled.baseline", ng-value="element.label" ng-click="uncheckLabeled($event)">Baseline</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            <br>
+                            <div class="row">
+                                <div class="voca">
+                                    <div class="col-md-3">
+                                        <label for=>Name</label>
+                                        <input class="form-control" name="label"
+                                               type="text" ng-model="label">
+                                    </div>
+                                    <button type="button" class="btn" ng-click="addLablesRow()">
+                                        Add to calculation
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                        <br>
+
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="form-group">
+                <div>
+                    <button type="submit" id="submitCalculationsForLabeledPhases" class="btn btn-primary" ng-click="submitCalculationsForLabeledPhases()">Calculate
+                        Average
+                        Load
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -446,11 +711,13 @@
                 </div>
                 <div ng-show="selectedStudy && selectedStudy.dataProcessing.length>0" class="form-group">
                     <h4>Select a data processing routine</h4>
-                    <div class="cheetah-section-description">This section allows you to run pre-defined data processing routine on the selected file. This
+                    <div class="cheetah-section-description">This section allows you to run pre-defined data processing
+                        routine on the selected file. This
                         might include filtering steps, but also data analysis steps can be included. For more
                         information fo to <a href="study-management.htm">My Studies</a>.
                     </div>
-                    <div ng-show="containsFilesFromOtherStudy" class="alert alert-warning">Some of the files you selected correspond to a different
+                    <div ng-show="containsFilesFromOtherStudy" class="alert alert-warning">Some of the files you
+                        selected correspond to a different
                         study. We will skip these files when executing the data processing.
                     </div>
                     <label class="control-label" for="cheeta-data-processing-select">Data processing routine</label>
@@ -463,11 +730,13 @@
                     data processing routine.
                 </div>
                 <div class="cheetah-dialog-button-container">
-                    <button ng-show="selectedStudy===undefined || selectedStudy.dataProcessing.length===0 || !selectedDataProcessing" type="submit"
+                    <button ng-show="selectedStudy===undefined || selectedStudy.dataProcessing.length===0 || !selectedDataProcessing"
+                            type="submit"
                             id="cheetah-close-execute-data-processing"
                             class="btn btn-primary" ng-click="closeDialog()">Close
                     </button>
-                    <button ng-show="selectedStudy && selectedStudy.dataProcessing.length>0 && selectedDataProcessing" type="submit"
+                    <button ng-show="selectedStudy && selectedStudy.dataProcessing.length>0 && selectedDataProcessing"
+                            type="submit"
                             id="cheetah-start-data-processing"
                             class="btn btn-primary" ng-click="startProcessing()">Start study data processing
                     </button>
@@ -476,6 +745,9 @@
         </div>
     </div>
 </div>
+
+
+
 
 
 <div ng-include="'angular/clean-data/clean-data.htm'"></div>
